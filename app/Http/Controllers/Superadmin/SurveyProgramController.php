@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin; // Namespace disesuaikan dengan folder
+namespace App\Http\Controllers\Superadmin;
 
-use App\Http\Controllers\Controller; // Jangan lupa import base controller
+use App\Http\Controllers\Controller;
 use App\Models\SurveyProgram;
 use App\Models\UnitKerja;
 use Illuminate\Http\Request;
@@ -16,7 +16,7 @@ class SurveyProgramController extends Controller
     public function index()
     {
         $programs = SurveyProgram::withCount('surveys', 'targetedUnitKerjas')->latest()->paginate(10);
-        return view('admin.programs.index', compact('programs'));
+        return view('superadmin.programs.index', compact('programs'));
     }
 
     /**
@@ -25,7 +25,7 @@ class SurveyProgramController extends Controller
     {
         $program = new SurveyProgram();
         $unitKerjas = UnitKerja::orderBy('unit_kerja_name')->get();
-        return view('admin.programs.create', compact('program', 'unitKerjas'));
+        return view('superadmin.programs.create', compact('program', 'unitKerjas'));
     }
 
     /**
@@ -53,7 +53,7 @@ class SurveyProgramController extends Controller
 
         $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
 
-        return redirect()->route('programs.index')->with('success', 'Program Survei berhasil dibuat.');
+        return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil dibuat.');
     }
 
     /**
@@ -61,7 +61,7 @@ class SurveyProgramController extends Controller
     public function show(SurveyProgram $program)
     {
         $program->load('targetedUnitKerjas', 'surveys.unitKerja');
-        return view('admin.programs.show', compact('program'));
+        return view('superadmin.programs.show', compact('program'));
     }
 
     /**
@@ -69,7 +69,7 @@ class SurveyProgramController extends Controller
     public function edit(SurveyProgram $program)
     {
         $unitKerjas = UnitKerja::orderBy('unit_kerja_name')->get();
-        return view('admin.programs.edit', compact('program', 'unitKerjas'));
+        return view('superadmin.programs.edit', compact('program', 'unitKerjas'));
     }
 
     /**
@@ -97,10 +97,11 @@ class SurveyProgramController extends Controller
 
         $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
 
-        return redirect()->route('programs.index')->with('success', 'Program Survei berhasil diperbarui.');
+        return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil diperbarui.');
     }
 
     /**
+     * Menghapus Program Survei.
      */
     public function destroy(SurveyProgram $program)
     {
@@ -109,6 +110,6 @@ class SurveyProgramController extends Controller
         }
 
         $program->delete();
-        return redirect()->route('programs.index')->with('success', 'Program Survei berhasil dihapus.');
+        return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil dihapus.');
     }
 }

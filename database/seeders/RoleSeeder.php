@@ -15,16 +15,12 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // DITAMBAHKAN: Nonaktifkan foreign key check untuk sementara
         Schema::disableForeignKeyConstraints();
 
-        // Mengosongkan tabel sebelum diisi
         DB::table('roles')->truncate();
 
-        // DITAMBAHKAN: Aktifkan kembali foreign key check
         Schema::enableForeignKeyConstraints();
 
-        // Membuat data peran yang dibutuhkan menggunakan Model
         Role::create([
             'role_name' => 'Superadmin',
             'code'      => 'SA'

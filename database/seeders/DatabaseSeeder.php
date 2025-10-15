@@ -13,12 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Memanggil seeder-seeder yang telah kita buat.
-        // Urutan ini penting: TipeUnit dan Role harus ada sebelum User.
         $this->call([
             TipeUnitSeeder::class,
             RoleSeeder::class,
-            // UserSeeder::class, // Kita beri komentar untuk saat ini sesuai permintaan Anda.
+            UserSeeder::class, 
         ]);
     }
 }
