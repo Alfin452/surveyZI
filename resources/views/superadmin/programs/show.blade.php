@@ -82,10 +82,9 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($pelaksanaan)
-                            <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Lihat/Edit Pelaksanaan</a>
+                            <a href="{{ route('superadmin.surveys.show', $pelaksanaan) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Lihat/Edit Pelaksanaan</a>
                             @else
-                            {{-- INILAH JAWABANNYA: Tombol untuk Super Admin membuatkan survei --}}
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Buatkan Pelaksanaan</a>
+                            <a href="{{ route('superadmin.surveys.create', ['program' => $program->id, 'unit' => $unit->id]) }}" class="text-blue-600 hover:text-blue-800 font-medium">Buatkan Pelaksanaan</a>
                             @endif
                         </td>
                     </tr>

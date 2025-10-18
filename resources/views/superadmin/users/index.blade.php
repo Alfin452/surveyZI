@@ -4,11 +4,11 @@
 <div class="p-4 sm:p-6">
 
     {{-- Header Halaman --}}
-    <div class="mb-8 bg-white rounded-xl p-4 md:p-6 border-l-4 border-yellow-500 shadow-sm">
+    <div class="mb-8 bg-white rounded-xl p-4 md:p-6 border-l-4 border-blue-500 shadow-sm">
         <div class="flex flex-col md:flex-row md:justify-between md:items-center">
             <div>
                 <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 bg-yellow-500 text-white p-3 rounded-lg shadow-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <div class="flex-shrink-0 bg-indigo-500 text-white p-3 rounded-lg shadow-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.125-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.125-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg></div>
                     <div>
@@ -17,7 +17,7 @@
                     </div>
                 </div>
             </div>
-            <a href="{{ route('superadmin.users.create') }}" class="mt-4 md:mt-0 bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-yellow-700 transition duration-300 shadow-md flex items-center space-x-2 self-start md:self-end">
+            <a href="{{ route('superadmin.users.create') }}" class="mt-4 md:mt-0 bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-yellow-700 transition duration-300 shadow-md flex items-center space-x-2 self-start md:self-end">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                 </svg>
@@ -25,7 +25,6 @@
             </a>
         </div>
     </div>
-
     @if(session('success'))
     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg shadow-sm" role="alert">
         <p class="font-semibold">{{ session('success') }}</p>

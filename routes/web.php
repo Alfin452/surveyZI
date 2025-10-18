@@ -5,7 +5,9 @@ use App\Http\Controllers\Superadmin\SurveyProgramController;
 use App\Http\Controllers\Superadmin\DashboardController as SuperadminDashboardController;
 use App\Http\Controllers\Superadmin\UnitKerjaController as SuperadminUnitKerjaController;
 use App\Http\Controllers\Superadmin\UserController as SuperadminUserController;
-use App\Http\Controllers\Superadmin\SurveyController as SuperadminSurveyController; 
+use App\Http\Controllers\Superadmin\SurveyController as SuperadminSurveyController;
+use App\Http\Controllers\Superadmin\QuestionController as SuperadminQuestionController;
+use App\Http\Controllers\Auth\LoginController;
 
 
 /*
@@ -44,6 +46,7 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::resource('unit-kerja', SuperadminUnitKerjaController::class);
         Route::resource('users', SuperadminUserController::class);
         Route::resource('surveys', SuperadminSurveyController::class);
+        Route::resource('surveys.questions', SuperadminQuestionController::class)->except(['index']);
 });
 
 //unitkerja

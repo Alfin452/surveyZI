@@ -11,16 +11,12 @@ use Illuminate\Http\Request;
 class SurveyController extends Controller
 {
     /**
-     * Menampilkan form untuk membuat survei pelaksanaan baru untuk unit kerja tertentu.
-     * Dipanggil saat Super Admin mengklik "Buatkan Pelaksanaan".
      */
     public function create(Request $request)
     {
-        // Mengambil ID program dan unit dari request
         $program = SurveyProgram::findOrFail($request->query('program'));
         $unitKerja = UnitKerja::findOrFail($request->query('unit'));
 
-        // Menyiapkan data untuk form
         $survey = new Survey([
             'title' => $program->title . ' - ' . $unitKerja->unit_kerja_name,
             'description' => $program->description,
@@ -30,7 +26,6 @@ class SurveyController extends Controller
     }
 
     /**
-     * Menyimpan survei pelaksanaan baru ke database.
      */
     public function store(Request $request)
     {
@@ -47,13 +42,13 @@ class SurveyController extends Controller
 
         Survey::create($validated);
 
-        // Kembali ke halaman detail program survei induknya
-        return redirect()->route('superadmin.programs.show', $request->survey_program_id)
+        $program = SurveyProgram::find($request->survey_program_id);
+
+        return redirect()->route('superadmin.programs.show', $program)
             ->with('success', 'Survei pelaksanaan berhasil dibuat.');
     }
 
     /**
-     * Menampilkan detail survei pelaksanaan (halaman kelola pertanyaan).
      */
     public function show(Survey $survey)
     {
@@ -62,17 +57,14 @@ class SurveyController extends Controller
     }
 
     /**
-     * Menampilkan form untuk mengedit survei pelaksanaan.
      */
     public function edit(Survey $survey)
     {
-        // Memuat relasi agar bisa menampilkan nama program dan unit
         $survey->load('surveyProgram', 'unitKerja');
         return view('superadmin.surveys.edit', compact('survey'));
     }
 
     /**
-     * Memperbarui survei pelaksanaan di database.
      */
     public function update(Request $request, Survey $survey)
     {
@@ -87,7 +79,7 @@ class SurveyController extends Controller
 
         $survey->update($validated);
 
-        return redirect()->route('superadmin.programs.show', $survey->survey_program_id)
+        return redirect()->route('superadmin.programs.show', $survey->surveyProgram)
             ->with('success', 'Survei pelaksanaan berhasil diperbarui.');
     }
 
@@ -96,10 +88,10 @@ class SurveyController extends Controller
      */
     public function destroy(Survey $survey)
     {
-        $programId = $survey->survey_program_id;
+        $program = $survey->surveyProgram;
         $survey->delete();
 
-        return redirect()->route('superadmin.programs.show', $programId)
+        return redirect()->route('superadmin.programs.show', $program)
             ->with('success', 'Survei pelaksanaan berhasil dihapus.');
     }
 }
