@@ -17,16 +17,22 @@ class ProgramController extends Controller
         $user = Auth::user();
         $unitKerjaId = $user->unit_kerja_id;
 
-        $programs = SurveyProgram::where('is_active', true)
+        $programsQuery = SurveyProgram::where('is_active', true)
             ->whereHas('targetedUnitKerjas', function ($query) use ($unitKerjaId) {
                 $query->where('unit_kerja_id', $unitKerjaId);
-            })
-            ->withCount(['surveys' => function ($query) use ($unitKerjaId) {
-                $query->where('unit_kerja_id', $unitKerjaId);
-            }])
-            ->latest()
-            ->paginate(10);
+            });
+
+        $programsQuery->with(['surveys' => function ($query) use ($unitKerjaId) {
+            $query->where('unit_kerja_id', $unitKerjaId);
+        }]);
+
+        $programsQuery->withCount(['surveys' => function ($query) use ($unitKerjaId) {
+            $query->where('unit_kerja_id', $unitKerjaId);
+        }]);
+
+        $programs = $programsQuery->latest()->paginate(10);
 
         return view('unit_kerja_admin.programs.index', compact('programs'));
     }
 }
+

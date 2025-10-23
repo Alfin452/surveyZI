@@ -4,15 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperAdmin Panel</title>
+    <title>Super Admin Panel - Survei UIN Antasari</title>
     @vite('resources/css/app.css')
 
     <script src="//unpkg.com/alpinejs" defer></script>
 
+    {{-- CSS Library --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
 
-    {{-- Font Poppins --}}
+    {{-- Mengimpor Font Poppins dari Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -68,6 +69,12 @@
             /* indigo-600 */
             box-shadow: 0 0 0 2px #c7d2fe !important;
         }
+
+        .sortable-ghost {
+            background-color: #dbeafe;
+            opacity: 0.7;
+            border: 2px dashed #60a5fa;
+        }
     </style>
     @stack('styles')
 </head>
@@ -76,6 +83,7 @@
     x-data="{ openLogout: false, openDeleteModal: false, deleteUrl: '', deleteItemName: '' }"
     @open-delete-modal.window="openDeleteModal = true; deleteUrl = event.detail.url; deleteItemName = event.detail.name">
 
+    {{-- Elemen Loading Screen --}}
     <div x-cloak x-data x-show="$store.globals.isLoading" x-transition.opacity
         class="fixed inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-[9999]">
         <div class="pulsing-dots space-x-2">
@@ -91,11 +99,12 @@
             <div class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo UIN" class="w-10 h-10 rounded-full">
                 <div>
-                    <h1 class="text-lg font-bold text-white leading-tight">SURVEY ZI UIN Antasari</h1>
-                    <p class="text-sm text-cyan-100 font-light">SuperAdmin</p>
+                    <h1 class="text-lg font-bold text-white leading-tight">SURVEY UIN Antasari</h1>
+                    <p class="text-sm text-cyan-100 font-light">SuperAdmin Panel</p>
                 </div>
             </div>
             <nav class="flex-1 space-y-1">
+                {{-- PERBAIKAN: Tautan disesuaikan dengan rute yang benar dan memiliki indikator aktif --}}
                 <a href="{{ route('superadmin.dashboard') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Dashboard</a>
                 <a href="{{ route('superadmin.programs.index') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.programs.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Program Survei</a>
                 <a href="{{ route('superadmin.unit-kerja.index') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.unit-kerja.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Unit Kerja</a>
@@ -162,10 +171,7 @@
             Alpine.store('globals', {
                 isLoading: false
             });
-            // Hapus event listener submit lama karena sudah digantikan oleh @click
         });
-
-        // Pindahkan event listener 'pageshow' ke sini agar tetap berfungsi
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
                 if (Alpine.store('globals')) {

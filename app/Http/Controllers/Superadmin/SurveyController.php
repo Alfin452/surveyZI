@@ -7,10 +7,13 @@ use App\Models\Survey;
 use App\Models\SurveyProgram;
 use App\Models\UnitKerja;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class SurveyController extends Controller
 {
     /**
+     * Menampilkan form untuk membuat survei pelaksanaan baru.
      */
     public function create(Request $request)
     {
@@ -26,6 +29,7 @@ class SurveyController extends Controller
     }
 
     /**
+     * Menyimpan survei pelaksanaan baru ke database.
      */
     public function store(Request $request)
     {
@@ -40,15 +44,15 @@ class SurveyController extends Controller
             'unit_kerja_id' => 'required|exists:unit_kerjas,id',
         ]);
 
-        Survey::create($validated);
+        $survey = Survey::create($validated);
 
-        $program = SurveyProgram::find($request->survey_program_id);
-
-        return redirect()->route('superadmin.programs.show', $program)
-            ->with('success', 'Survei pelaksanaan berhasil dibuat.');
+        // Arahkan langsung ke halaman Kelola Pertanyaan setelah dibuat
+        return redirect()->route('superadmin.surveys.show', $survey)
+            ->with('success', 'Survei pelaksanaan berhasil dibuat. Sekarang Anda bisa menambahkan pertanyaan.');
     }
 
     /**
+     * Menampilkan halaman kelola pertanyaan.
      */
     public function show(Survey $survey)
     {
@@ -57,14 +61,18 @@ class SurveyController extends Controller
     }
 
     /**
+     * Menampilkan form untuk mengedit detail pelaksanaan.
      */
     public function edit(Survey $survey)
     {
         $survey->load('surveyProgram', 'unitKerja');
-        return view('superadmin.surveys.edit', compact('survey'));
+        $program = $survey->surveyProgram;
+
+        return view('superadmin.surveys.edit', compact('survey', 'program'));
     }
 
     /**
+     * Memperbarui detail pelaksanaan.
      */
     public function update(Request $request, Survey $survey)
     {

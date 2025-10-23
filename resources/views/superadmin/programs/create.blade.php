@@ -1,7 +1,7 @@
-@extends('layouts.superadmin') 
+@extends('layouts.superadmin')
 
 @section('content')
-<div class="p-4 sm:p-6">
+<div class="px-4 lg:px-6 pb-6 h-full overflow-y-auto">
     {{-- Header Halaman --}}
     <div class="mb-8 bg-white rounded-xl p-4 md:p-6 border-l-4 border-indigo-500 shadow-sm">
         <div class="flex items-center gap-4">
@@ -26,11 +26,10 @@
 @endsection
 
 @push('scripts')
-{{-- Script untuk datepicker dan multi-select --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        flatpickr(".datepicker", {
-            dateFormat: "Y-m-d",
+        flatpickr('.datepicker', {
+            dateFormat: 'Y-m-d'
         });
         new TomSelect('#targeted_unit_kerjas_select', {
             plugins: ['remove_button'],

@@ -57,14 +57,14 @@
         </select>
         @error('targeted_unit_kerjas') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
     </div>
-</div>
 
-{{-- Tombol Aksi --}}
-<div class="mt-8 pt-6 border-t flex justify-end space-x-3">
-    <a href="{{ route('superadmin.programs.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
-        Batal
-    </a>
-    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-        Simpan Program
-    </button>
+    {{-- PERBAIKAN: Tombol Aksi dipindahkan ke dalam kartu utama --}}
+    <div class="mt-8 pt-6 border-t flex justify-end space-x-3">
+        <a href="{{ route('superadmin.programs.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Batal
+        </a>
+        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+            Simpan Program
+        </button>
+    </div>
 </div>

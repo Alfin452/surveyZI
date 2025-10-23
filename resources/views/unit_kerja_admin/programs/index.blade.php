@@ -46,7 +46,6 @@
                         {{ $program->start_date?->format('d M Y') ?? 'N/A' }} - {{ $program->end_date?->format('d M Y') ?? 'N/A' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        {{-- surveys_count di sini adalah hasil dari withCount yang sudah difilter di controller --}}
                         @if($program->surveys_count > 0)
                         <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Sudah Dibuat</span>
                         @else
@@ -54,10 +53,11 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
-                        @if($program->surveys_count > 0)
-                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Lihat/Edit Pelaksanaan</a>
+                        {{-- PERBAIKAN: Logika diubah agar lebih bersih dan aman --}}
+                        @if($program->surveys_count > 0 && ($pelaksanaan = $program->surveys->first()))
+                        <a href="{{ route('unitkerja.admin.surveys.edit', $pelaksanaan) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Lihat/Edit Pelaksanaan</a>
                         @else
-                        <a href="#" class="inline-block bg-teal-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-600 transition">Buat Pelaksanaan</a>
+                        <a href="{{ route('unitkerja.admin.surveys.create', ['program' => $program->id]) }}" class="inline-block bg-teal-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-600 transition">Buat Pelaksanaan</a>
                         @endif
                     </td>
                 </tr>

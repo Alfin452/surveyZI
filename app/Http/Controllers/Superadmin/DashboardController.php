@@ -1,19 +1,33 @@
 <?php
 
-    namespace App\Http\Controllers\Superadmin;
+namespace App\Http\Controllers\Superadmin;
 
-    use App\Http\Controllers\Controller;
-    use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+// DITAMBAHKAN: Import model yang kita butuhkan untuk statistik
+use App\Models\SurveyProgram;
+use App\Models\Survey;
+use App\Models\UnitKerja;
+use App\Models\User;
 
-    class DashboardController extends Controller
+class DashboardController extends Controller
+{
+    /**
+     * Menampilkan halaman dashboard untuk Super Admin.
+     */
+    public function index()
     {
-        /**
-         * Menampilkan halaman dashboard untuk Super Admin.
-         */
-        public function index()
-        {
-            // Untuk saat ini, kita hanya akan menampilkan view.
-            // Nanti kita bisa menambahkan logika untuk mengambil data statistik.
-            return view('superadmin.dashboard');
-        }
+        // DITAMBAHKAN: Logika untuk mengambil data statistik
+        $totalPrograms = SurveyProgram::count();
+        $totalPelaksanaan = Survey::count(); // Ini adalah total survei turunan
+        $totalUnitKerja = UnitKerja::count();
+        $totalUsers = User::count(); // Total semua pengguna (admin, user, dll)
+
+        return view('superadmin.dashboard', compact(
+            'totalPrograms',
+            'totalPelaksanaan',
+            'totalUnitKerja',
+            'totalUsers'
+        ));
     }
+}

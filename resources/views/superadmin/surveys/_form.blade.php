@@ -1,67 +1,60 @@
-{{-- Menggunakan Alpine.js untuk mengelola opsi jawaban secara dinamis --}}
-<div x-data='{
-    options: {{ 
-        json_encode(
-            old('options', $question->exists ? $question->options->map->only(['option_body', 'option_score']) : [['option_body' => '', 'option_score' => '']])
-        ) 
-    }}
-}'>
-    <div class="space-y-6 bg-white p-6 rounded-xl shadow-lg border">
-        {{-- Tipe Pertanyaan (saat ini tersembunyi karena hanya ada satu tipe) --}}
-        <input type="hidden" name="type" value="multiple_choice">
+<div class="space-y-6 bg-white p-6 rounded-xl shadow-lg border">
+    {{-- Judul & Deskripsi --}}
+    <div>
+        <label for="title" class="block text-sm font-medium text-gray-700">Judul Pelaksanaan Survei</label>
+        <input type="text" name="title" id="title" value="{{ old('title', $survey->title ?? '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+    </div>
+    <div>
+        <label for="description" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+        <textarea name="description" id="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('description', $survey->description ?? '') }}</textarea>
+        @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+    </div>
 
-        {{-- Isi Pertanyaan --}}
+    {{-- Periode Pelaksanaan --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
         <div>
-            <label for="question_body" class="block text-sm font-medium text-gray-700">Teks Pertanyaan</label>
-            <textarea name="question_body" id="question_body" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('question_body', $question->question_body ?? '') }}</textarea>
-            @error('question_body') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+            <label for="start_date" class="block text-sm font-medium text-gray-700">Tanggal Mulai Pelaksanaan</label>
+            <input type="text" name="start_date" id="start_date" value="{{ old('start_date', $survey->start_date?->format('Y-m-d')) }}" required class="datepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="YYYY-MM-DD">
+            @error('start_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
+        <div>
+            <label for="end_date" class="block text-sm font-medium text-gray-700">Tanggal Selesai Pelaksanaan</label>
+            <input type="text" name="end_date" id="end_date" value="{{ old('end_date', $survey->end_date?->format('Y-m-d')) }}" required class="datepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="YYYY-MM-DD">
+            @error('end_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        </div>
+    </div>
 
-        {{-- Opsi Jawaban Dinamis --}}
-        <div class="pt-4 border-t">
-            <label class="block text-sm font-medium text-gray-700">Opsi Jawaban</label>
-            <div class="mt-2 space-y-4">
-                <template x-for="(option, index) in options" :key="index">
-                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border">
-                        {{-- Input Teks Opsi --}}
-                        <div class="flex-grow">
-                            <input type="text" :name="`options[${index}][option_body]`" x-model="option.option_body" required class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm" placeholder="Tulis teks jawaban...">
-                        </div>
-                        {{-- Input Skor Opsi --}}
-                        <div class="w-24">
-                            <input type="number" :name="`options[${index}][option_score]`" x-model="option.option_score" required class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm" placeholder="Skor">
-                        </div>
-                        {{-- Tombol Hapus Opsi --}}
-                        <button type="button" @click="if(options.length > 1) options.splice(index, 1)" :class="{'opacity-50 cursor-not-allowed': options.length <= 1}" class="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                </template>
+    {{-- Opsi Tambahan --}}
+    <div class="pt-4 border-t space-y-4">
+        <div class="relative flex items-start">
+            <div class="flex h-6 items-center">
+                <input id="requires_pre_survey" name="requires_pre_survey" type="checkbox" value="1" {{ old('requires_pre_survey', $survey->requires_pre_survey ?? false) ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
             </div>
-
-            @error('options.*') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
-            @error('options') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
-
-
-            {{-- Tombol Tambah Opsi --}}
-            <button type="button" @click="options.push({ option_body: '', option_score: '' })" class="mt-4 inline-flex items-center px-4 py-2 border border-dashed border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-                </svg>
-                Tambah Opsi
-            </button>
+            <div class="ml-3 text-sm leading-6">
+                <label for="requires_pre_survey" class="font-medium text-gray-900">Wajibkan Pra-Survei</label>
+                <p class="text-gray-500">Responden harus mengisi data demografi sebelum memulai.</p>
+            </div>
+        </div>
+        <div class="relative flex items-start">
+            <div class="flex h-6 items-center">
+                <input id="is_active" name="is_active" type="checkbox" value="1" {{ old('is_active', $survey->is_active ?? true) ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+            </div>
+            <div class="ml-3 text-sm leading-6">
+                <label for="is_active" class="font-medium text-gray-900">Aktifkan Pelaksanaan</label>
+                <p class="text-gray-500">Pelaksanaan yang aktif akan muncul di halaman publik.</p>
+            </div>
         </div>
     </div>
+</div>
 
-    {{-- Tombol Aksi --}}
-    <div class="mt-8 pt-6 border-t flex justify-end space-x-3">
-        <a href="{{ route('superadmin.surveys.show', $survey) }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
-            Batal
-        </a>
-        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-            Simpan Pertanyaan
-        </button>
-    </div>
+{{-- Tombol Aksi --}}
+<div class="mt-8 pt-6 border-t flex justify-end space-x-3">
+    {{-- Tombol Batal ini sekarang akan berfungsi karena $program diteruskan dengan benar --}}
+    <a href="{{ route('superadmin.programs.show', $program) }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+        Batal
+    </a>
+    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+        Simpan Pelaksanaan
+    </button>
 </div>

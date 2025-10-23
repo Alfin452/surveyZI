@@ -51,9 +51,9 @@
 
             <nav class="flex-1 space-y-1">
                 {{-- Tautan navigasi akan kita fungsionalkan nanti --}}
-                <a href="#" class="block p-4 rounded-lg transition duration-300 {{-- request()->routeIs('unitkerja.admin.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' --}}">Dashboard</a>
-                <a href="#" class="block p-4 rounded-lg transition duration-300 {{-- request()->routeIs('unitkerja.admin.programs.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' --}}">Program Survei</a>
-                <a href="#" class="block p-4 rounded-lg transition duration-300 {{-- request()->routeIs('unitkerja.admin.surveys.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' --}}">Pelaksanaan Saya</a>
+                <a href="{{ route('unitkerja.admin.dashboard') }}" class="block p-4 rounded-lg transition duration-300 {{-- request()->routeIs('unitkerja.admin.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' --}}">Dashboard</a>
+                <a href="{{ route('unitkerja.admin.programs.index') }}" class="block p-4 rounded-lg transition duration-300 {{-- request()->routeIs('unitkerja.admin.programs.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' --}}">Program Survei</a>
+                <a href="{{ route('unitkerja.admin.surveys.index') }}" class="block p-4 rounded-lg transition duration-300 {{-- request()->routeIs('unitkerja.admin.surveys.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' --}}">Pelaksanaan Saya</a>
             </nav>
 
             <div class="mt-auto">

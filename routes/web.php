@@ -7,7 +7,17 @@ use App\Http\Controllers\Superadmin\UnitKerjaController as SuperadminUnitKerjaCo
 use App\Http\Controllers\Superadmin\UserController as SuperadminUserController;
 use App\Http\Controllers\Superadmin\SurveyController as SuperadminSurveyController;
 use App\Http\Controllers\Superadmin\QuestionController as SuperadminQuestionController;
+use App\Http\Controllers\Superadmin\SurveyResultController;
+use App\Http\Controllers\Superadmin\QuestionOrderController;
+
+
 use App\Http\Controllers\Auth\LoginController;
+
+use App\Http\Controllers\UnitKerjaAdmin\DashboardController as UnitKerjaDashboardController;
+use App\Http\Controllers\UnitKerjaAdmin\ProgramController as UnitKerjaProgramController;
+use App\Http\Controllers\UnitKerjaAdmin\SurveyController as UnitKerjaSurveyController;
+use App\Http\Controllers\UnitKerjaAdmin\QuestionController as UnitKerjaQuestionController;
+
 
 
 /*
@@ -22,7 +32,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// PERBAIKAN: Rute /dashboard sekarang menjadi "penyalur" cerdas yang akan mengarahkan pengguna
 Route::get('/dashboard', [LoginController::class, 'dashboardRedirect'])->middleware(['auth', 'verified'])->name('dashboard');
 
 //login
@@ -47,10 +56,19 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::resource('users', SuperadminUserController::class);
         Route::resource('surveys', SuperadminSurveyController::class);
         Route::resource('surveys.questions', SuperadminQuestionController::class)->except(['index']);
+        Route::get('/surveys/{survey}/results', [SurveyResultController::class, 'show'])->name('surveys.results');
+        Route::post('surveys/{survey}/questions/reorder', [QuestionOrderController::class, '__invoke'])->name('surveys.questions.reorder');
+        Route::post('programs/{program}/clone', [SurveyProgramController::class, 'cloneProgram'])->name('programs.clone');
 });
 
 //unitkerja
 Route::middleware(['auth', 'verified', 'is.unitkerja.admin'])
     ->prefix('unit-kerja-admin')
     ->name('unitkerja.admin.')
-    ->group(function () {});
+    ->group(function () {
+
+        Route::get('/dashboard', [UnitKerjaDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/programs', [UnitKerjaProgramController::class, 'index'])->name('programs.index');
+        Route::resource('surveys', UnitKerjaSurveyController::class);
+        Route::resource('surveys.questions', UnitKerjaQuestionController::class)->except(['index']);
+});
