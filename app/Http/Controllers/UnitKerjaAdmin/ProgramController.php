@@ -1,38 +1,40 @@
 <?php
 
-namespace App\Http\Controllers\UnitKerjaAdmin;
+    namespace App\Http\Controllers\UnitKerjaAdmin;
 
-use App\Http\Controllers\Controller;
-use App\Models\SurveyProgram;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+    use App\Http\Controllers\Controller;
+    use App\Models\SurveyProgram;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Auth;
 
-class ProgramController extends Controller
-{
-    /**
-     * 
-     */
-    public function index()
+    class ProgramController extends Controller
     {
-        $user = Auth::user();
-        $unitKerjaId = $user->unit_kerja_id;
+        /**
+         * Menampilkan daftar "Program Survei" (Wadah) yang ditargetkan
+         * ke unit kerja dari admin yang sedang login.
+         */
+        public function index()
+        {
+            $user = Auth::user();
 
-        $programsQuery = SurveyProgram::where('is_active', true)
-            ->whereHas('targetedUnitKerjas', function ($query) use ($unitKerjaId) {
-                $query->where('unit_kerja_id', $unitKerjaId);
-            });
+            // Ambil unit kerja yang terkait dengan admin ini
+            $unitKerja = $user->unitKerja;
 
-        $programsQuery->with(['surveys' => function ($query) use ($unitKerjaId) {
-            $query->where('unit_kerja_id', $unitKerjaId);
-        }]);
+            // Jika admin tidak terikat ke unit kerja, jangan tampilkan apa-apa
+            if (!$unitKerja) {
+                $programs = collect(); // Koleksi kosong
+            } else {
+                // Ambil hanya program yang aktif dan menargetkan unit kerja ini
+                $programs = SurveyProgram::where('is_active', true)
+                    ->whereDate('start_date', '<=', now())
+                    ->whereDate('end_date', '>=', now())
+                    ->whereHas('targetedUnitKerjas', function ($query) use ($unitKerja) {
+                        $query->where('unit_kerja_id', $unitKerja->id);
+                    })
+                    ->latest()
+                    ->paginate(10);
+            }
 
-        $programsQuery->withCount(['surveys' => function ($query) use ($unitKerjaId) {
-            $query->where('unit_kerja_id', $unitKerjaId);
-        }]);
-
-        $programs = $programsQuery->latest()->paginate(10);
-
-        return view('unit_kerja_admin.programs.index', compact('programs'));
+            return view('unit_kerja_admin.programs.index', compact('programs'));
+        }
     }
-}
-

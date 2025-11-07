@@ -23,6 +23,7 @@ class UnitKerja extends Model
     ];
 
     /**
+     * Memberitahu Laravel untuk menggunakan 'alias' saat mencari model dari URL.
      */
     public function getRouteKeyName()
     {
@@ -30,6 +31,8 @@ class UnitKerja extends Model
     }
 
     /**
+     * Relasi ke Program Survei.
+     * Sebuah Unit Kerja bisa ditargetkan oleh banyak Program Survei.
      */
     public function surveyPrograms()
     {
@@ -37,13 +40,15 @@ class UnitKerja extends Model
     }
 
     /**
+     * PERUBAHAN: Relasi 'surveys()' dihapus karena model Survey sudah tidak ada.
      */
-    public function surveys()
-    {
-        return $this->hasMany(Survey::class);
-    }
+    // public function surveys()
+    // {
+    //     return $this->hasMany(Survey::class);
+    // }
 
     /**
+     * Relasi ke Pengguna (User).
      */
     public function users()
     {
@@ -51,6 +56,7 @@ class UnitKerja extends Model
     }
 
     /**
+     * Relasi ke Tipe Unit.
      */
     public function tipeUnit()
     {
@@ -58,6 +64,7 @@ class UnitKerja extends Model
     }
 
     /**
+     * Relasi ke induk (parent).
      */
     public function parent()
     {
@@ -65,6 +72,7 @@ class UnitKerja extends Model
     }
 
     /**
+     * Relasi ke anak (children).
      */
     public function children()
     {
@@ -72,6 +80,7 @@ class UnitKerja extends Model
     }
 
     /**
+     * Scope untuk filter.
      */
     public function scopeFilter(Builder $query, array $filters)
     {

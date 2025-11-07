@@ -9,11 +9,10 @@
 
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    {{-- CSS Library --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
 
-    {{-- Mengimpor Font Poppins dari Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,25 +26,34 @@
             font-family: 'Poppins', sans-serif !important;
         }
 
-        .pulsing-dots div {
-            animation: pulse 1.4s infinite ease-in-out both;
-            background-color: #3b82f6;
-            /* blue-500 */
+        .bouncing-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 40px;
+        }
+
+        .bouncing-loader>div {
+            width: 12px;
+            height: 12px;
+            margin: 3px;
             border-radius: 50%;
-            display: inline-block;
-            height: 10px;
-            width: 10px;
+            background-color: #4f46e5;
+            /* PERUBAHAN: Disesuaikan agar cocok dengan aksen indigo */
+            opacity: 1;
+            animation: bouncing-loader 2.1s infinite ease-in-out both;
         }
 
-        .pulsing-dots .dot-1 {
-            animation-delay: -0.32s;
+        .bouncing-loader .dot-1 {
+            animation-delay: -0.48s;
         }
 
-        .pulsing-dots .dot-2 {
-            animation-delay: -0.16s;
+        .bouncing-loader .dot-2 {
+            animation-delay: -0.24s;
         }
 
-        @keyframes pulse {
+        @keyframes bouncing-loader {
 
             0%,
             80%,
@@ -57,121 +65,304 @@
                 transform: scale(1.0);
             }
         }
-
-        .ts-control {
-            border-radius: 0.5rem !important;
-            border-color: #d1d5db !important;
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
-        }
-
-        .ts-control.focus {
-            border-color: #4f46e5 !important;
-            /* indigo-600 */
-            box-shadow: 0 0 0 2px #c7d2fe !important;
-        }
-
-        .sortable-ghost {
-            background-color: #dbeafe;
-            opacity: 0.7;
-            border: 2px dashed #60a5fa;
-        }
     </style>
     @stack('styles')
 </head>
 
-<body class="bg-gray-100 font-sans leading-normal tracking-normal"
-    x-data="{ openLogout: false, openDeleteModal: false, deleteUrl: '', deleteItemName: '' }"
-    @open-delete-modal.window="openDeleteModal = true; deleteUrl = event.detail.url; deleteItemName = event.detail.name">
+<body class="bg-gray-100 font-sans leading-normal tracking-normal h-screen overflow-y-hidden"
+    x-data="{ 
+        openLogout: false, 
+        openDeleteModal: false, 
+        deleteUrl: '', 
+        deleteItemName: '',
+        openCloneModal: false,
+        cloneUrl: '',
+        cloneItemName: ''
+    }"
+    @open-delete-modal.window="openDeleteModal = true; deleteUrl = event.detail.url; deleteItemName = event.detail.name"
+    @open-clone-modal.window="openCloneModal = true; cloneUrl = event.detail.url; cloneItemName = event.detail.name">
 
-    {{-- Elemen Loading Screen --}}
     <div x-cloak x-data x-show="$store.globals.isLoading" x-transition.opacity
         class="fixed inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-[9999]">
-        <div class="pulsing-dots space-x-2">
+        <div class="bouncing-loader">
             <div class="dot-1"></div>
             <div class="dot-2"></div>
             <div class="dot-3"></div>
         </div>
     </div>
 
-    <div class="flex h-screen">
-        {{-- Sidebar --}}
-        <aside class="w-64 flex-shrink-0 bg-gradient-to-b from-cyan-500 to-blue-600 text-gray-100 flex flex-col p-4 shadow-xl">
-            <div class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo UIN" class="w-10 h-10 rounded-full">
-                <div>
-                    <h1 class="text-lg font-bold text-white leading-tight">SURVEY UIN Antasari</h1>
-                    <p class="text-sm text-cyan-100 font-light">SuperAdmin Panel</p>
-                </div>
+    <div class="flex h-full">
+
+        {{--
+            PERBAIKAN: 
+            - Latar belakang diubah menjadi bg-gray-900 (hitam)
+            - Teks diubah menjadi text-gray-300
+        --}}
+        <aside
+            class="w-64 transition-all duration-300 flex-shrink-0 bg-gray-900 text-gray-300 flex flex-col p-4 shadow-xl">
+
+            {{-- PERBAIKAN: Logo dipindahkan ke tengah --}}
+            <div class="flex flex-col items-center justify-center pt-4 mb-6">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo UIN" class="w-14 h-14 rounded-full shadow-lg mb-3">
+                <h1 class="text-lg font-bold leading-tight text-white">APLIKASI SURVEY</h1>
+                <span class="text-xs text-gray-400">UIN Antasari</span>
             </div>
-            <nav class="flex-1 space-y-1">
-                {{-- PERBAIKAN: Tautan disesuaikan dengan rute yang benar dan memiliki indikator aktif --}}
-                <a href="{{ route('superadmin.dashboard') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Dashboard</a>
-                <a href="{{ route('superadmin.programs.index') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.programs.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Program Survei</a>
-                <a href="{{ route('superadmin.unit-kerja.index') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.unit-kerja.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Unit Kerja</a>
-                <a href="{{ route('superadmin.users.index') }}" @click="$store.globals.isLoading = true" class="block p-4 rounded-lg transition duration-300 {{ request()->routeIs('superadmin.users.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100 hover:bg-white/10 hover:text-yellow-300' }}">Manajemen Pengguna</a>
-            </nav>
-            <div class="mt-auto">
-                <button @click="openLogout = true" class="w-full flex items-center gap-3 p-4 text-left text-gray-100 hover:bg-red-500 hover:text-white rounded-lg transition-all duration-300 ease-in-out">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+
+            <nav class="flex-1 space-y-2">
+                {{-- PERBAIKAN: Style link aktif dan hover diubah agar sesuai tema gelap --}}
+                <a href="{{ route('superadmin.dashboard') }}"
+                    @click="setTimeout(() => $store.globals.isLoading = true, 300)"
+                    class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                           {{ request()->routeIs('superadmin.dashboard') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    Logout
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{{ route('superadmin.programs.index') }}"
+                    @click="setTimeout(() => $store.globals.isLoading = true, 300)"
+                    class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                           {{ request()->routeIs('superadmin.programs.*') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 5h6m-7 4h8m-8 4h8m-8 4h8M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                    </svg>
+                    <span>Program Survei</span>
+                </a>
+
+                <a href="{{ route('superadmin.unit-kerja.index') }}"
+                    @click="setTimeout(() => $store.globals.isLoading = true, 300)"
+                    class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                           {{ request()->routeIs('superadmin.unit-kerja.*') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <span>Unit Kerja</span>
+                </a>
+
+                <a href="{{ route('superadmin.users.index') }}"
+                    @click="setTimeout(() => $store.globals.isLoading = true, 300)"
+                    class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                           {{ request()->routeIs('superadmin.users.*') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span>Manajemen Pengguna</span>
+                </a>
+            </nav>
+
+            {{-- PERBAIKAN: Style tombol logout disesuaikan --}}
+            <div class="mt-auto">
+                <button @click="openLogout = true"
+                    class="w-full flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-red-600 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                    </svg>
+                    <span>Logout</span>
                 </button>
             </div>
         </aside>
 
-        <!-- Konten Utama -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto">
-            <div class="p-1">
+        <main class="flex-1 overflow-y-auto bg-gray-100">
+            <div class="p-2 space-y-6">
                 @yield('content')
             </div>
         </main>
     </div>
 
-    <!-- Modal Konfirmasi Logout -->
-    <div x-cloak x-show="openLogout" x-transition.opacity class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div x-show="openLogout" @click.away="openLogout = false" x-transition.scale class="bg-white rounded-xl shadow-xl p-6 w-80 text-center">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Konfirmasi Logout</h2>
-            <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar?</p>
-            <div class="flex justify-center gap-3">
-                <button @click="openLogout = false" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition">Batal</button>
+    {{-- [Modal Konfirmasi Logout] --}}
+    <div x-cloak x-show="openLogout" x-transition.opacity
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+        <div x-show="openLogout" @click.away="openLogout = false" x-transition.scale
+            class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md text-center">
+
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                </svg>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-4">Konfirmasi Logout</h2>
+            <p class="text-gray-600 my-4">
+                Apakah Anda yakin ingin keluar dari sesi ini?
+            </p>
+            <div class="flex justify-center gap-4 mt-6">
+                <button @click="openLogout = false"
+                    class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition">
+                    Batal
+                </button>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" @click="$store.globals.isLoading = true" class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium shadow-md transition">Logout</button>
+                    <button type="submit" @click="$store.globals.isLoading = true"
+                        class="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md transition">
+                        Ya, Logout
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
-    <div x-cloak x-show="openDeleteModal" x-transition.opacity class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div x-show="openDeleteModal" @click.away="openDeleteModal = false" x-transition.scale class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100"><svg class="h-6 w-6 text-red-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg></div>
+    {{-- [Modal Konfirmasi Delete] --}}
+    <div x-cloak x-show="openDeleteModal" x-transition.opacity
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+        <div x-show="openDeleteModal" @click.away="openDeleteModal = false" x-transition.scale
+            class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <svg class="h-6 w-6 text-red-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 
+                            0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 
+                            0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
             <h2 class="text-2xl font-bold text-gray-800 mt-4">Konfirmasi Hapus</h2>
-            <p class="text-gray-600 my-4">Apakah Anda yakin ingin menghapus <strong x-text="deleteItemName" class="font-semibold text-gray-900"></strong>?<br>Aksi ini tidak dapat dibatalkan.</p>
+            <p class="text-gray-600 my-4">
+                Apakah Anda yakin ingin menghapus
+                <strong x-text="deleteItemName" class="font-semibold text-gray-900"></strong>?<br>
+                Aksi ini tidak dapat dibatalkan.
+            </p>
             <div class="flex justify-center gap-4 mt-6">
-                <button @click="openDeleteModal = false" class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition">Batal</button>
-                <form x-bind:action="deleteUrl" method="POST">
+                <button @click="openDeleteModal = false"
+                    class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition">
+                    Batal
+                </button>
+                <form x-bind:action="deleteUrl" method="POST"
+                    @submit.prevent="$store.globals.isLoading = true; $el.submit();">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" @click="$store.globals.isLoading = true" class="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md transition">Ya, Hapus</button>
+                    <button type="submit"
+                        class="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md transition">
+                        Ya, Hapus
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    {{-- Skrip Global --}}
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    {{-- [Modal Konfirmasi Kloning] --}}
+    <div x-cloak x-show="openCloneModal" x-transition.opacity
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+        <div x-show="openCloneModal" @click.away="openCloneModal = false" x-transition.scale
+            class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md text-center">
+
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+                <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75c-.621 0-1.125-.504-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75M15.75 17.25H18M15.75 17.25v-3.375M15.75 13.875c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125v3.375M15.75 13.875c0-3.313 2.687-6 6-6v6h-6z" />
+                </svg>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-4">Konfirmasi Kloning</h2>
+            <p class="text-gray-600 my-4">
+                Apakah Anda yakin ingin mengkloning program
+                <strong x-text="cloneItemName" class="font-semibold text-gray-900"></strong>?
+                <br>Seluruh pertanyaannya juga akan disalin.
+            </p>
+            <div class="flex justify-center gap-4 mt-6">
+                <button @click="openCloneModal = false"
+                    class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition">
+                    Batal
+                </button>
+                <form x-bind:action="cloneUrl" method="POST"
+                    @submit.prevent="$store.globals.isLoading = true; $el.submit();">
+                    @csrf
+                    <button type="submit"
+                        class="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition">
+                        Ya, Kloning
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- [Notifikasi "Toast" Global] --}}
+    <div x-cloak
+        x-data="{
+             show: false,
+             message: '',
+             type: 'success'
+         }"
+        x-init="
+             @if (session('success'))
+                 show = true;
+                 message = '{{ session('success') }}';
+                 type = 'success';
+                 setTimeout(() => show = false, 5000);
+             @endif
+             @if (session('error'))
+                 show = true;
+                 message = '{{ session('error') }}';
+                 type = 'error';
+                 setTimeout(() => show = false, 5000);
+             @endif
+         "
+        x-show="show"
+        x-transition:enter="transform ease-out duration-300 transition"
+        x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+        x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+        x-transition:leave="transition ease-in duration-100"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @click.away="show = false"
+        class="fixed top-4 right-4 z-[100] w-full max-w-sm">
+
+        <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden"
+            :class="{ 'bg-green-50': type === 'success', 'bg-red-50': type === 'error' }">
+            <div class="p-4">
+                <div class="flex items-start">
+
+                    <div class="flex-shrink-0">
+                        <svg x-show="type === 'success'" class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <svg x-show="type === 'error'" class="h-6 w-6 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.25 11.25 0 0112 2.25c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2.25 12 2.25z" />
+                        </svg>
+                    </div>
+
+                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                        <p class="text-sm font-semibold" :class="{ 'text-green-800': type === 'success', 'text-red-800': type === 'error' }" x-text="type === 'success' ? 'Berhasil!' : 'Terjadi Kesalahan!'"></p>
+                        <p class="mt-1 text-sm" :class="{ 'text-green-700': type === 'success', 'text-red-700': type === 'error' }" x-text="message"></p>
+                    </div>
+
+                    <div class="ml-4 flex-shrink-0 flex">
+                        <button @click="show = false" class="inline-flex rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                            :class="{
+                                    'bg-green-50 text-green-500 hover:bg-green-100 focus:ring-green-600 focus:ring-offset-green-50': type === 'success',
+                                    'bg-red-50 text-red-500 hover:bg-red-100 focus:ring-red-600 focus:ring-offset-red-50': type === 'error'
+                                }">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- Skrip Library Global --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    {{-- Skrip Inisialisasi Global --}}
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('globals', {
                 isLoading: false
             });
         });
+
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
                 if (Alpine.store('globals')) {
@@ -179,7 +370,25 @@
                 }
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr(".datepicker", {
+                altInput: true,
+                altFormat: "d F Y",
+                dateFormat: "Y-m-d",
+                locale: "id"
+            });
+
+            flatpickr(".timepicker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                placeholder: "Pilih jam (HH:MM)..."
+            });
+        });
     </script>
+
     @stack('scripts')
 </body>
 

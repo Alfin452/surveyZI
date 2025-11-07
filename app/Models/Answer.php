@@ -16,7 +16,7 @@ class Answer extends Model
      */
     protected $fillable = [
         'user_id',
-        'survey_id',
+        'survey_program_id',
         'unit_kerja_id',
         'question_id',
         'option_id',
@@ -24,6 +24,7 @@ class Answer extends Model
     ];
 
     /**
+     * The attributes that should be cast.
      *
      * @var array<string, string>
      */
@@ -32,6 +33,7 @@ class Answer extends Model
     ];
 
     /**
+     * 
      */
     public function user()
     {
@@ -39,13 +41,15 @@ class Answer extends Model
     }
 
     /**
+     * 
      */
-    public function survey()
+    public function surveyProgram()
     {
-        return $this->belongsTo(Survey::class);
+        return $this->belongsTo(SurveyProgram::class);
     }
 
     /**
+     * 
      */
     public function unitKerja()
     {
@@ -53,6 +57,7 @@ class Answer extends Model
     }
 
     /**
+     * 
      */
     public function question()
     {
@@ -60,6 +65,7 @@ class Answer extends Model
     }
 
     /**
+     * .
      */
     public function option()
     {

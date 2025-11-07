@@ -8,11 +8,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 
+// DITAMBAHKAN: Import model yang akan kita relasikan
+use App\Models\Role;
+use App\Models\UnitKerja;
+use App\Models\Answer;
+use App\Models\PreSurveyResponse;
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     /**
+     * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
@@ -23,13 +30,16 @@ class User extends Authenticatable
         'google_id',
         'role_id',
         'unit_kerja_id',
-        'jenis_responden',
-        'asal_responden',
-        'email_verified',
+        'jenis_responden', // Kolom untuk profil
+        'asal_responden',  // Kolom untuk profil
+        'gender',          // Kolom untuk profil
+        'age',             // Kolom untuk profil
         'is_active',
+        'email_verified', // Ditambahkan dari kode Anda
     ];
 
     /**
+     * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
@@ -39,20 +49,22 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
+            // 'email_verified_at' => 'datetime', // Dihapus dari kode Anda, diganti di bawah
             'password' => 'hashed',
-            'email_verified' => 'boolean',
-            'is_active' => 'boolean',
+            'email_verified' => 'boolean', // Diambil dari kode Anda
+            'is_active' => 'boolean', // Diambil dari kode Anda
         ];
     }
 
     /**
-     * Relasi ke Role.
+     * Relasi: Pengguna ini memiliki satu Peran (Role).
      */
     public function role()
     {
@@ -60,6 +72,7 @@ class User extends Authenticatable
     }
 
     /**
+     * Relasi: Pengguna ini (jika Admin) terikat pada satu Unit Kerja.
      */
     public function unitKerja()
     {
@@ -67,6 +80,24 @@ class User extends Authenticatable
     }
 
     /**
+     * DITAMBAHKAN: Relasi: Pengguna ini memiliki banyak Jawaban.
+     */
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    /**
+     * DITAMBAHKAN: Relasi: Pengguna ini memiliki banyak data respons pra-survei.
+     * Ini akan memperbaiki error "garis merah" Anda.
+     */
+    public function preSurveyResponses()
+    {
+        return $this->hasMany(PreSurveyResponse::class);
+    }
+
+    /**
+     * Scope filter untuk pencarian di panel admin.
      */
     public function scopeFilter(Builder $query, array $filters)
     {

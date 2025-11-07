@@ -10,11 +10,12 @@ class Question extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'survey_id',
+        'survey_program_id', 
         'question_body',
         'type',
         'order_column',
@@ -22,9 +23,9 @@ class Question extends Model
 
     /**
      */
-    public function survey()
+    public function surveyProgram()
     {
-        return $this->belongsTo(Survey::class);
+        return $this->belongsTo(SurveyProgram::class);
     }
 
     /**
@@ -34,3 +35,4 @@ class Question extends Model
         return $this->hasMany(Option::class);
     }
 }
+

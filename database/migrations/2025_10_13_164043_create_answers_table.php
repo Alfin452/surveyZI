@@ -13,19 +13,12 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-
-            $table->foreignId('survey_id')->constrained('surveys')->onDelete('cascade');
-
+            $table->foreignId('survey_program_id')->constrained('survey_programs')->onDelete('cascade');
             $table->foreignId('unit_kerja_id')->constrained('unit_kerjas')->onDelete('cascade');
-
             $table->foreignId('question_id')->constrained('questions')->onDelete('cascade');
-
             $table->foreignId('option_id')->constrained('options')->onDelete('cascade');
-
             $table->integer('answer_skor')->default(0);
-
             $table->timestamps();
         });
     }
