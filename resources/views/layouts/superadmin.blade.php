@@ -11,8 +11,8 @@
 
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
-
+    {{-- <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script> --}} {{-- <-- SUDAH DIPINDAHKAN DARI SINI --}}
+    <link rel="icon" href="{{ asset('images/logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -39,8 +39,8 @@
             height: 12px;
             margin: 3px;
             border-radius: 50%;
-            background-color: #4f46e5;
-            /* PERUBAHAN: Disesuaikan agar cocok dengan aksen indigo */
+            background-color: #6B7280;
+            /* PERUBAHAN: Warna loader diubah ke abu-abu */
             opacity: 1;
             animation: bouncing-loader 2.1s infinite ease-in-out both;
         }
@@ -93,27 +93,20 @@
 
     <div class="flex h-full">
 
-        {{--
-            PERBAIKAN: 
-            - Latar belakang diubah menjadi bg-gray-900 (hitam)
-            - Teks diubah menjadi text-gray-300
-        --}}
         <aside
             class="w-64 transition-all duration-300 flex-shrink-0 bg-gray-900 text-gray-300 flex flex-col p-4 shadow-xl">
 
-            {{-- PERBAIKAN: Logo dipindahkan ke tengah --}}
             <div class="flex flex-col items-center justify-center pt-4 mb-6">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo UIN" class="w-14 h-14 rounded-full shadow-lg mb-3">
-                <h1 class="text-lg font-bold leading-tight text-white">APLIKASI SURVEY</h1>
+                <h1 class="text-lg font-bold leading-tight text-white">APLIKASI SURVEI</h1>
                 <span class="text-xs text-gray-400">UIN Antasari</span>
             </div>
 
             <nav class="flex-1 space-y-2">
-                {{-- PERBAIKAN: Style link aktif dan hover diubah agar sesuai tema gelap --}}
                 <a href="{{ route('superadmin.dashboard') }}"
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
-                           {{ request()->routeIs('superadmin.dashboard') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                            {{ request()->routeIs('superadmin.dashboard') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
@@ -123,7 +116,7 @@
                 <a href="{{ route('superadmin.programs.index') }}"
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
-                           {{ request()->routeIs('superadmin.programs.*') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                            {{ request()->routeIs('superadmin.programs.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 5h6m-7 4h8m-8 4h8m-8 4h8M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z" />
@@ -134,7 +127,7 @@
                 <a href="{{ route('superadmin.unit-kerja.index') }}"
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
-                           {{ request()->routeIs('superadmin.unit-kerja.*') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                            {{ request()->routeIs('superadmin.unit-kerja.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
@@ -144,7 +137,7 @@
                 <a href="{{ route('superadmin.users.index') }}"
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
-                           {{ request()->routeIs('superadmin.users.*') ? 'bg-indigo-600 text-white font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                            {{ request()->routeIs('superadmin.users.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
 
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
@@ -153,9 +146,21 @@
                     </svg>
                     <span>Manajemen Pengguna</span>
                 </a>
+
+                <a href="{{ route('superadmin.reports.index') }}"
+                    @click="setTimeout(() => $store.globals.isLoading = true, 300)"
+                    class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                            {{ request()->routeIs('superadmin.reports.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span>Laporan Hasil Survey</span>
+                </a>
             </nav>
 
-            {{-- PERBAIKAN: Style tombol logout disesuaikan --}}
             <div class="mt-auto">
                 <button @click="openLogout = true"
                     class="w-full flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-red-600 hover:text-white transition-colors">
@@ -176,7 +181,6 @@
         </main>
     </div>
 
-    {{-- [Modal Konfirmasi Logout] --}}
     <div x-cloak x-show="openLogout" x-transition.opacity
         class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
         <div x-show="openLogout" @click.away="openLogout = false" x-transition.scale
@@ -208,7 +212,6 @@
         </div>
     </div>
 
-    {{-- [Modal Konfirmasi Delete] --}}
     <div x-cloak x-show="openDeleteModal" x-transition.opacity
         class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
         <div x-show="openDeleteModal" @click.away="openDeleteModal = false" x-transition.scale
@@ -217,8 +220,8 @@
                 <svg class="h-6 w-6 text-red-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 
-                            0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 
-                            0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 
+                                0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
             </div>
             <h2 class="text-2xl font-bold text-gray-800 mt-4">Konfirmasi Hapus</h2>
@@ -245,7 +248,6 @@
         </div>
     </div>
 
-    {{-- [Modal Konfirmasi Kloning] --}}
     <div x-cloak x-show="openCloneModal" x-transition.opacity
         class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
         <div x-show="openCloneModal" @click.away="openCloneModal = false" x-transition.scale
@@ -272,7 +274,7 @@
                     @submit.prevent="$store.globals.isLoading = true; $el.submit();">
                     @csrf
                     <button type="submit"
-                        class="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition">
+                        class="px-6 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold shadow-md transition">
                         Ya, Kloning
                     </button>
                 </form>
@@ -280,8 +282,6 @@
         </div>
     </div>
 
-
-    {{-- [Notifikasi "Toast" Global] --}}
     <div x-cloak
         x-data="{
              show: false,
@@ -334,9 +334,9 @@
                     <div class="ml-4 flex-shrink-0 flex">
                         <button @click="show = false" class="inline-flex rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-offset-2"
                             :class="{
-                                    'bg-green-50 text-green-500 hover:bg-green-100 focus:ring-green-600 focus:ring-offset-green-50': type === 'success',
-                                    'bg-red-50 text-red-500 hover:bg-red-100 focus:ring-red-600 focus:ring-offset-red-50': type === 'error'
-                                }">
+                                     'bg-green-50 text-green-500 hover:bg-green-100 focus:ring-green-600 focus:ring-offset-green-50': type === 'success',
+                                     'bg-red-50 text-red-500 hover:bg-red-100 focus:ring-red-600 focus:ring-offset-red-50': type === 'error'
+                                 }">
                             <span class="sr-only">Close</span>
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -350,12 +350,11 @@
     </div>
 
 
-    {{-- Skrip Library Global --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    {{-- Skrip Inisialisasi Global --}}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('globals', {
@@ -376,7 +375,7 @@
                 altInput: true,
                 altFormat: "d F Y",
                 dateFormat: "Y-m-d",
-                locale: "id"
+                locale: "id" // Ini sekarang akan bekerja dengan benar
             });
 
             flatpickr(".timepicker", {

@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="mt-4 md:mt-0 flex space-x-2 self-start md:self-end">
-                <a href="{{ route('superadmin.programs.questions.index', $program) }}" class="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition border border-gray-300 shadow-sm">
+                <a href="{{ route('superadmin.programs.index', $program) }}" class="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition border border-gray-300 shadow-sm">
                     Kembali
                 </a>
             </div>

@@ -2,28 +2,23 @@
 
 namespace App\Providers;
 
-use App\Models\Survey;
-use App\Policies\SurveyPolicy;
+use Illuminate\Support\ServiceProvider;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
-class AuthServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
     /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
+     * Register any application services.
      */
-    protected $policies = [
-        // Mendaftarkan "penjaga keamanan" untuk model Survey
-        Survey::class => SurveyPolicy::class,
-    ];
+    public function register(): void
+    {
+        //
+    }
 
     /**
-     * Register any authentication / authorization services.
+     * Bootstrap any application services.
      */
     public function boot(): void
     {
-        //
+        // HAPUS SEMUA KODE POLICY (use App\Models\SurveyProgram, dll.) DARI SINI
     }
 }

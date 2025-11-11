@@ -10,6 +10,7 @@ class SurveyProgram extends Model
     use HasFactory;
 
     protected $fillable = [
+        'unit_kerja_id', 
         'title',
         'alias',
         'description',
@@ -17,7 +18,7 @@ class SurveyProgram extends Model
         'end_date',
         'is_active',
         'requires_pre_survey',
-        'is_featured', // DITAMBAHKAN
+        'is_featured',
     ];
 
     protected $casts = [
@@ -25,44 +26,28 @@ class SurveyProgram extends Model
         'end_date' => 'date',
         'is_active' => 'boolean',
         'requires_pre_survey' => 'boolean',
-        'is_featured' => 'boolean', // DITAMBAHKAN
+        'is_featured' => 'boolean',
     ];
-
-    /**
-     * Memberitahu Laravel untuk menggunakan 'alias' saat mencari model dari URL.
-     */
     public function getRouteKeyName()
     {
         return 'alias';
     }
-
-    /**
-     * Relasi: Program ini ditargetkan ke banyak Unit Kerja.
-     */
+    public function unitKerja()
+    {
+        return $this->belongsTo(UnitKerja::class);
+    }
     public function targetedUnitKerjas()
     {
         return $this->belongsToMany(UnitKerja::class, 'survey_program_unit_kerja');
     }
-
-    /**
-     * PERUBAHAN: Program ini sekarang langsung memiliki banyak Pertanyaan.
-     */
-    public function questions()
+    public function questionSections()
     {
-        return $this->hasMany(Question::class)->orderBy('order_column', 'asc');
+        return $this->hasMany(QuestionSection::class)->orderBy('order_column', 'asc');
     }
-
-    /**
-     * PERUBAHAN: Program ini sekarang langsung memiliki banyak Jawaban.
-     */
     public function answers()
     {
         return $this->hasMany(Answer::class);
     }
-
-    /**
-     * PERUBAHAN: Program ini sekarang langsung memiliki banyak data Pra-Survei.
-     */
     public function preSurveyResponses()
     {
         return $this->hasMany(PreSurveyResponse::class);

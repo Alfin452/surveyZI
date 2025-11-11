@@ -1,4 +1,4 @@
-@extends('layouts.superadmin')
+@extends('layouts.unit_kerja_admin')
 
 @section('content')
 <div class="p-4 sm:p-6">
@@ -19,11 +19,10 @@
     </div>
 
     {{-- Form --}}
-    {{-- PERBAIKAN: Mengirimkan $section dan $question ke rute --}}
-    <form action="{{ route('superadmin.sections.questions.update', ['section' => $section, 'question' => $question]) }}" method="POST">
+    <form action="{{ route('unitkerja.admin.sections.questions.update', ['section' => $section, 'question' => $question]) }}" method="POST">
         @csrf
         @method('PUT')
-        @include('superadmin.programs.questions._form', ['question' => $question, 'program' => $program])
+        @include('unit_kerja_admin.programs.questions._form', ['question' => $question, 'program' => $program])
     </form>
 </div>
 @endsection

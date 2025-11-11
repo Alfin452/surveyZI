@@ -18,10 +18,23 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SurveyProgramController extends Controller
 {
-
-    public function index()
+    
+    use AuthorizesRequests;
+    public function index(Request $request)
     {
-        $programs = SurveyProgram::withCount('questions', 'targetedUnitKerjas')->latest()->paginate(10);
+        $query = SurveyProgram::query();
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // PERBAIKAN: Tambahkan ->with('unitKerja') untuk memuat relasi pemilik Tipe 2
+        $programs = $query->with('unitKerja')
+            ->withCount('questionSections', 'targetedUnitKerjas')
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('superadmin.programs.index', compact('programs'));
     }
 
@@ -35,7 +48,6 @@ class SurveyProgramController extends Controller
     private function handleFeaturedStatus(Request $request, ?SurveyProgram $program = null)
     {
         $isFeatured = $request->boolean('is_featured');
-
         if ($isFeatured) {
             $query = SurveyProgram::query();
             if ($program) {
@@ -43,7 +55,6 @@ class SurveyProgramController extends Controller
             }
             $query->update(['is_featured' => false]);
         }
-
         return $isFeatured;
     }
 
@@ -60,10 +71,7 @@ class SurveyProgramController extends Controller
             'targeted_unit_kerjas' => 'required|array',
             'targeted_unit_kerjas.*' => 'exists:unit_kerjas,id',
         ]);
-
         $isFeatured = $this->handleFeaturedStatus($request);
-
-
         $program = SurveyProgram::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -73,11 +81,11 @@ class SurveyProgramController extends Controller
             'is_active' => $request->boolean('is_active'),
             'requires_pre_survey' => $request->boolean('requires_pre_survey'),
             'is_featured' => $isFeatured,
+            'unit_kerja_id' => null, 
         ]);
-
         $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
-
-        return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil dibuat.');
+        return redirect()->route('superadmin.programs.questions.index', $program)
+            ->with('success', 'Program Survei berhasil dibuat. Silakan tambahkan bagian dan pertanyaan.');
     }
 
     public function show(SurveyProgram $program)
@@ -87,6 +95,7 @@ class SurveyProgramController extends Controller
 
     public function edit(SurveyProgram $program)
     {
+        $program->load('targetedUnitKerjas');
         $unitKerjas = UnitKerja::orderBy('unit_kerja_name')->get();
         return view('superadmin.programs.edit', compact('program', 'unitKerjas'));
     }
@@ -115,214 +124,133 @@ class SurveyProgramController extends Controller
             'requires_pre_survey' => $request->boolean('requires_pre_survey'),
             'is_featured' => $isFeatured,
         ]);
-
         $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
-
         return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil diperbarui.');
     }
 
     public function destroy(SurveyProgram $program)
     {
-        // Sekarang kita cek 'questions' bukan 'surveys'
-        if ($program->questions()->exists() || $program->answers()->exists()) {
-            return back()->with('error', 'Program ini tidak dapat dihapus karena sudah memiliki pertanyaan atau jawaban terkait.');
+        if ($program->answers()->exists()) {
+            return back()->with('error', 'Program ini tidak dapat dihapus karena sudah memiliki jawaban responden.');
         }
-
         $program->delete();
         return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil dihapus.');
     }
 
-    /**
-     */
     public function cloneProgram(Request $request, SurveyProgram $program)
     {
         $newTitle = $program->title . ' (Salinan)';
         $newAlias = Str::slug($newTitle);
-        if (SurveyProgram::where('title', $newTitle)->orWhere('alias', $newAlias)->exists()) {
-            $newTitle .= ' ' . time();
+        if (SurveyProgram::where('alias', $newAlias)->exists()) {
             $newAlias .= '-' . time();
         }
-
         DB::transaction(function () use ($program, $newTitle, $newAlias) {
-
-            $program->load('targetedUnitKerjas', 'questions.options');
-
-            // 3. Kloning Program (Wadah)
+            // PERBAIKAN: Muat relasi nested (Bagian -> Pertanyaan -> Opsi)
+            $program->load('targetedUnitKerjas', 'questionSections.questions.options');
+            // 1. Kloning Program
             $newProgram = $program->replicate();
             $newProgram->title = $newTitle;
             $newProgram->alias = $newAlias;
+            $newProgram->is_featured = false;
             $newProgram->created_at = now();
             $newProgram->updated_at = now();
             $newProgram->save();
-
+            // 2. Kloning Target Unit Kerja
             $newProgram->targetedUnitKerjas()->sync($program->targetedUnitKerjas->pluck('id'));
-
-            foreach ($program->questions as $question) {
-                $newQuestion = $question->replicate();
-                $newQuestion->survey_program_id = $newProgram->id; // Hubungkan ke program baru
-                $newQuestion->created_at = now();
-                $newQuestion->updated_at = now();
-                $newQuestion->save();
-
-                // 6. Kloning setiap opsi
-                foreach ($question->options as $option) {
-                    $newOption = $option->replicate();
-                    $newOption->question_id = $newQuestion->id; // Hubungkan ke pertanyaan baru
-                    $newOption->created_at = now();
-                    $newOption->updated_at = now();
-                    $newOption->save();
+            // 3. Kloning Bagian Soal (Sections)
+            foreach ($program->questionSections as $section) {
+                $newSection = $section->replicate();
+                $newSection->survey_program_id = $newProgram->id; 
+                $newSection->created_at = now();
+                $newSection->updated_at = now();
+                $newSection->save();
+                // 4. Kloning Pertanyaan (Questions)
+                foreach ($section->questions as $question) {
+                    $newQuestion = $question->replicate();
+                    $newQuestion->question_section_id = $newSection->id; 
+                    $newQuestion->created_at = now();
+                    $newQuestion->updated_at = now();
+                    $newQuestion->save();
+                    // 5. Kloning Opsi (Options)
+                    foreach ($question->options as $option) {
+                        $newOption = $option->replicate();
+                        $newOption->question_id = $newQuestion->id; 
+                        $newOption->created_at = now();
+                        $newOption->updated_at = now();
+                        $newOption->save();
+                    }
                 }
             }
         });
-
         return redirect()->route('superadmin.programs.index')->with('success', 'Program survei berhasil dikloning.');
     }
 
-    /**
-     */
-    public function showQuestions(SurveyProgram $program)
+    public function showQuestionsPage(SurveyProgram $program)
     {
-        $program->load('questions.options');
+        $program->load(['questionSections' => function ($query) {
+            $query->orderBy('order_column', 'asc')->withCount('questions');
+        }]);
         return view('superadmin.programs.questions.index', compact('program'));
-    }
-
-    /**
-     */
-    public function createQuestion(SurveyProgram $program)
-    {
-        $question = new Question();
-        return view('superadmin.programs.questions.create', compact('program', 'question'));
-    }
-
-    /**
-     */
-    public function storeQuestion(Request $request, SurveyProgram $program)
-    {
-        $validated = $request->validate([
-            'question_body' => 'required|string',
-            'type' => 'required|in:multiple_choice',
-            'options' => 'required|array|min:1',
-            'options.*.option_body' => 'required|string|max:255',
-            'options.*.option_score' => 'required|integer',
-        ]);
-
-        DB::transaction(function () use ($program, $validated) {
-            $question = $program->questions()->create([
-                'question_body' => $validated['question_body'],
-                'type' => $validated['type'],
-            ]);
-            $question->options()->createMany($validated['options']);
-        });
-
-        return redirect()->route('superadmin.programs.questions.index', $program)
-            ->with('success', 'Pertanyaan berhasil ditambahkan.');
-    }
-
-    public function editQuestion(SurveyProgram $program, Question $question)
-    {
-        $question->load('options');
-        return view('superadmin.programs.questions.edit', compact('program', 'question'));
-    }
-
-
-    public function updateQuestion(Request $request, SurveyProgram $program, Question $question)
-    {
-        $validated = $request->validate([
-            'question_body' => 'required|string',
-            'options' => 'required|array|min:1',
-            'options.*.option_body' => 'required|string|max:255',
-            'options.*.option_score' => 'required|integer',
-        ]);
-
-        DB::transaction(function () use ($question, $validated) {
-            $question->update(['question_body' => $validated['question_body']]);
-            $question->options()->delete();
-            $question->options()->createMany($validated['options']);
-        });
-
-        return redirect()->route('superadmin.programs.questions.index', $program)
-            ->with('success', 'Pertanyaan berhasil diperbarui.');
-    }
-
-
-    public function destroyQuestion(SurveyProgram $program, Question $question)
-    {
-        $question->delete();
-        return redirect()->route('superadmin.programs.questions.index', $program)
-            ->with('success', 'Pertanyaan berhasil dihapus.');
-    }
-
-
-    public function reorderQuestions(Request $request, SurveyProgram $program)
-    {
-        $request->validate(['order' => 'required|array', 'order.*' => 'exists:questions,id']);
-
-        DB::transaction(function () use ($request, $program) {
-            foreach ($request->order as $index => $questionId) {
-                Question::where('id', $questionId)
-                    ->where('survey_program_id', $program->id)
-                    ->update(['order_column' => $index + 1]);
-            }
-        });
-
-        return response()->json(['status' => 'success', 'message' => 'Urutan pertanyaan berhasil disimpan.']);
     }
 
     private function applyFilters($query, Request $request)
     {
+        // Bergabung dengan tabel pre_survey_responses
+        $query->join('pre_survey_responses', function ($join) {
+            $join->on('answers.user_id', '=', 'pre_survey_responses.user_id')
+                ->on('answers.survey_program_id', '=', 'pre_survey_responses.survey_program_id');
+        });
+
+        // Terapkan filter
         $query->when($request->filled('gender'), function ($q) use ($request) {
             $q->where('pre_survey_responses.gender', $request->gender);
         });
         $query->when($request->filled('status'), function ($q) use ($request) {
             $q->where('pre_survey_responses.status', $request->status);
         });
-        // Tambahkan filter lain (usia, fakultas) di sini jika perlu
     }
 
+    /**
+     * Mengambil opsi unik untuk dropdown filter.
+     */
     private function getFilterOptions(SurveyProgram $program)
     {
         $preSurveyData = PreSurveyResponse::where('survey_program_id', $program->id)
-            ->select('gender', 'status') // Ambil hanya kolom yang ingin kita filter
+            ->select('gender', 'status')
             ->distinct()
             ->get();
 
-        // Buat daftar unik untuk setiap filter
         $genders = $preSurveyData->pluck('gender')->unique()->filter()->values();
         $statuses = $preSurveyData->pluck('status')->unique()->filter()->values();
 
         return compact('genders', 'statuses');
     }
-
     public function showResults(Request $request, SurveyProgram $program)
     {
-        $program->load('questions.options');
+        $program->load('questionSections.questions.options');
+        $filterOptions = $this->getFilterOptions($program); // Ambil opsi filter
+        $respondentsQuery = Answer::where('answers.survey_program_id', $program->id);
 
-        $respondentsQuery = Answer::where('answers.survey_program_id', $program->id)
-            ->join('pre_survey_responses', function ($join) {
-                $join->on('answers.user_id', '=', 'pre_survey_responses.user_id')
-                    ->on('answers.survey_program_id', '=', 'pre_survey_responses.survey_program_id');
-            });
+        if ($request->filled('gender') || $request->filled('status')) {
+            $this->applyFilters($respondentsQuery, $request);
+        }
 
-        $this->applyFilters($respondentsQuery, $request); // Terapkan filter
         $totalRespondents = $respondentsQuery->distinct('answers.user_id')->count('answers.user_id');
+        $answerCountsQuery = Answer::where('answers.survey_program_id', $program->id);
 
-        $answerCountsQuery = Answer::where('answers.survey_program_id', $program->id)
-            ->join('pre_survey_responses', function ($join) {
-                $join->on('answers.user_id', '=', 'pre_survey_responses.user_id')
-                    ->on('answers.survey_program_id', '=', 'pre_survey_responses.survey_program_id');
-            });
-
-        $this->applyFilters($answerCountsQuery, $request); // Terapkan filter
+        if ($request->filled('gender') || $request->filled('status')) {
+            $this->applyFilters($answerCountsQuery, $request);
+        }
 
         $answerCounts = $answerCountsQuery->select('question_id', 'option_id', DB::raw('count(*) as total'))
             ->groupBy('question_id', 'option_id')
             ->get()
             ->groupBy('question_id');
 
-        $filterOptions = $this->getFilterOptions($program);
-
         $chartData = [];
-        foreach ($program->questions as $question) {
+        $questions = $program->questionSections->flatMap->questions;
+
+        foreach ($questions as $question) {
             $labels = $question->options->pluck('option_body');
             $data = $question->options->map(function ($option) use ($answerCounts, $question) {
                 return $answerCounts->get($question->id)
@@ -347,3 +275,4 @@ class SurveyProgramController extends Controller
         ));
     }
 }
+

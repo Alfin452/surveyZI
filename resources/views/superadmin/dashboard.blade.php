@@ -1,20 +1,14 @@
 @extends('layouts.superadmin')
 
 @section('content')
-{{-- PERBAIKAN: Menyamakan padding 'p-2 space-y-6' --}}
-<div class="space-y-2">
-
     {{-- Header --}}
-    {{-- PERBAIKAN: Menyamakan style header card (padding, border, radius, shadow) --}}
     <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm flex items-start gap-3">
-        {{-- PERBAIKAN: Menyamakan ikon (padding, size) --}}
-        <div class="flex-shrink-0 bg-indigo-500 text-white p-2 rounded-md">
+        <div class="flex-shrink-0 bg-gray-800 text-white p-2 rounded-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </div>
         <div>
-            {{-- PERBAIKAN: Menyamakan font size 'text-xl' --}}
             <h1 class="text-xl font-bold text-gray-800">Dashboard Super Admin</h1>
             <p class="text-sm text-gray-500 mt-1">Selamat datang kembali, {{ Auth::user()->username }}!</p>
         </div>
@@ -23,7 +17,7 @@
     {{-- Statistik Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        {{-- PERBAIKAN: Mengubah 'rounded-xl shadow-md' menjadi 'rounded-lg shadow-sm' --}}
+        <!-- Program Survei -->
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div class="flex items-center gap-4">
                 <div class="flex-shrink-0 bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 p-3 rounded-lg">
@@ -41,12 +35,12 @@
             </a>
         </div>
 
-        {{-- PERBAIKAN: Mengubah 'rounded-xl shadow-md' menjadi 'rounded-lg shadow-sm' --}}
+        <!-- Unit Kerja -->
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div class="flex items-center gap-4">
                 <div class="flex-shrink-0 bg-gradient-to-br from-green-100 to-green-200 text-green-600 p-3 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                 </div>
                 <div>
@@ -59,7 +53,7 @@
             </a>
         </div>
 
-        {{-- PERBAIKAN: Mengubah 'rounded-xl shadow-md' menjadi 'rounded-lg shadow-sm' --}}
+        <!-- Pengguna -->
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div class="flex items-center gap-4">
                 <div class="flex-shrink-0 bg-gradient-to-br from-yellow-100 to-yellow-200 text-yellow-600 p-3 rounded-lg">
@@ -77,7 +71,7 @@
             </a>
         </div>
 
-        {{-- PERBAIKAN: Mengubah 'rounded-xl shadow-md' menjadi 'rounded-lg shadow-sm' --}}
+        <!-- Total Responden -->
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div class="flex items-center gap-4">
                 <div class="flex-shrink-0 bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 p-3 rounded-lg">
@@ -87,16 +81,14 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500">Total Responden</p>
-                    {{-- Ganti $totalRespondents dengan variabel Anda --}}
                     <p class="text-3xl font-bold text-gray-800">{{ $totalRespondents ?? 0 }}</p>
                 </div>
             </div>
-            {{-- Arahkan ke halaman hasil atau responden jika ada --}}
-            <span class="text-sm text-gray-400 mt-4 inline-block">
-                Semua Program
-            </span>
+            <a href="{{ route('superadmin.programs.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 mt-4 inline-block">
+                Lihat Hasil Survei &rarr;
+            </a>
         </div>
 
     </div>
-</div>
+
 @endsection
