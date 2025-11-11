@@ -6,8 +6,8 @@
 <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
         <div class="flex items-start gap-3">
-            <div class="flex-shrink-0 bg-indigo-500 text-white p-2 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div class="flex-shrink-0 bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 p-3 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
             </div>

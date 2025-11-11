@@ -3,95 +3,82 @@
 namespace App\Exports;
 
 use App\Models\SurveyProgram;
-use App\Models\Answer;
-use App\Models\Question;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class AggregateReportExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
+class AggregateReportExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     protected $program;
     protected $sections;
-    protected $averageScores;
-
     public function __construct(SurveyProgram $program)
     {
-        $this->program = $program;
-
-        // Load questions grouped by section
-        $questions = Question::join('question_sections', 'questions.question_section_id', '=', 'question_sections.id')
-            ->where('question_sections.survey_program_id', $program->id)
-            ->orderBy('question_sections.order_column')
-            ->orderBy('questions.order_column')
-            ->select('questions.*', 'question_sections.title as section_title')
-            ->get();
-
-        $this->sections = $questions->groupBy('section_title');
-
-        $this->averageScores = Answer::where('survey_program_id', $program->id)
-            ->select('unit_kerja_id', 'question_id', DB::raw('AVG(answer_skor) as avg_score'))
-            ->groupBy('unit_kerja_id', 'question_id')
-            ->get()
-            ->groupBy('unit_kerja_id')
-            ->map(fn($answers) => $answers->pluck('avg_score', 'question_id'));
+        $this->program = $program->load('questionSections', 'targetedUnitKerjas', 'unitKerja');
+        $this->sections = $this->program->questionSections;
     }
 
     public function headings(): array
     {
-        $head = ['Unit Kerja'];
+        $headings = ['Unit Kerja'];
 
-        foreach ($this->sections as $section => $qs) {
-            $head[] = "$section Total";
-            $head[] = "$section Max";
-            $head[] = "$section Avg";
+        foreach ($this->sections as $section) {
+            $headings[] = $section->title . ' (Rata-rata)';
         }
-
-        $head[] = 'Rata Rata Total';
-
-        return $head;
+        $headings[] = 'Rata-rata Total';
+        return $headings;
     }
 
-    public function map($row): array
+    public function collection()
     {
-        $unitId = $row['unit_id'];
-        $scores = $this->averageScores->get($unitId) ?? collect();
-        $result = [$row['unit_name']];
+        $sectionIds = $this->sections->pluck('id');
 
-        foreach ($this->sections as $section => $qs) {
-            $vals = [];
-            foreach ($qs as $q) {
-                $vals[] = $scores[$q->id] ?? null;
+        $sectionAverages = DB::table('answers')
+            ->join('questions', 'answers.question_id', '=', 'questions.id')
+            ->select(
+                'answers.unit_kerja_id',
+                'questions.question_section_id',
+                DB::raw('AVG(answers.answer_skor) as avg_section_score')
+            )
+            ->where('answers.survey_program_id', $this->program->id)
+            ->whereIn('questions.question_section_id', $sectionIds)
+            ->groupBy('answers.unit_kerja_id', 'questions.question_section_id')
+            ->get()
+            ->groupBy('unit_kerja_id');
+
+        $totalAverages = DB::table('answers')
+            ->select(
+                'unit_kerja_id',
+                DB::raw('AVG(answer_skor) as avg_total_score')
+            )
+            ->where('survey_program_id', $this->program->id)
+            ->groupBy('unit_kerja_id')
+            ->get()
+            ->pluck('avg_total_score', 'unit_kerja_id');
+
+        $unitsToReportOn = collect();
+        if ($this->program->unit_kerja_id === null) {
+            $unitsToReportOn = $this->program->targetedUnitKerjas;
+        } else {
+            if ($this->program->unitKerja) { // Cek relasinya
+                $unitsToReportOn->push($this->program->unitKerja);
             }
-
-            $total = collect($vals)->filter()->sum();
-            $max = $qs->count() * 5;
-            $avg = $qs->count() ? collect($vals)->filter()->avg() : null;
-
-            $result[] = $total;
-            $result[] = $max;
-            $result[] = $avg;
         }
+        $reportData = $unitsToReportOn->map(function ($unit) use ($sectionAverages, $totalAverages) {
+            $row = [
+                'Unit Kerja' => $unit->unit_kerja_name,
+            ];
 
-        $result[] = $scores->avg();
-
-        return $result;
-    }
-
-    public function collection(): Collection
-    {
-        $rows = collect();
-
-        foreach ($this->program->targetedUnitKerjas as $unit) {
-            $rows->push([
-                'unit_id' => $unit->id,
-                'unit_name' => $unit->unit_kerja_name,
-            ]);
-        }
-
-        return $rows;
+            $unitSectionScores = $sectionAverages->get($unit->id);
+            foreach ($this->sections as $section) {
+                $score = $unitSectionScores
+                    ? $unitSectionScores->firstWhere('question_section_id', $section->id)
+                    : null;
+                $row['section_score_' . $section->id] = $score ? (float)number_format($score->avg_section_score, 2) : 0.0;
+            }
+            $row['total_avg'] = (float)number_format($totalAverages->get($unit->id) ?? 0, 2);
+            return $row;
+        });
+        return $reportData;
     }
 }

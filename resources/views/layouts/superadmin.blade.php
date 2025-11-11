@@ -117,9 +117,8 @@
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
                             {{ request()->routeIs('superadmin.programs.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 5h6m-7 4h8m-8 4h8m-8 4h8M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     <span>Program Survei</span>
                 </a>
@@ -138,7 +137,6 @@
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
                             {{ request()->routeIs('superadmin.users.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
-
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -151,11 +149,8 @@
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition-colors
                             {{ request()->routeIs('superadmin.reports.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-7m-6 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-5a2 2 0 01-2-2z" />
                     </svg>
                     <span>Laporan Hasil Survey</span>
                 </a>

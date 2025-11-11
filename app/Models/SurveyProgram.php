@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class SurveyProgram extends Model
 {
     use HasFactory;
@@ -19,6 +18,7 @@ class SurveyProgram extends Model
         'is_active',
         'requires_pre_survey',
         'is_featured',
+        'unit_kerja_id',
     ];
 
     protected $casts = [
@@ -52,4 +52,5 @@ class SurveyProgram extends Model
     {
         return $this->hasMany(PreSurveyResponse::class);
     }
+
 }

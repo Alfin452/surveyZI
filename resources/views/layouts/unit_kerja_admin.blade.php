@@ -93,9 +93,7 @@
 
     <div class="flex h-full">
 
-        <aside
-            class="w-64 transition-all duration-300 flex-shrink-0 bg-gray-900 text-gray-300 flex flex-col p-4 shadow-xl">
-
+        <aside class="w-64 transition-all duration-300 flex-shrink-0 bg-gray-900 text-gray-300 flex flex-col p-4 shadow-xl">
             <div class="flex flex-col items-center justify-center pt-4 mb-6">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo UIN" class="w-14 h-14 rounded-full shadow-lg mb-3">
                 <h1 class="text-lg font-bold leading-tight text-white">APLIKASI SURVEI</h1>
@@ -112,6 +110,17 @@
                     <span>Dashboard</span>
                 </a>
 
+                <a href="{{ route('unitkerja.admin.profile.edit') }}"
+                    @click="setTimeout(() => $store.globals.isLoading = true, 300)"
+                    class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-indigo-500/30 {{ request()->routeIs('unitkerja.admin.profile.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span>Profil Unit</span>
+                </a>
+
                 <a href="{{ route('unitkerja.admin.programs.index') }}"
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
                     class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-indigo-500/30 {{ request()->routeIs('unitkerja.admin.programs.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100' }}">
@@ -122,7 +131,7 @@
                     <span>Program Survei</span>
                 </a>
             </nav>
-            
+
             <div class="mt-auto">
                 <button @click="openLogout = true"
                     class="w-full flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-red-600 hover:text-white transition-colors">

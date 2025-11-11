@@ -1,30 +1,24 @@
 @extends('layouts.superadmin')
 
 @section('content')
-{{-- PERBAIKAN: Menyamakan padding 'p-2 space-y-6' --}}
 <div class="space-y-1">
-
     {{-- Header Halaman --}}
-    {{-- PERBAIKAN: Menyamakan style header card (padding, border, radius, shadow) --}}
     <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm">
         <div class="flex flex-col md:flex-row md:justify-between md:items-center">
             <div>
                 <div class="flex items-start gap-3">
-                    {{-- PERBAIKAN: Menyamakan ikon (padding, size) --}}
-                    <div class="flex-shrink-0 bg-blue-500 text-white p-2 rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <div class="flex-shrink-0 bg-gradient-to-br from-green-100 to-green-200 text-green-600 p-3 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
                     </div>
                     <div>
-                        {{-- PERBAIKAN: Menyamakan font size 'text-xl' --}}
                         <h1 class="text-xl font-bold text-gray-800">Manajemen Unit Kerja</h1>
                         <p class="text-sm text-gray-500 mt-1">Kelola semua unit kerja yang terdaftar dalam sistem.</p>
                     </div>
                 </div>
             </div>
-            {{-- PERBAIKAN: Menyamakan tombol (shadow-sm, rounded-lg) --}}
-            <a href="{{ route('superadmin.unit-kerja.create') }}" class="mt-4 md:mt-0 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300 shadow-sm flex items-center space-x-2 self-start md:self-end">
+            <a href="{{ route('superadmin.unit-kerja.create') }}" class="mt-4 md:mt-0 bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700 transition duration-300 shadow-sm flex items-center space-x-2 self-start md:self-end">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                 </svg>
@@ -32,14 +26,6 @@
             </a>
         </div>
     </div>
-
-    {{--
-        PERBAIKAN: Notifikasi @if(session(...)) dihapus dari sini.
-        Sekarang ditangani oleh Notifikasi "Toast" global di layouts/superadmin.blade.php
-    --}}
-
-    {{-- Panel Filter --}}
-    {{-- PERBAIKAN: Menyamakan style card (radius, shadow, padding) --}}
     <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm">
         <form action="{{ route('superadmin.unit-kerja.index') }}" method="GET" class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4">
             <div>
@@ -64,7 +50,6 @@
             </div>
             <div>
                 <label for="parent" class="text-sm font-medium text-gray-700">Induk Unit</label>
-                {{-- PERBAIKAN: Input disamakan (rounded-md, shadow-sm) --}}
                 <select id="parent" name="parent" class="mt-1 w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">Semua Induk</option>
                     @foreach ($parentUnits as $parent)
@@ -73,26 +58,22 @@
                 </select>
             </div>
             <div class="flex items-end gap-3">
-                {{-- PERBAIKAN: Tombol disamakan (rounded-md) --}}
                 <button type="submit" class="w-full bg-blue-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-blue-700 transition shadow-sm flex items-center justify-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                     </svg>
                     <span>Filter</span>
                 </button>
-                {{-- PERBAIKAN: Tombol disamakan (rounded-md, shadow-sm) --}}
                 <a href="{{ route('superadmin.unit-kerja.index') }}" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">Reset</a>
             </div>
         </form>
     </div>
 
     {{-- Tabel Unit Kerja --}}
-    {{-- PERBAIKAN: Menyamakan style card (radius, shadow) --}}
     <div class="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-blue-50">
                 <tr>
-                    {{-- PERBAIKAN: Mengganti font-semibold ke font-medium agar konsisten --}}
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No.</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Unit</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
@@ -165,7 +146,6 @@
         </table>
     </div>
 
-    {{-- PERBAIKAN: Menyamakan margin pagination --}}
     <div class="mt-6">
         {{ $unitKerja->links() }}
     </div>

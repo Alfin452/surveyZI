@@ -20,6 +20,8 @@ use App\Http\Controllers\UnitKerjaAdmin\SurveyResultController as UnitKerjaSurve
 use App\Http\Controllers\UnitKerjaAdmin\SurveyProgramController as UnitKerjaSurveyProgramController;
 use App\Http\Controllers\UnitKerjaAdmin\QuestionSectionController as UnitKerjaQuestionSectionController;
 use App\Http\Controllers\UnitKerjaAdmin\QuestionController as UnitKerjaQuestionController;
+use App\Http\Controllers\UnitKerjaAdmin\ProfileController;
+
 
 //Publik
 use App\Http\Controllers\PublicSurveyController;
@@ -86,8 +88,9 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::post('programs/{program}/questions/reorder', [SuperadminSurveyProgramController::class, 'reorderQuestions'])->name('programs.questions.reorder');
         Route::get('programs/{program}/results', [SuperadminSurveyProgramController::class, 'showResults'])->name('programs.results');
         Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/laporan/{program_id}/{unit_kerja_id}', [ReportController::class, 'showUnitDetail'])->name('reports.showUnit');
         Route::get('/laporan/export', [ReportController::class, 'export'])->name('reports.export');
-        
+
     Route::prefix('programs/{program}/sections')->name('programs.sections.')->group(function () {
         Route::post('/', [SuperadminQuestionSectionController::class, 'store'])->name('store');
         Route::post('/reorder', [SuperadminQuestionSectionController::class, 'reorder'])->name('reorder');
@@ -98,7 +101,7 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::resource('questions', SuperadminQuestionController::class)->except(['index', 'show']);
         Route::post('/questions/reorder', [SuperadminQuestionController::class, 'reorder'])->name('questions.reorder');
     });
-    });
+});
 
 
 
@@ -109,13 +112,13 @@ Route::middleware(['auth', 'verified', 'is.unitkerja.admin'])
     ->group(function () {
 
         Route::get('/dashboard', [UnitKerjaDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profil-unit-kerja', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profil-unit-kerja', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/programs', [UnitKerjaProgramController::class, 'index'])->name('programs.index');
         Route::get('/programs/{program}/results', [UnitKerjaSurveyResultController::class, 'show'])->name('programs.results');
-    Route::resource('my-programs', UnitKerjaSurveyProgramController::class)->parameters(['my-programs' => 'program']);
-    Route::post('my-programs/{program}/clone', [UnitKerjaSurveyProgramController::class, 'cloneProgram'])->name('my-programs.clone');
-
-    // DITAMBAHKAN: Rute Bagian Soal & Pertanyaan (Tipe 2)
-    Route::get('my-programs/{program}/questions', [UnitKerjaSurveyProgramController::class, 'showQuestionsPage'])->name('programs.questions.index');
+        Route::resource('my-programs', UnitKerjaSurveyProgramController::class)->parameters(['my-programs' => 'program']);
+        Route::post('my-programs/{program}/clone', [UnitKerjaSurveyProgramController::class, 'cloneProgram'])->name('my-programs.clone');Route::get('my-programs/{program}/questions', [UnitKerjaSurveyProgramController::class, 'showQuestionsPage'])->name('programs.questions.index');
+    
     Route::prefix('my-programs/{program}/sections')->name('programs.sections.')->group(function () {
         Route::post('/', [UnitKerjaQuestionSectionController::class, 'store'])->name('store');
         Route::post('/reorder', [UnitKerjaQuestionSectionController::class, 'reorder'])->name('reorder');
