@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
 {
-    /**
-     * Menampilkan form untuk membuat pertanyaan baru DI DALAM sebuah Bagian.
-     */
     public function create(QuestionSection $section)
     {
         $question = new Question();
@@ -20,9 +17,6 @@ class QuestionController extends Controller
         return view('superadmin.programs.questions.create', compact('program', 'section', 'question'));
     }
 
-    /**
-     * Menyimpan pertanyaan baru ke database.
-     */
     public function store(Request $request, QuestionSection $section)
     {
         $validated = $request->validate([

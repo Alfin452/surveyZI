@@ -1,7 +1,6 @@
 @extends('layouts.superadmin')
 
 @section('content')
-{{-- PERBAIKAN: Menyamakan padding 'p-2 space-y-6' agar konsisten --}}
 <div class="space-y-1">
     {{-- Header Halaman --}}
     <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm">
@@ -12,7 +11,6 @@
                 </svg>
             </div>
             <div>
-                {{-- PERBAIKAN: Menyamakan ukuran font (text-xl) agar konsisten --}}
                 <h1 class="text-xl font-bold text-gray-800">Edit Program Survei</h1>
                 <p class="text-sm text-gray-500 mt-1">Perbarui detail untuk: <span class="font-semibold">{{ $program->title }}</span></p>
             </div>
@@ -22,30 +20,65 @@
     {{-- Form --}}
     <form action="{{ route('superadmin.programs.update', $program) }}" method="POST">
         @csrf
-        @method('PUT') {{-- Penting: Memberitahu Laravel bahwa ini adalah proses update --}}
+        @method('PUT')
         @include('superadmin.programs._form')
     </form>
 </div>
 @endsection
 
 @push('scripts')
-{{-- Script untuk mengaktifkan Flatpickr dan TomSelect --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const select = document.getElementById('targeted_unit_kerjas_select');
+        if (!select) return;
 
-        // PERBAIKAN: Menyamakan format Flatpickr dengan permintaan Anda
-        flatpickr(".datepicker", {
-            altInput: true,
-            altFormat: "d F Y", // Tampilan u/ pengguna: 03 November 2025
-            dateFormat: "Y-m-d", // Data u/ server: 2025-11-03
-            locale: "id" // Opsional: jika Anda punya file locale flatpickr indonesia
-        });
-
-        // Skrip TomSelect (Sudah benar)
-        new TomSelect('#targeted_unit_kerjas_select', {
-            placeholder: 'Pilih satu atau lebih unit kerja...',
+        const tomSelect = new TomSelect(select, {
+            placeholder: 'Pilih minimal satu unit kerja...',
             plugins: ['remove_button'],
+            maxOptions: 200,
         });
+
+        // Logika untuk tombol "Pilih Semua" dan "Hapus Semua"
+        const btnSelectAll = document.getElementById('select-all-button');
+        const btnDeselectAll = document.getElementById('deselect-all-button');
+
+        if (btnSelectAll && btnDeselectAll) {
+            btnSelectAll.addEventListener('click', () => {
+                const allOptionIds = Object.keys(tomSelect.options);
+                tomSelect.setValue(allOptionIds);
+            });
+
+            btnDeselectAll.addEventListener('click', () => {
+                tomSelect.clear();
+            });
+        }
+
+        // Hapus style error TomSelect jika pengguna mulai memilih
+        tomSelect.on('change', function() {
+            if (tomSelect.items.length > 0) {
+                tomSelect.wrapper.classList.remove('tomselect-error');
+            }
+        });
+
+        // Terapkan style error TomSelect HANYA jika ada error dari server (Laravel)
+        @if($errors -> has('targeted_unit_kerjas'))
+        tomSelect.wrapper.classList.add('tomselect-error');
+        @endif
     });
 </script>
+
+<style>
+    .tomselect-error .ts-control {
+        @apply border-red-500 ring-1 ring-red-500;
+    }
+
+    #targeted_unit_kerjas_select {
+        display: none !important;
+    }
+
+    .min-h-5 {
+        min-height: 1.25rem;
+        /* 20px */
+    }
+</style>
 @endpush

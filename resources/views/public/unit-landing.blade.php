@@ -1,11 +1,11 @@
 <x-guest-layout :title="$unitKerja->unit_kerja_name . ' - ' . $program->title">
 
     {{-- Hero Section with Gradient Background --}}
-    <section class="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 pt-32 sm:pt-36 pb-20 sm:pb-24 overflow-hidden min-h-screen flex items-center">
+    <section class="relative bg-gradient-to-br from-cyan-600 via-teal-600 to-blue-600 pt-32 sm:pt-36 pb-20 sm:pb-24 overflow-hidden min-h-screen flex items-center">
         {{-- Animated Background --}}
         <div class="absolute inset-0 overflow-hidden">
             <div class="floating-shape absolute top-20 left-10 w-32 h-32 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div class="floating-shape absolute top-40 right-20 w-48 h-48 sm:w-96 sm:h-96 bg-yellow-300/10 rounded-full blur-3xl"></div>
+            <div class="floating-shape absolute top-40 right-20 w-48 h-48 sm:w-96 sm:h-96 bg-cyan-300/10 rounded-full blur-3xl"></div>
             <div class="floating-shape absolute bottom-20 left-1/4 w-40 h-40 sm:w-80 sm:h-80 bg-blue-300/10 rounded-full blur-3xl"></div>
 
             {{-- Grid Pattern --}}
@@ -39,14 +39,14 @@
             <div class="max-w-4xl mx-auto">
                 <div class="unit-card bg-white rounded-3xl shadow-2xl overflow-hidden">
                     {{-- Gradient Header --}}
-                    <div class="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                    <div class="h-2 bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-500"></div>
 
                     <div class="p-8 sm:p-12 text-center">
                         {{-- Icon with Animation --}}
                         <div class="unit-icon-wrapper mb-8">
                             <div class="relative inline-block">
-                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-3xl blur-2xl opacity-50 animate-pulse"></div>
-                                <div class="relative bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 text-indigo-600 h-24 w-24 sm:h-28 sm:w-28 rounded-3xl flex items-center justify-center shadow-2xl transform hover:rotate-6 hover:scale-110 transition-all duration-300">
+                                <div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-teal-600 rounded-3xl blur-2xl opacity-50 animate-pulse"></div>
+                                <div class="relative bg-gradient-to-br from-cyan-100 via-teal-100 to-blue-100 text-teal-600 h-24 w-24 sm:h-28 sm:w-28 rounded-3xl flex items-center justify-center shadow-2xl transform hover:rotate-6 hover:scale-110 transition-all duration-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-14 sm:w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                     </svg>
@@ -62,7 +62,7 @@
                         {{-- Short Name Badge --}}
                         @if($unitKerja->uk_short_name)
                         <div class="unit-badge inline-block mb-6">
-                            <span class="bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 px-6 py-2 rounded-full text-sm font-bold border-2 border-indigo-200">
+                            <span class="bg-gradient-to-r from-cyan-100 to-teal-100 text-teal-700 px-6 py-2 rounded-full text-sm font-bold border-2 border-teal-200">
                                 {{ $unitKerja->uk_short_name }}
                             </span>
                         </div>
@@ -79,11 +79,11 @@
                         </div>
 
                         {{-- Survey Action Card --}}
-                        <div class="survey-action-card bg-gradient-to-br from-slate-50 to-indigo-50 p-6 sm:p-8 rounded-2xl border-2 border-indigo-100 shadow-lg">
+                        <div class="survey-action-card bg-gradient-to-br from-slate-50 to-cyan-50 p-6 sm:p-8 rounded-2xl border-2 border-cyan-100 shadow-lg">
                             {{-- Program Info --}}
                             <div class="mb-6">
                                 <div class="flex items-center justify-center mb-3">
-                                    <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-1.5 rounded-full text-xs font-black">
+                                    <div class="bg-gradient-to-r from-cyan-500 to-teal-500 text-white px-4 py-1.5 rounded-full text-xs font-black">
                                         PROGRAM SURVEI
                                     </div>
                                 </div>
@@ -98,19 +98,19 @@
                             {{-- Features List --}}
                             <div class="features-list grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                                 <div class="feature-item bg-white p-4 rounded-xl shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-indigo-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <p class="text-xs font-bold text-gray-700">Cepat & Mudah</p>
                                 </div>
                                 <div class="feature-item bg-white p-4 rounded-xl shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-indigo-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                     </svg>
                                     <p class="text-xs font-bold text-gray-700">Aman & Anonim</p>
                                 </div>
                                 <div class="feature-item bg-white p-4 rounded-xl shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-indigo-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                     <p class="text-xs font-bold text-gray-700">Berdampak Nyata</p>
@@ -119,8 +119,8 @@
 
                             {{-- CTA Button --}}
                             <a href="{{ route('public.survey.fill', ['program' => $program, 'unitKerja' => $unitKerja]) }}"
-                                class="cta-button group relative inline-flex items-center justify-center w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black py-5 px-8 rounded-2xl text-base sm:text-lg overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
-                                <span class="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                                class="cta-button group relative inline-flex items-center justify-center w-full bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white font-black py-5 px-8 rounded-2xl text-base sm:text-lg overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+                                <span class="absolute inset-0 bg-gradient-to-r from-blue-600 via-teal-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                                 <span class="relative flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -140,7 +140,7 @@
 
                         {{-- Back Button --}}
                         <div class="back-button mt-8">
-                            <a href="{{ route('public.survey.directory', $program) }}" class="inline-flex items-center text-gray-600 hover:text-indigo-600 font-semibold transition-colors">
+                            <a href="{{ route('public.survey.directory', $program) }}" class="inline-flex items-center text-gray-600 hover:text-teal-600 font-semibold transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
@@ -275,16 +275,14 @@
                     clearProps: "opacity,x"
                 }, "-=0.2");
 
-            // === CTA BUTTON PULSE ===
             gsap.to('.cta-button', {
-                boxShadow: "0 0 40px rgba(79, 70, 229, 0.6)",
+                boxShadow: "0 0 40px rgba(20, 184, 166, 0.6)", 
                 duration: 2,
                 repeat: -1,
                 yoyo: true,
                 ease: "power1.inOut"
             });
 
-            // === FALLBACK: Ensure button is always visible after 2 seconds ===
             setTimeout(() => {
                 gsap.set('.cta-button, .survey-action-card, .unit-card, .feature-item', {
                     opacity: 1,
@@ -293,13 +291,12 @@
                 });
             }, 2000);
 
-            // === FEATURE ITEMS HOVER ===
             document.querySelectorAll('.feature-item').forEach((item, index) => {
                 item.addEventListener('mouseenter', () => {
                     gsap.to(item, {
                         y: -5,
                         scale: 1.05,
-                        boxShadow: "0 10px 30px rgba(79, 70, 229, 0.2)",
+                        boxShadow: "0 10px 30px rgba(20, 184, 166, 0.2)", // teal-600 dengan opacity
                         duration: 0.3,
                         ease: "power2.out"
                     });

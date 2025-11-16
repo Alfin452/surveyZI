@@ -1,11 +1,3 @@
-{{--
-PERBAIKAN:
-1. Menyamakan style card (rounded-lg, shadow-sm, space-y-8).
-2. Mengelompokkan field dengan lebih jelas (Info Dasar, Struktur, Kontak).
-3. Menyamakan style <select> agar konsisten dengan <input>.
-4. Menyamakan warna tombol "Simpan" menjadi indigo.
-5. MENGGUNAKAN KELAS '.timepicker' (untuk Flatpickr 24-jam).
---}}
 <div class="space-y-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
 
     {{-- Grup 1: Info Dasar --}}
@@ -14,13 +6,21 @@ PERBAIKAN:
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label for="unit_kerja_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Unit Kerja</label>
-                <input type="text" name="unit_kerja_name" id="unit_kerja_name" value="{{ old('unit_kerja_name', $unitKerja->unit_kerja_name ?? '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Unit Teknologi Informasi dan Pangkalan Data">
-                @error('unit_kerja_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                <input type="text" name="unit_kerja_name" id="unit_kerja_name" value="{{ old('unit_kerja_name', $unitKerja->unit_kerja_name ?? '') }}" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('unit_kerja_name') border-red-500 ring-1 ring-red-500 @enderror"
+                    placeholder="Contoh: Unit Teknologi Informasi dan Pangkalan Data">
+                <div class="mt-1 min-h-5">
+                    @error('unit_kerja_name') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
             <div>
                 <label for="uk_short_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Pendek / Akronim</label>
-                <input type="text" name="uk_short_name" id="uk_short_name" value="{{ old('uk_short_name', $unitKerja->uk_short_name ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: UTIPD">
-                @error('uk_short_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                <input type="text" name="uk_short_name" id="uk_short_name" value="{{ old('uk_short_name', $unitKerja->uk_short_name ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('uk_short_name') border-red-500 ring-1 ring-red-500 @enderror"
+                    placeholder="Contoh: UTIPD">
+                <div class="mt-1 min-h-5">
+                    @error('uk_short_name') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
         </div>
     </div>
@@ -31,7 +31,8 @@ PERBAIKAN:
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label for="tipe_unit_id" class="block text-sm font-medium text-gray-700 mb-1">Tipe Unit</label>
-                <select name="tipe_unit_id" id="tipe_unit_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <select name="tipe_unit_id" id="tipe_unit_id" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('tipe_unit_id') border-red-500 ring-1 ring-red-500 @enderror">
                     <option value="">Pilih tipe unit...</option>
                     @foreach($tipeUnits as $tipe)
                     <option value="{{ $tipe->id }}" {{ old('tipe_unit_id', $unitKerja->tipe_unit_id ?? '') == $tipe->id ? 'selected' : '' }}>
@@ -39,11 +40,14 @@ PERBAIKAN:
                     </option>
                     @endforeach
                 </select>
-                @error('tipe_unit_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                <div class="mt-1 min-h-5">
+                    @error('tipe_unit_id') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
             <div>
                 <label for="parent_id" class="block text-sm font-medium text-gray-700 mb-1">Induk Unit (Opsional)</label>
-                <select name="parent_id" id="parent_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <select name="parent_id" id="parent_id"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('parent_id') border-red-500 ring-1 ring-red-500 @enderror">
                     <option value="">Tidak ada induk</option>
                     @foreach($parentUnits as $parent)
                     @if(isset($unitKerja) && $unitKerja->id === $parent->id) @continue @endif
@@ -52,7 +56,9 @@ PERBAIKAN:
                     </option>
                     @endforeach
                 </select>
-                @error('parent_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                <div class="mt-1 min-h-5">
+                    @error('parent_id') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
         </div>
     </div>
@@ -63,21 +69,37 @@ PERBAIKAN:
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">Kontak (Email/No. Telepon)</label>
-                <input type="text" name="contact" id="contact" value="{{ old('contact', $unitKerja->contact ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <input type="text" name="contact" id="contact" value="{{ old('contact', $unitKerja->contact ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('contact') border-red-500 ring-1 ring-red-500 @enderror">
+                <div class="mt-1 min-h-5">
+                    @error('contact') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
             <div>
                 <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Alamat / Lokasi</label>
-                <input type="text" name="address" id="address" value="{{ old('address', $unitKerja->address ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <input type="text" name="address" id="address" value="{{ old('address', $unitKerja->address ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('address') border-red-500 ring-1 ring-red-500 @enderror">
+                <div class="mt-1 min-h-5">
+                    @error('address') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
             <div>
                 <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai Layanan</label>
-                {{-- PERBAIKAN: Menggunakan kelas 'timepicker' untuk Flatpickr --}}
-                <input type="text" name="start_time" id="start_time" value="{{ old('start_time', $unitKerja->start_time ?? '') }}" class="timepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Input jam mulai layanan">
+                <input type="text" name="start_time" id="start_time" value="{{ old('start_time', $unitKerja->start_time ?? '') }}"
+                    class="timepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('start_time') border-red-500 ring-1 ring-red-500 @enderror"
+                    placeholder="Input jam mulai layanan">
+                <div class="mt-1 min-h-5">
+                    @error('start_time') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
             <div>
                 <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">Jam Selesai Layanan</label>
-                {{-- PERBAIKAN: Menggunakan kelas 'timepicker' untuk Flatpickr --}}
-                <input type="text" name="end_time" id="end_time" value="{{ old('end_time', $unitKerja->end_time ?? '') }}" class="timepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Input jam selesai layanan">
+                <input type="text" name="end_time" id="end_time" value="{{ old('end_time', $unitKerja->end_time ?? '') }}"
+                    class="timepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('end_time') border-red-500 ring-1 ring-red-500 @enderror"
+                    placeholder="Input jam selesai layanan">
+                <div class="mt-1 min-h-5">
+                    @error('end_time') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                </div>
             </div>
         </div>
     </div>

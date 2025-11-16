@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Panel - Survei UIN Antasari</title>
+    <title>Admin Panel - Survei UIN Antasari</title>
     @vite('resources/css/app.css')
 
     <script src="//unpkg.com/alpinejs" defer></script>
@@ -123,10 +123,10 @@
 
                 <a href="{{ route('unitkerja.admin.programs.index') }}"
                     @click="setTimeout(() => $store.globals.isLoading = true, 300)"
-                    class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-indigo-500/30 {{ request()->routeIs('unitkerja.admin.programs.*') ? 'bg-white/20 text-yellow-300' : 'text-gray-100' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 5h6m-7 4h8m-8 4h8m-8 4h8M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                    class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                            {{ request()->routeIs('unitkerja.admin.programs.*') ? 'bg-gray-100 text-gray-900 font-semibold shadow' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     <span>Program Survei</span>
                 </a>

@@ -60,6 +60,11 @@ class SurveyProgramController extends Controller
 
     public function store(Request $request)
     {
+        // Perbaikan: Set default array kosong jika tidak ada yang dikirim
+        $request->merge([
+            'targeted_unit_kerjas' => $request->input('targeted_unit_kerjas', [])
+        ]);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255|unique:survey_programs,title',
             'description' => 'nullable|string',
@@ -68,9 +73,13 @@ class SurveyProgramController extends Controller
             'is_active' => 'nullable|boolean',
             'requires_pre_survey' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
-            'targeted_unit_kerjas' => 'required|array',
+            'targeted_unit_kerjas' => 'required|array|min:1',
             'targeted_unit_kerjas.*' => 'exists:unit_kerjas,id',
+        ], [
+            'targeted_unit_kerjas.required' => 'Anda harus memilih minimal satu unit kerja.',
+            'targeted_unit_kerjas.min' => 'Anda harus memilih minimal satu unit kerja.',
         ]);
+
         $isFeatured = $this->handleFeaturedStatus($request);
         $program = SurveyProgram::create([
             'title' => $validated['title'],
@@ -81,7 +90,7 @@ class SurveyProgramController extends Controller
             'is_active' => $request->boolean('is_active'),
             'requires_pre_survey' => $request->boolean('requires_pre_survey'),
             'is_featured' => $isFeatured,
-            'unit_kerja_id' => null, 
+            'unit_kerja_id' => null,
         ]);
         $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
         return redirect()->route('superadmin.programs.questions.index', $program)
@@ -102,6 +111,11 @@ class SurveyProgramController extends Controller
 
     public function update(Request $request, SurveyProgram $program)
     {
+        // Perbaikan: Set default array kosong jika tidak ada yang dikirim
+        $request->merge([
+            'targeted_unit_kerjas' => $request->input('targeted_unit_kerjas', [])
+        ]);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255', Rule::unique('survey_programs')->ignore($program->id)],
             'description' => 'nullable|string',
@@ -110,9 +124,13 @@ class SurveyProgramController extends Controller
             'is_active' => 'nullable|boolean',
             'requires_pre_survey' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
-            'targeted_unit_kerjas' => 'required|array',
+            'targeted_unit_kerjas' => 'required|array|min:1',
             'targeted_unit_kerjas.*' => 'exists:unit_kerjas,id',
+        ], [
+            'targeted_unit_kerjas.required' => 'Anda harus memilih minimal satu unit kerja.',
+            'targeted_unit_kerjas.min' => 'Anda harus memilih minimal satu unit kerja.',
         ]);
+
         $isFeatured = $this->handleFeaturedStatus($request, $program);
         $program->update([
             'title' => $validated['title'],

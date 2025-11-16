@@ -185,9 +185,9 @@ window.GSAPAnimations = {
 
     showMessage(selector, type = "success") {
         const colors = {
-            success: "#10b981",
-            error: "#ef4444",
-            info: "#3b82f6",
+            success: "#10b981", // green-500 - tetap untuk success
+            error: "#ef4444", // red-500 - tetap untuk error
+            info: "#14b8a6", // teal-600 - DIUBAH dari blue (#3b82f6)
         };
 
         gsap.fromTo(

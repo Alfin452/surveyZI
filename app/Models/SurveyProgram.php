@@ -18,7 +18,6 @@ class SurveyProgram extends Model
         'is_active',
         'requires_pre_survey',
         'is_featured',
-        'unit_kerja_id',
     ];
 
     protected $casts = [

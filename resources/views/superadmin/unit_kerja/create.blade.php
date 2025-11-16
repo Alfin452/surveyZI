@@ -29,14 +29,38 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi TomSelect
-        new TomSelect('#tipe_unit_id', {
+        // Inisialisasi TomSelect dan simpan instansinya
+        const tsTipe = new TomSelect('#tipe_unit_id', {
             placeholder: 'Pilih tipe unit...',
         });
-        new TomSelect('#parent_id', {
+        const tsParent = new TomSelect('#parent_id', {
             placeholder: 'Pilih induk unit (jika ada)...',
         });
-        // Flatpickr inisialisasi sudah ada di layouts/superadmin.blade.php secara global
+
+        // Hapus style error TomSelect jika pengguna mulai memilih
+        tsTipe.on('change', () => tsTipe.wrapper.classList.remove('tomselect-error'));
+        tsParent.on('change', () => tsParent.wrapper.classList.remove('tomselect-error'));
+
+        // Terapkan style error TomSelect HANYA jika ada error dari server (Laravel)
+        @if($errors -> has('tipe_unit_id'))
+        tsTipe.wrapper.classList.add('tomselect-error');
+        @endif
+
+        @if($errors -> has('parent_id'))
+        tsParent.wrapper.classList.add('tomselect-error');
+        @endif
     });
 </script>
+
+<style>
+    /* Style untuk error border pada TomSelect */
+    .tomselect-error .ts-control {
+        @apply border-red-500 ring-1 ring-red-500;
+    }
+
+    .min-h-5 {
+        min-height: 1.25rem;
+        /* 20px */
+    }
+</style>
 @endpush
