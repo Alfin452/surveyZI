@@ -30,9 +30,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const select = document.getElementById('targeted_unit_kerjas_select');
-        const errorContainer = document.getElementById('unit_kerja_error'); // Tetap ada untuk jaga-jaga
-        const form = document.querySelector('form');
-
         if (!select) return;
 
         const tomSelect = new TomSelect(select, {
@@ -41,13 +38,29 @@
             maxOptions: 200,
         });
 
+        // Logika untuk tombol "Pilih Semua" dan "Hapus Semua"
+        const btnSelectAll = document.getElementById('select-all-button');
+        const btnDeselectAll = document.getElementById('deselect-all-button');
+
+        if (btnSelectAll && btnDeselectAll) {
+            btnSelectAll.addEventListener('click', () => {
+                const allOptionIds = Object.keys(tomSelect.options);
+                tomSelect.setValue(allOptionIds);
+            });
+
+            btnDeselectAll.addEventListener('click', () => {
+                tomSelect.clear();
+            });
+        }
+
+        // Hapus style error TomSelect jika pengguna mulai memilih
         tomSelect.on('change', function() {
             if (tomSelect.items.length > 0) {
-                errorContainer.classList.add('hidden');
                 tomSelect.wrapper.classList.remove('tomselect-error');
             }
         });
 
+        // Terapkan style error TomSelect HANYA jika ada error dari server (Laravel)
         <?php if($errors -> has('targeted_unit_kerjas')): ?>
         tomSelect.wrapper.classList.add('tomselect-error');
         <?php endif; ?>
@@ -65,6 +78,7 @@
 
     .min-h-5 {
         min-height: 1.25rem;
+        /* 20px */
     }
 </style>
 <?php $__env->stopPush(); ?>

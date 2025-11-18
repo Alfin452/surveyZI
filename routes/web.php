@@ -11,6 +11,7 @@ use App\Http\Controllers\Superadmin\UserController as SuperadminUserController;
 use App\Http\Controllers\Superadmin\ReportController;
 use App\Http\Controllers\Superadmin\QuestionSectionController as SuperadminQuestionSectionController;
 use App\Http\Controllers\Superadmin\QuestionController as SuperadminQuestionController;
+use App\Http\Controllers\Superadmin\ProgramResultController;
 
 
 //Admin Unit Kerja
@@ -86,7 +87,7 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::put('programs/{program}/questions/{question}', [SuperadminSurveyProgramController::class, 'updateQuestion'])->name('programs.questions.update');
         Route::delete('programs/{program}/questions/{question}', [SuperadminSurveyProgramController::class, 'destroyQuestion'])->name('programs.questions.destroy');
         Route::post('programs/{program}/questions/reorder', [SuperadminSurveyProgramController::class, 'reorderQuestions'])->name('programs.questions.reorder');
-        Route::get('programs/{program}/results', [SuperadminSurveyProgramController::class, 'showResults'])->name('programs.results');
+        Route::get('programs/{program}/results', [ProgramResultController::class, 'showResults'])->name('programs.results');
         Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/laporan/{program_id}/{unit_kerja_id}', [ReportController::class, 'showUnitDetail'])->name('reports.showUnit');
         Route::get('/laporan/export', [ReportController::class, 'export'])->name('reports.export');

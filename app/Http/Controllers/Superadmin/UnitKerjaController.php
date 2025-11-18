@@ -16,11 +16,9 @@ class UnitKerjaController extends Controller
      */
     public function index(Request $request)
     {
-        // Mengambil data untuk filter dropdown
         $tipeUnits = TipeUnit::orderBy('nama_tipe_unit')->get();
         $parentUnits = UnitKerja::whereNull('parent_id')->orderBy('unit_kerja_name')->get();
 
-        // Query dasar dengan filter
         $query = UnitKerja::with(['tipeUnit', 'parent'])
             ->withCount(['users', 'children'])
             ->filter($request->only('search', 'type', 'parent'));
