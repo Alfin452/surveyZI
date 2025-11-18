@@ -1,66 +1,148 @@
-{{-- Menggunakan Alpine.js untuk mengelola opsi jawaban secara dinamis --}}
-<div x-data='{
-    options: {{ 
-        json_encode(
-            old('options', ($question->exists && $question->options->count()) ? $question->options->map->only(['option_body', 'option_score']) : [['option_body' => '', 'option_score' => '']])
-        ) 
-    }}
-}'>
-    <div class="space-y-6 bg-white p-6 rounded-xl shadow-lg border">
-        {{-- Tipe Pertanyaan (saat ini tersembunyi karena hanya ada satu tipe) --}}
+@php
+// Menyiapkan data untuk Alpine.js sesuai logika asli Anda
+// Menggunakan nama field asli: option_body & option_score
+$optionsData = json_encode(
+old('options', ($question->exists && $question->options->count())
+? $question->options->map->only(['option_body', 'option_score'])
+: [['option_body' => '', 'option_score' => '']]
+)
+);
+@endphp
+
+{{-- Container Glassmorphism --}}
+<div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8"
+    x-data="{ options: {{ $optionsData }} }">
+
+    <div class="space-y-8">
+
+        {{-- Tipe Pertanyaan (Hidden) --}}
         <input type="hidden" name="type" value="multiple_choice">
 
-        {{-- Isi Pertanyaan --}}
-        <div>
-            <label for="question_body" class="block text-sm font-medium text-gray-700">Teks Pertanyaan</label>
-            <textarea name="question_body" id="question_body" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('question_body', $question->question_body ?? '') }}</textarea>
-            @error('question_body') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        {{-- 1. Isi Pertanyaan --}}
+        <div class="space-y-2">
+            <label for="question_body" class="block text-xs font-bold text-slate-500 uppercase ml-1">
+                Teks Pertanyaan <span class="text-rose-500">*</span>
+            </label>
+            <div class="relative group">
+                <div class="absolute top-3 left-0 pl-4 flex items-start pointer-events-none">
+                    {{-- Icon Chat Bubble --}}
+                    <svg class="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                </div>
+                <textarea name="question_body" id="question_body" rows="3" required
+                    class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm placeholder-slate-400 hover:bg-white resize-none"
+                    placeholder="Tuliskan pertanyaan Anda di sini...">{{ old('question_body', $question->question_body ?? '') }}</textarea>
+            </div>
+            @error('question_body') <p class="text-rose-500 text-xs mt-1 ml-1">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Opsi Jawaban Dinamis --}}
-        <div class="pt-4 border-t">
-            <label class="block text-sm font-medium text-gray-700">Opsi Jawaban</label>
-            <div class="mt-2 space-y-4">
+        {{-- 2. Opsi Jawaban Dinamis --}}
+        <div class="pt-6 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    Opsi Jawaban
+                </h3>
+                {{-- Tombol Tambah Kecil --}}
+                <button type="button" @click="options.push({ option_body: '', option_score: '' })"
+                    class="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah Opsi
+                </button>
+            </div>
+
+            <div class="space-y-3">
                 <template x-for="(option, index) in options" :key="index">
-                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border">
+                    <div class="flex items-center gap-3 group animate-fade-in">
+                        {{-- Handle Geser (Visual) --}}
+                        <div class="text-slate-300 cursor-move">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                            </svg>
+                        </div>
+
                         {{-- Input Teks Opsi --}}
-                        <div class="flex-grow">
-                            <input type="text" :name="`options[${index}][option_body]`" x-model="option.option_body" required class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm" placeholder="Tulis teks jawaban...">
+                        <div class="flex-1 relative">
+                            <input type="text" :name="`options[${index}][option_body]`" x-model="option.option_body" required
+                                class="block w-full pl-4 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all shadow-sm"
+                                placeholder="Tulis teks jawaban...">
                         </div>
-                        {{-- Input Skor Opsi --}}
-                        <div class="w-24">
-                            <input type="number" :name="`options[${index}][option_score]`" x-model="option.option_score" required class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm" placeholder="Skor">
+
+                        {{-- Input Skor --}}
+                        <div class="w-24 relative" title="Bobot Nilai">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-xs font-bold">pts</div>
+                            <input type="number" :name="`options[${index}][option_score]`" x-model="option.option_score" required
+                                class="block w-full pl-8 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-center focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all shadow-sm"
+                                placeholder="0">
                         </div>
-                        {{-- Tombol Hapus Opsi --}}
-                        <button type="button" @click="if(options.length > 1) options.splice(index, 1)" :class="{'opacity-50 cursor-not-allowed': options.length <= 1}" class="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+
+                        {{-- Tombol Hapus --}}
+                        <button type="button" @click="if(options.length > 1) options.splice(index, 1)"
+                            :class="{'opacity-50 cursor-not-allowed': options.length <= 1}"
+                            class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                            title="Hapus Opsi">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
                     </div>
                 </template>
             </div>
 
-            @error('options.*') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
-            @error('options') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
+            {{-- Error Messages --}}
+            <div class="mt-2">
+                @error('options.*') <span class="text-rose-500 text-xs block">{{ $message }}</span> @enderror
+                @error('options') <span class="text-rose-500 text-xs block">{{ $message }}</span> @enderror
+            </div>
 
-            {{-- Tombol Tambah Opsi --}}
-            <button type="button" @click="options.push({ option_body: '', option_score: '' })" class="mt-4 inline-flex items-center px-4 py-2 border border-dashed border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+            {{-- Tombol Tambah Besar (Empty State / Bottom) --}}
+            <button type="button" @click="options.push({ option_body: '', option_score: '' })"
+                class="mt-4 w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                Tambah Opsi
+                Tambah Opsi Jawaban Lain
             </button>
         </div>
+
     </div>
 
-    {{-- Tombol Aksi --}}
-    <div class="mt-8 pt-6 border-t flex justify-end space-x-3">
-        <a href="{{ route('superadmin.programs.questions.index', $program) }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+    {{-- Footer Aksi --}}
+    <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-3">
+        <a href="{{ route('superadmin.programs.questions.index', $program) }}"
+            class="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all">
             Batal
         </a>
-        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+        <button type="submit"
+            class="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
             Simpan Pertanyaan
         </button>
     </div>
 </div>
+
+{{-- Style Animasi Halus --}}
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

@@ -1,60 +1,63 @@
-<div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-    <div class="space-y-8">
+<div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8">
+    <div class="space-y-10">
 
         
-        <div class="space-y-4">
-            <div>
-                <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-                    Judul Program Survei <span class="text-red-500">*</span>
-                </label>
-                <input type="text" name="title" id="title"
-                    value="<?php echo e(old('title', $program->title ?? '')); ?>"
-                    required
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 <?php $__errorArgs = ['title'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-500 ring-1 ring-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                    placeholder="Contoh: Survei Penilaian Zona Integritas 2025">
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Informasi Dasar</h3>
+            </div>
 
-                <div class="mt-1 min-h-5">
+            <div class="grid grid-cols-1 gap-6">
+                
+                <div class="relative group">
+                    <label for="title" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
+                        Judul Program <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </div>
+                        <input type="text" name="title" id="title"
+                            value="<?php echo e(old('title', $program->title ?? '')); ?>"
+                            required
+                            class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm placeholder-slate-400 hover:bg-white"
+                            placeholder="Contoh: Survei Kepuasan Masyarakat 2025">
+                    </div>
                     <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                    <span class="text-red-500 text-xs block"><?php echo e($message); ?></span>
-                    <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                 </div>
-            </div>
 
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                <textarea name="description" id="description" rows="4"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 <?php $__errorArgs = ['description'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-500 ring-1 ring-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                    placeholder="Jelaskan tujuan umum dari program survei ini..."><?php echo e(old('description', $program->description ?? '')); ?></textarea>
-
-                <div class="mt-1 min-h-5">
+                
+                <div class="relative group">
+                    <label for="description" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Deskripsi</label>
+                    <div class="relative">
+                        <div class="absolute top-3 left-0 pl-4 flex items-start pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                            </svg>
+                        </div>
+                        <textarea name="description" id="description" rows="4"
+                            class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm placeholder-slate-400 hover:bg-white"
+                            placeholder="Jelaskan tujuan survei ini..."><?php echo e(old('description', $program->description ?? '')); ?></textarea>
+                    </div>
                     <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                    <span class="text-red-500 text-xs block"><?php echo e($message); ?></span>
-                    <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
@@ -63,173 +66,202 @@ unset($__errorArgs, $__bag); ?>
         </div>
 
         
-        <div class="space-y-4 pt-6 border-t border-gray-200">
-            <h3 class="text-sm font-medium text-gray-900">Periode Program</h3>
+        <div class="pt-6 border-t border-slate-100">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Periode Pelaksanaan</h3>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">
-                        Tanggal Mulai Program <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" name="start_date" id="start_date"
-                        value="<?php echo e(old('start_date', $program->start_date?->format('Y-m-d'))); ?>"
-                        required
-                        class="datepicker block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 <?php $__errorArgs = ['start_date'];
+                <div class="group">
+                    <label for="start_date" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Mulai</label>
+                    <div class="relative">
+                        <input type="text" name="start_date" id="start_date"
+                            value="<?php echo e(old('start_date', $program->start_date?->format('Y-m-d'))); ?>"
+                            required
+                            class="datepicker block w-full pl-4 pr-10 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm cursor-pointer hover:bg-white"
+                            placeholder="Pilih tanggal mulai...">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-400 group-focus-within:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <?php $__errorArgs = ['start_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-500 ring-1 ring-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                        placeholder="Pilih tanggal...">
-
-                    <div class="mt-1 min-h-5">
-                        <?php $__errorArgs = ['start_date'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                        <span class="text-red-500 text-xs block"><?php echo e($message); ?></span>
-                        <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                    </div>
                 </div>
-                <div>
-                    <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">
-                        Tanggal Selesai Program <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" name="end_date" id="end_date"
-                        value="<?php echo e(old('end_date', $program->end_date?->format('Y-m-d'))); ?>"
-                        required
-                        class="datepicker block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 <?php $__errorArgs = ['end_date'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-500 ring-1 ring-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                        placeholder="Pilih tanggal...">
 
-                    <div class="mt-1 min-h-5">
-                        <?php $__errorArgs = ['end_date'];
+                <div class="group">
+                    <label for="end_date" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Selesai</label>
+                    <div class="relative">
+                        <input type="text" name="end_date" id="end_date"
+                            value="<?php echo e(old('end_date', $program->end_date?->format('Y-m-d'))); ?>"
+                            required
+                            class="datepicker block w-full pl-4 pr-10 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm cursor-pointer hover:bg-white"
+                            placeholder="Pilih tanggal selesai...">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-400 group-focus-within:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <?php $__errorArgs = ['end_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                        <span class="text-red-500 text-xs block"><?php echo e($message); ?></span>
-                        <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                    </div>
                 </div>
             </div>
         </div>
 
         
-        <div class="space-y-4 pt-6 border-t border-gray-200">
-            <h3 class="text-sm font-medium text-gray-900">Opsi Program</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="relative flex items-start">
-                    <div class="flex h-6 items-center">
-                        <input id="is_active" name="is_active" type="checkbox" value="1"
-                            <?php echo e(old('is_active', $program->is_active ?? true) ? 'checked' : ''); ?>
-
-                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                    </div>
-                    <div class="ml-3 text-sm leading-6">
-                        <label for="is_active" class="font-medium text-gray-900">Aktifkan Program</label>
-                        <p class="text-gray-500">Akan terlihat di halaman publik.</p>
-                    </div>
+        <div class="pt-6 border-t border-slate-100">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
                 </div>
-
-                <div class="relative flex items-start">
-                    <div class="flex h-6 items-center">
-                        <input id="requires_pre_survey" name="requires_pre_survey" type="checkbox" value="1"
-                            <?php echo e(old('requires_pre_survey', $program->requires_pre_survey ?? true) ? 'checked' : ''); ?>
-
-                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                    </div>
-                    <div class="ml-3 text-sm leading-6">
-                        <label for="requires_pre_survey" class="font-medium text-gray-900">Wajibkan Pra-Survei</label>
-                        <p class="text-gray-500">Responden wajib isi data diri.</p>
-                    </div>
-                </div>
-
-                <div class="relative flex items-start">
-                    <div class="flex h-6 items-center">
-                        <input id="is_featured" name="is_featured" type="checkbox" value="1"
-                            <?php echo e(old('is_featured', $program->is_featured ?? false) ? 'checked' : ''); ?>
-
-                            class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-600">
-                    </div>
-                    <div class="ml-3 text-sm leading-6">
-                        <label for="is_featured" class="font-medium text-gray-900">Program Unggulan</label>
-                        <p class="text-gray-500">Tampilkan di Halaman Utama.</p>
-                    </div>
-                </div>
+                <h3 class="text-lg font-bold text-slate-800">Pengaturan Tambahan</h3>
             </div>
-        </div>
 
-        
-        <div class="space-y-4 pt-6 border-t border-gray-200">
-            <div>
-                <label for="targeted_unit_kerjas_select" class="block text-sm font-medium text-gray-900 mb-1">
-                    Targetkan ke Unit Kerja <span class="text-red-500">*</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <label class="relative cursor-pointer group">
+                    <input type="checkbox" name="is_active" value="1" class="peer sr-only" <?php echo e(old('is_active', $program->is_active ?? true) ? 'checked' : ''); ?>>
+                    <div class="p-4 bg-white border-2 border-slate-100 rounded-2xl hover:border-indigo-300 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all shadow-sm h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="p-2 bg-green-100 text-green-600 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-500 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-bold text-slate-700 group-hover:text-indigo-600">Status Aktif</p>
+                        <p class="text-xs text-slate-400 mt-1">Survei dapat diakses publik.</p>
+                    </div>
                 </label>
-                <p class="text-sm text-gray-500 mb-2">Pilih minimal satu unit kerja yang akan mengisi survei ini.</p>
 
-                <div class="flex gap-2 mb-2">
-                    <button type="button" id="select-all-button" class="px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Pilih Semua
-                    </button>
-                    <button type="button" id="deselect-all-button" class="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
-                        Hapus Semua
-                    </button>
-                </div>
+                
+                <label class="relative cursor-pointer group">
+                    <input type="checkbox" name="requires_pre_survey" value="1" class="peer sr-only" <?php echo e(old('requires_pre_survey', $program->requires_pre_survey ?? true) ? 'checked' : ''); ?>>
+                    <div class="p-4 bg-white border-2 border-slate-100 rounded-2xl hover:border-indigo-300 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all shadow-sm h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-500 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-bold text-slate-700 group-hover:text-indigo-600">Wajib Pra-Survei</p>
+                        <p class="text-xs text-slate-400 mt-1">Data diri responden wajib diisi.</p>
+                    </div>
+                </label>
 
-                <select
-                    name="targeted_unit_kerjas[]"
-                    id="targeted_unit_kerjas_select"
-                    multiple
-                    required
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <?php $__currentLoopData = $unitKerjas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($unit->id); ?>"
-                        <?php echo e(in_array($unit->id, old('targeted_unit_kerjas', $program->targetedUnitKerjas?->pluck('id')->toArray() ?? [])) ? 'selected' : ''); ?>>
-                        <?php echo e($unit->unit_kerja_name); ?>
-
-                    </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </select>
-
-                <div class="mt-1 min-h-5">
-                    <?php $__errorArgs = ['targeted_unit_kerjas'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                    <span class="text-red-500 text-xs block"><?php echo e($message); ?></span>
-                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                </div>
+                
+                <label class="relative cursor-pointer group">
+                    <input type="checkbox" name="is_featured" value="1" class="peer sr-only" <?php echo e(old('is_featured', $program->is_featured ?? false) ? 'checked' : ''); ?>>
+                    <div class="p-4 bg-white border-2 border-slate-100 rounded-2xl hover:border-amber-300 peer-checked:border-amber-500 peer-checked:bg-amber-50 transition-all shadow-sm h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                            </div>
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:bg-amber-500 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-bold text-slate-700 group-hover:text-amber-600">Program Unggulan</p>
+                        <p class="text-xs text-slate-400 mt-1">Tampil prioritas di halaman depan.</p>
+                    </div>
+                </label>
             </div>
         </div>
 
         
-        <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+        <div class="pt-6 border-t border-slate-100">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-teal-100 text-teal-600 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Target Unit Kerja</h3>
+                        <p class="text-xs text-slate-500">Pilih unit yang akan mengisi survei ini.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" id="select-all-button" class="px-3 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                        + Pilih Semua
+                    </button>
+                    <button type="button" id="deselect-all-button" class="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors">
+                        x Hapus Semua
+                    </button>
+                </div>
+            </div>
+
+            <select
+                name="targeted_unit_kerjas[]"
+                id="targeted_unit_kerjas_select"
+                multiple
+                required
+                class="block w-full rounded-xl border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-4"
+                placeholder="Klik untuk memilih unit...">
+                <?php $__currentLoopData = $unitKerjas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($unit->id); ?>"
+                    <?php echo e(in_array($unit->id, old('targeted_unit_kerjas', $program->targetedUnitKerjas?->pluck('id')->toArray() ?? [])) ? 'selected' : ''); ?>>
+                    <?php echo e($unit->unit_kerja_name); ?>
+
+                </option>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+            <?php $__errorArgs = ['targeted_unit_kerjas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        </div>
+
+        
+        <div class="pt-6 border-t border-slate-100 flex flex-col-reverse md:flex-row justify-end gap-3">
             <a href="<?php echo e(route('superadmin.programs.index')); ?>"
-                class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all text-center">
                 Batal
             </a>
             <button type="submit"
-                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Simpan Program
+                class="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all">
+                Simpan Perubahan
             </button>
         </div>
     </div>

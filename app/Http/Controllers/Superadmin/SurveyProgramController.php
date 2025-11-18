@@ -21,19 +21,40 @@ class SurveyProgramController extends Controller
     use AuthorizesRequests;
     public function index(Request $request)
     {
-        $query = SurveyProgram::query();
+        $query = SurveyProgram::with(['unitKerja'])
+            ->withCount(['questions', 'questionSections', 'targetedUnitKerjas'])
+            ->latest();
 
+        // 1. Logika Pencarian
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        $programs = $query->with('unitKerja')
-            ->withCount('questionSections', 'targetedUnitKerjas')
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+        // 2. Logika Filter Status
+        if ($request->filled('status')) {
+            if ($request->status == 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status == 'inactive') {
+                $query->where('is_active', false);
+            }
+        }
 
-        return view('superadmin.programs.index', compact('programs'));
+        // 3. Logika Filter Unit Kerja (Support Institusional/Lokal dari View baru)
+        if ($request->filled('unit_id')) {
+            if ($request->unit_id === 'institutional') {
+                $query->whereNull('unit_kerja_id');
+            } elseif ($request->unit_id === 'local') {
+                $query->whereNotNull('unit_kerja_id');
+            } else {
+                $query->where('unit_kerja_id', $request->unit_id);
+            }
+        }
+
+        $programs = $query->paginate(10)->withQueryString();
+
+        $units = UnitKerja::orderBy('unit_kerja_name')->get();
+
+        return view('superadmin.programs.index', compact('programs', 'units'));
     }
 
     public function create()
