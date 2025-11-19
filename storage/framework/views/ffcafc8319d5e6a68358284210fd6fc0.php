@@ -37,7 +37,10 @@
     </div>
 
     
-    <form action="<?php echo e(route('superadmin.programs.store')); ?>" method="POST">
+    
+    <form action="<?php echo e(route('superadmin.programs.store')); ?>" method="POST"
+        x-data
+        @submit.prevent="if($el.checkValidity()) { Alpine.store('globals').isLoading = true; $el.submit(); } else { $el.reportValidity(); }">
         <?php echo csrf_field(); ?>
         <?php echo $__env->make('superadmin.programs._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </form>
@@ -49,13 +52,11 @@
 <?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        // 1. Inisialisasi TomSelect untuk Unit Kerja
         var unitSelect = new TomSelect('#targeted_unit_kerjas_select', {
             plugins: ['remove_button'],
             create: false,
             placeholder: 'Cari dan pilih unit kerja...',
-            maxOptions: null, // Tampilkan semua opsi
+            maxOptions: null,
             render: {
                 option: function(data, escape) {
                     return '<div class="flex items-center gap-2 py-1">' +
@@ -66,18 +67,14 @@
             }
         });
 
-        // 2. Logika Tombol "Pilih Semua"
         document.getElementById('select-all-button').addEventListener('click', function() {
-            // Ambil semua value dari option
             var allValues = Object.keys(unitSelect.options);
             unitSelect.setValue(allValues);
         });
 
-        // 3. Logika Tombol "Hapus Semua"
         document.getElementById('deselect-all-button').addEventListener('click', function() {
             unitSelect.clear();
         });
-
     });
 </script>
 <?php $__env->stopPush(); ?>

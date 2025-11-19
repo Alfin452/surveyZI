@@ -1,7 +1,7 @@
-@extends('layouts.unit_kerja_admin')
 
-@section('content')
-{{-- Background Aurora --}}
+
+<?php $__env->startSection('content'); ?>
+
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-teal-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
@@ -18,16 +18,17 @@
                 </div>
                 <div>
                     <h1 class="text-2xl font-black text-slate-800 tracking-tight">Tambah Pertanyaan</h1>
-                    <p class="text-slate-500 text-sm font-medium mt-0.5">Menambahkan ke bagian: <span class="text-teal-600 font-bold">{{ $section->title }}</span></p>
+                    <p class="text-slate-500 text-sm font-medium mt-0.5">Menambahkan ke bagian: <span class="text-teal-600 font-bold"><?php echo e($section->title); ?></span></p>
                 </div>
             </div>
-            <a href="{{ route('unitkerja.admin.programs.questions.index', $program) }}" class="px-5 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl font-bold shadow-sm hover:bg-slate-50 hover:text-teal-600 text-sm">Kembali</a>
+            <a href="<?php echo e(route('unitkerja.admin.programs.questions.index', $program)); ?>" class="px-5 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl font-bold shadow-sm hover:bg-slate-50 hover:text-teal-600 text-sm">Kembali</a>
         </div>
     </div>
 
-    <form action="{{ route('unitkerja.admin.sections.questions.store', $section) }}" method="POST">
-        @csrf
-        @include('unit_kerja_admin.programs.questions._form')
+    <form action="<?php echo e(route('unitkerja.admin.sections.questions.store', $section)); ?>" method="POST">
+        <?php echo csrf_field(); ?>
+        <?php echo $__env->make('unit_kerja_admin.programs.questions._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </form>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.unit_kerja_admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\surveyZI\resources\views/unit_kerja_admin/programs/questions/create.blade.php ENDPATH**/ ?>

@@ -45,7 +45,7 @@
             background: #94a3b8;
         }
 
-        /* Aurora Animation for Sidebar */
+        /* Aurora Animation for Sidebar (WARNA ORIGINAL - KEMBALI KE AWAL) */
         @keyframes aurora-sidebar {
             0% {
                 background-position: 0% 50%;
@@ -83,7 +83,7 @@
     @open-clone-modal.window="openCloneModal = true; cloneUrl = event.detail.url; cloneItemName = event.detail.name">
 
     
-    <div x-cloak x-data x-show="$store.globals.isLoading" x-transition.opacity
+    <div x-cloak x-show="$store.globals.isLoading" x-transition.opacity
         class="fixed inset-0 bg-slate-900/50 backdrop-blur-md flex items-center justify-center z-[9999]">
         <div class="bg-white p-4 rounded-2xl shadow-2xl flex items-center gap-3">
             <span class="relative flex h-3 w-3">
@@ -105,20 +105,19 @@
                     <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-75 group-hover:opacity-100 transition duration-200 blur"></div>
                     <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Logo UIN" class="relative w-16 h-16 rounded-full bg-white p-1">
                 </div>
-                <h1 class="mt-4 text-lg font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200">SURVEY SUPERADMIN</h1>
+                <h1 class="mt-4 text-lg font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200">SURVEYZI ADMIN</h1>
                 <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded-full mt-1">UIN Antasari</span>
             </div>
 
             
             <nav class="flex-1 space-y-1.5 p-4 overflow-y-auto">
-                
                 <?php
                 function isActive($route) {
                 return request()->routeIs($route) ? 'bg-white/10 text-white shadow-lg border border-white/10 backdrop-blur-sm' : 'text-indigo-200 hover:bg-white/5 hover:text-white';
                 }
                 ?>
 
-                <a href="<?php echo e(route('superadmin.dashboard')); ?>" @click="$store.globals.isLoading = true"
+                <a href="<?php echo e(route('superadmin.dashboard')); ?>"
                     class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 <?php echo e(isActive('superadmin.dashboard')); ?>">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -130,7 +129,7 @@
                     <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">Master Data</p>
                 </div>
 
-                <a href="<?php echo e(route('superadmin.programs.index')); ?>" @click="$store.globals.isLoading = true"
+                <a href="<?php echo e(route('superadmin.programs.index')); ?>"
                     class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 <?php echo e(isActive('superadmin.programs.*')); ?>">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -138,7 +137,7 @@
                     <span class="font-medium text-sm">Program Survei</span>
                 </a>
 
-                <a href="<?php echo e(route('superadmin.unit-kerja.index')); ?>" @click="$store.globals.isLoading = true"
+                <a href="<?php echo e(route('superadmin.unit-kerja.index')); ?>"
                     class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 <?php echo e(isActive('superadmin.unit-kerja.*')); ?>">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -150,7 +149,7 @@
                     <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">Administrasi</p>
                 </div>
 
-                <a href="<?php echo e(route('superadmin.users.index')); ?>" @click="$store.globals.isLoading = true"
+                <a href="<?php echo e(route('superadmin.users.index')); ?>"
                     class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 <?php echo e(isActive('superadmin.users.*')); ?>">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -158,7 +157,7 @@
                     <span class="font-medium text-sm">Pengguna</span>
                 </a>
 
-                <a href="<?php echo e(route('superadmin.reports.index')); ?>" @click="$store.globals.isLoading = true"
+                <a href="<?php echo e(route('superadmin.reports.index')); ?>"
                     class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 <?php echo e(isActive('superadmin.reports.*')); ?>">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-7m-6 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-5a2 2 0 01-2-2z" />
@@ -180,7 +179,7 @@
         </aside>
 
         <main class="flex-1 overflow-y-auto bg-slate-50 relative">
-            <div class="p-4 space-y-6 max-w-7xl mx-auto">
+            <div class="p-2 space-y-6 max-w-7xl mx-auto">
                 <?php echo $__env->yieldContent('content'); ?>
             </div>
         </main>
@@ -190,15 +189,11 @@
     <div x-cloak x-show="openLogout" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div x-show="openLogout" @click.away="openLogout = false" x-transition.scale class="bg-white/90 rounded-3xl shadow-2xl p-8 w-full max-w-md text-center border border-white/50 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-orange-500/5 pointer-events-none"></div>
-
-            
             <div class="w-20 h-20 mx-auto mb-4 drop-shadow-lg">
                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Sleeping%20Face.png" alt="Sleep" class="w-full h-full object-contain">
             </div>
-
             <h2 class="text-2xl font-black text-slate-800 mb-2">Sudah Selesai?</h2>
             <p class="text-slate-500 mb-8 text-sm">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari aplikasi?</p>
-
             <div class="flex justify-center gap-3 relative z-10">
                 <button @click="openLogout = false" class="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition shadow-sm">Batal</button>
                 <form action="<?php echo e(route('logout')); ?>" method="POST">
@@ -213,16 +208,11 @@
     <div x-cloak x-show="openDeleteModal" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div x-show="openDeleteModal" @click.away="openDeleteModal = false" x-transition.scale class="bg-white/90 rounded-3xl shadow-2xl p-8 w-full max-w-md text-center border border-white/50 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-pink-500/5 pointer-events-none"></div>
-
             <div class="w-20 h-20 mx-auto mb-4 drop-shadow-lg">
                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png" alt="Warning" class="w-full h-full object-contain">
             </div>
-
             <h2 class="text-2xl font-black text-slate-800 mb-2">Hapus Data Permanen?</h2>
-            <p class="text-slate-500 mb-8 text-sm">
-                Anda akan menghapus <strong x-text="deleteItemName" class="text-slate-800 bg-slate-100 px-1 rounded"></strong>. <br>Tindakan ini tidak bisa dibatalkan.
-            </p>
-
+            <p class="text-slate-500 mb-8 text-sm">Anda akan menghapus <strong x-text="deleteItemName" class="text-slate-800 bg-slate-100 px-1 rounded"></strong>. <br>Tindakan ini tidak bisa dibatalkan.</p>
             <div class="flex justify-center gap-3 relative z-10">
                 <button @click="openDeleteModal = false" class="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition shadow-sm">Batal</button>
                 <form x-bind:action="deleteUrl" method="POST" @submit.prevent="$store.globals.isLoading = true; $el.submit();">
@@ -237,16 +227,11 @@
     <div x-cloak x-show="openCloneModal" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div x-show="openCloneModal" @click.away="openCloneModal = false" x-transition.scale class="bg-white/90 rounded-3xl shadow-2xl p-8 w-full max-w-md text-center border border-white/50 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 pointer-events-none"></div>
-
             <div class="w-20 h-20 mx-auto mb-4 drop-shadow-lg">
                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clipboard.png" alt="Clone" class="w-full h-full object-contain">
             </div>
-
             <h2 class="text-2xl font-black text-slate-800 mb-2">Duplikasi Data?</h2>
-            <p class="text-slate-500 mb-8 text-sm">
-                Kami akan menyalin program <strong x-text="cloneItemName" class="text-slate-800 bg-slate-100 px-1 rounded"></strong> beserta seluruh pertanyaannya.
-            </p>
-
+            <p class="text-slate-500 mb-8 text-sm">Kami akan menyalin program <strong x-text="cloneItemName" class="text-slate-800 bg-slate-100 px-1 rounded"></strong> beserta seluruh pertanyaannya.</p>
             <div class="flex justify-center gap-3 relative z-10">
                 <button @click="openCloneModal = false" class="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition shadow-sm">Batal</button>
                 <form x-bind:action="cloneUrl" method="POST" @submit.prevent="$store.globals.isLoading = true; $el.submit();">
@@ -265,18 +250,14 @@
         <div class="p-4 flex items-start gap-4">
             <div class="flex-shrink-0">
                 <template x-if="type === 'success'">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600"><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
+                        </svg></div>
                 </template>
                 <template x-if="type === 'error'">
-                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600"><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </div>
+                        </svg></div>
                 </template>
             </div>
             <div class="flex-1 pt-0.5">
@@ -294,14 +275,18 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
     <script>
+        // Set loading false saat inisialisasi awal
         document.addEventListener('alpine:init', () => {
             Alpine.store('globals', {
                 isLoading: false
             });
         });
+
+        // Reset loading jika user menekan tombol Back/Forward browser (BFCache)
         window.addEventListener('pageshow', (event) => {
             if (event.persisted && Alpine.store('globals')) Alpine.store('globals').isLoading = false;
         });
+
         document.addEventListener('DOMContentLoaded', function() {
             flatpickr(".datepicker", {
                 altInput: true,
@@ -318,8 +303,6 @@
             });
         });
     </script>
-
-    
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 

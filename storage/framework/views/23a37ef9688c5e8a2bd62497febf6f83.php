@@ -1,8 +1,8 @@
-{{-- Form Container Glassmorphism --}}
+
 <div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8">
     <div class="space-y-10">
 
-        {{-- 1. Informasi Dasar --}}
+        
         <div class="space-y-6">
             <div class="flex items-center gap-3 mb-2">
                 <div class="p-2 bg-teal-100 text-teal-600 rounded-lg">
@@ -14,7 +14,7 @@
             </div>
 
             <div class="grid grid-cols-1 gap-6">
-                {{-- Judul --}}
+                
                 <div class="group">
                     <label for="title" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
                         Judul Program <span class="text-rose-500">*</span>
@@ -26,25 +26,39 @@
                             </svg>
                         </div>
                         <input type="text" name="title" id="title"
-                            value="{{ old('title', $program->title ?? '') }}" required
+                            value="<?php echo e(old('title', $program->title ?? '')); ?>" required
                             class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
                             placeholder="Contoh: Survei Evaluasi Kinerja Dosen 2025">
                     </div>
-                    @error('title') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                    <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
-                {{-- Deskripsi --}}
+                
                 <div class="group">
                     <label for="description" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Deskripsi</label>
                     <textarea name="description" id="description" rows="3"
                         class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
-                        placeholder="Jelaskan tujuan survei ini secara singkat...">{{ old('description', $program->description ?? '') }}</textarea>
-                    @error('description') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                        placeholder="Jelaskan tujuan survei ini secara singkat..."><?php echo e(old('description', $program->description ?? '')); ?></textarea>
+                    <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
         </div>
 
-        {{-- 2. Periode Pelaksanaan --}}
+        
         <div class="pt-6 border-t border-slate-100">
             <div class="flex items-center gap-3 mb-6">
                 <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
@@ -60,7 +74,7 @@
                     <label for="start_date" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Tanggal Mulai <span class="text-rose-500">*</span></label>
                     <div class="relative">
                         <input type="text" name="start_date" id="start_date"
-                            value="{{ old('start_date', $program->start_date?->format('Y-m-d')) }}" required
+                            value="<?php echo e(old('start_date', $program->start_date?->format('Y-m-d'))); ?>" required
                             class="datepicker block w-full pl-4 pr-10 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer hover:bg-white"
                             placeholder="Pilih tanggal...">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -69,14 +83,21 @@
                             </svg>
                         </div>
                     </div>
-                    @error('start_date') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                    <?php $__errorArgs = ['start_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="group">
                     <label for="end_date" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Tanggal Selesai <span class="text-rose-500">*</span></label>
                     <div class="relative">
                         <input type="text" name="end_date" id="end_date"
-                            value="{{ old('end_date', $program->end_date?->format('Y-m-d')) }}" required
+                            value="<?php echo e(old('end_date', $program->end_date?->format('Y-m-d'))); ?>" required
                             class="datepicker block w-full pl-4 pr-10 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer hover:bg-white"
                             placeholder="Pilih tanggal...">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -85,12 +106,19 @@
                             </svg>
                         </div>
                     </div>
-                    @error('end_date') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                    <?php $__errorArgs = ['end_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-rose-500 text-xs mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
         </div>
 
-        {{-- 3. Pengaturan Tambahan (Interactive Cards) --}}
+        
         <div class="pt-6 border-t border-slate-100">
             <div class="flex items-center gap-3 mb-6">
                 <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
@@ -102,9 +130,9 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {{-- Option 1: Aktif --}}
+                
                 <label class="relative cursor-pointer group">
-                    <input type="checkbox" name="is_active" value="1" class="peer sr-only" {{ old('is_active', $program->is_active ?? true) ? 'checked' : '' }}>
+                    <input type="checkbox" name="is_active" value="1" class="peer sr-only" <?php echo e(old('is_active', $program->is_active ?? true) ? 'checked' : ''); ?>>
                     <div class="p-4 bg-white border-2 border-slate-100 rounded-2xl hover:border-emerald-300 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all shadow-sm h-full">
                         <div class="flex items-center justify-between mb-2">
                             <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
@@ -123,9 +151,9 @@
                     </div>
                 </label>
 
-                {{-- Option 2: Pre-survey --}}
+                
                 <label class="relative cursor-pointer group">
-                    <input type="checkbox" name="requires_pre_survey" value="1" class="peer sr-only" {{ old('requires_pre_survey', $program->requires_pre_survey ?? true) ? 'checked' : '' }}>
+                    <input type="checkbox" name="requires_pre_survey" value="1" class="peer sr-only" <?php echo e(old('requires_pre_survey', $program->requires_pre_survey ?? true) ? 'checked' : ''); ?>>
                     <div class="p-4 bg-white border-2 border-slate-100 rounded-2xl hover:border-blue-300 peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all shadow-sm h-full">
                         <div class="flex items-center justify-between mb-2">
                             <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
@@ -146,9 +174,9 @@
             </div>
         </div>
 
-        {{-- Footer Buttons --}}
+        
         <div class="pt-6 border-t border-slate-100 flex flex-col-reverse md:flex-row justify-end gap-3">
-            <a href="{{ route('unitkerja.admin.programs.index') }}"
+            <a href="<?php echo e(route('unitkerja.admin.programs.index')); ?>"
                 class="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all text-center">
                 Batal
             </a>
@@ -158,4 +186,4 @@
             </button>
         </div>
     </div>
-</div>
+</div><?php /**PATH C:\laragon\www\surveyZI\resources\views/unit_kerja_admin/programs/_form.blade.php ENDPATH**/ ?>

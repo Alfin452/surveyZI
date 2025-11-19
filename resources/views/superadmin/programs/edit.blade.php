@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('content')
-{{-- Background Aurora --}}
+{{-- Background Aurora (Tema Amber/Edit) --}}
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-amber-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-orange-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
@@ -37,7 +37,9 @@
     </div>
 
     {{-- 2. Form Section --}}
-    <form action="{{ route('superadmin.programs.update', $program) }}" method="POST">
+    <form action="{{ route('superadmin.programs.update', $program) }}" method="POST"
+        x-data
+        @submit.prevent="if($el.checkValidity()) { Alpine.store('globals').isLoading = true; $el.submit(); } else { $el.reportValidity(); }">
         @csrf
         @method('PUT')
         @include('superadmin.programs._form')
@@ -46,12 +48,10 @@
 </div>
 @endsection
 
-{{-- SCRIPT PENTING (TomSelect & Select All) --}}
+{{-- Script TomSelect & Select All --}}
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        // 1. Inisialisasi TomSelect
         var unitSelect = new TomSelect('#targeted_unit_kerjas_select', {
             plugins: ['remove_button'],
             create: false,
@@ -67,17 +67,14 @@
             }
         });
 
-        // 2. Logika Pilih Semua
         document.getElementById('select-all-button').addEventListener('click', function() {
             var allValues = Object.keys(unitSelect.options);
             unitSelect.setValue(allValues);
         });
 
-        // 3. Logika Hapus Semua
         document.getElementById('deselect-all-button').addEventListener('click', function() {
             unitSelect.clear();
         });
-
     });
 </script>
 @endpush

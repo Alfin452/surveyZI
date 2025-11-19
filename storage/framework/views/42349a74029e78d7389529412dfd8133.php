@@ -1,7 +1,7 @@
-@extends('layouts.unit_kerja_admin')
 
-@section('content')
-{{-- Background Aurora (Teal Theme) --}}
+
+<?php $__env->startSection('content'); ?>
+
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-teal-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
@@ -10,13 +10,13 @@
 
 <div class="relative z-10 space-y-6">
 
-    {{-- 1. Hero Header Section --}}
+    
     <div class="bg-white/60 backdrop-blur-xl rounded-3xl px-6 py-5 border border-white/40 shadow-lg relative overflow-hidden group hover:shadow-teal-100/50 transition-all duration-500">
         <div class="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-emerald-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                {{-- 3D Icon --}}
+                
                 <div class="w-14 h-14 flex-shrink-0 drop-shadow-lg">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Identification%20Card.png" alt="Profile Icon" class="w-full h-full object-contain">
                 </div>
@@ -28,15 +28,15 @@
         </div>
     </div>
 
-    {{-- 2. Form Card --}}
+    
     <div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8">
-        <form action="{{ route('unitkerja.admin.profile.update') }}" method="POST" @submit="Alpine.store('globals').isLoading = true">
-            @csrf
-            @method('PUT')
+        <form action="<?php echo e(route('unitkerja.admin.profile.update')); ?>" method="POST" @submit="Alpine.store('globals').isLoading = true">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
 
             <div class="space-y-8">
 
-                {{-- Grup 1: Identitas (Read Only) --}}
+                
                 <div class="space-y-4">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="p-2 bg-slate-100 text-slate-600 rounded-lg">
@@ -55,7 +55,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                             </div>
-                            <input type="text" value="{{ $unitKerja->unit_kerja_name }}" disabled
+                            <input type="text" value="<?php echo e($unitKerja->unit_kerja_name); ?>" disabled
                                 class="block w-full pl-11 pr-4 py-3 bg-slate-100 border-slate-200 rounded-xl text-sm text-slate-600 cursor-not-allowed shadow-inner">
                             <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,7 +67,7 @@
                     </div>
                 </div>
 
-                {{-- Grup 2: Informasi Kontak & Lokasi --}}
+                
                 <div class="space-y-6 pt-6 border-t border-slate-100">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="p-2 bg-teal-100 text-teal-600 rounded-lg">
@@ -89,11 +89,18 @@
                                     </svg>
                                 </div>
                                 <input type="text" name="contact" id="contact"
-                                    value="{{ old('contact', $unitKerja->contact) }}"
+                                    value="<?php echo e(old('contact', $unitKerja->contact)); ?>"
                                     class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
                                     placeholder="Contoh: humas@unit.com">
                             </div>
-                            @error('contact') <p class="mt-1 text-xs text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                            <?php $__errorArgs = ['contact'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <p class="mt-1 text-xs text-rose-500 font-bold ml-1"><?php echo e($message); ?></p> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <div class="group">
@@ -107,14 +114,21 @@
                                 </div>
                                 <textarea name="address" id="address" rows="3"
                                     class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white resize-none"
-                                    placeholder="Alamat lengkap gedung/kantor...">{{ old('address', $unitKerja->address) }}</textarea>
+                                    placeholder="Alamat lengkap gedung/kantor..."><?php echo e(old('address', $unitKerja->address)); ?></textarea>
                             </div>
-                            @error('address') <p class="mt-1 text-xs text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                            <?php $__errorArgs = ['address'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <p class="mt-1 text-xs text-rose-500 font-bold ml-1"><?php echo e($message); ?></p> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
 
-                {{-- Grup 3: Jam Operasional --}}
+                
                 <div class="space-y-6 pt-6 border-t border-slate-100">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
@@ -129,27 +143,41 @@
                         <div class="group">
                             <label for="start_time" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Jam Buka</label>
                             <div class="relative">
-                                <input type="text" name="start_time" id="start_time" value="{{ old('start_time', $unitKerja->start_time) }}"
+                                <input type="text" name="start_time" id="start_time" value="<?php echo e(old('start_time', $unitKerja->start_time)); ?>"
                                     class="timepicker block w-full pl-4 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white text-center"
                                     placeholder="08:00">
                             </div>
-                            @error('start_time') <p class="mt-1 text-xs text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                            <?php $__errorArgs = ['start_time'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <p class="mt-1 text-xs text-rose-500 font-bold ml-1"><?php echo e($message); ?></p> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         <div class="group">
                             <label for="end_time" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Jam Tutup</label>
                             <div class="relative">
-                                <input type="text" name="end_time" id="end_time" value="{{ old('end_time', $unitKerja->end_time) }}"
+                                <input type="text" name="end_time" id="end_time" value="<?php echo e(old('end_time', $unitKerja->end_time)); ?>"
                                     class="timepicker block w-full pl-4 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white text-center"
                                     placeholder="16:00">
                             </div>
-                            @error('end_time') <p class="mt-1 text-xs text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                            <?php $__errorArgs = ['end_time'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <p class="mt-1 text-xs text-rose-500 font-bold ml-1"><?php echo e($message); ?></p> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            {{-- Footer Actions --}}
+            
             <div class="pt-8 mt-6 border-t border-slate-100 flex justify-end">
                 <button type="submit"
                     class="px-8 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-lg hover:shadow-teal-500/30 hover:-translate-y-1 transition-all flex items-center gap-2">
@@ -162,4 +190,5 @@
         </form>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.unit_kerja_admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\surveyZI\resources\views/unit_kerja_admin/profile/edit.blade.php ENDPATH**/ ?>

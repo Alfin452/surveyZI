@@ -10,7 +10,7 @@
 
 <div class="relative z-10 space-y-6">
 
-    {{-- 1. Hero Header --}}
+    {{-- 1. Hero Header Section --}}
     <div class="bg-white/60 backdrop-blur-xl rounded-3xl px-6 py-5 border border-white/40 shadow-lg relative overflow-hidden group hover:shadow-indigo-100/50 transition-all duration-500">
         <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -37,7 +37,10 @@
     </div>
 
     {{-- 2. Form Section --}}
-    <form action="{{ route('superadmin.programs.store') }}" method="POST">
+    {{-- PENTING: Menambahkan @submit untuk loading state --}}
+    <form action="{{ route('superadmin.programs.store') }}" method="POST"
+        x-data
+        @submit.prevent="if($el.checkValidity()) { Alpine.store('globals').isLoading = true; $el.submit(); } else { $el.reportValidity(); }">
         @csrf
         @include('superadmin.programs._form')
     </form>
@@ -45,17 +48,15 @@
 </div>
 @endsection
 
-{{-- SCRIPT PENTING (TomSelect & Select All) --}}
+{{-- Script TomSelect & Select All --}}
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        // 1. Inisialisasi TomSelect untuk Unit Kerja
         var unitSelect = new TomSelect('#targeted_unit_kerjas_select', {
             plugins: ['remove_button'],
             create: false,
             placeholder: 'Cari dan pilih unit kerja...',
-            maxOptions: null, // Tampilkan semua opsi
+            maxOptions: null,
             render: {
                 option: function(data, escape) {
                     return '<div class="flex items-center gap-2 py-1">' +
@@ -66,18 +67,14 @@
             }
         });
 
-        // 2. Logika Tombol "Pilih Semua"
         document.getElementById('select-all-button').addEventListener('click', function() {
-            // Ambil semua value dari option
             var allValues = Object.keys(unitSelect.options);
             unitSelect.setValue(allValues);
         });
 
-        // 3. Logika Tombol "Hapus Semua"
         document.getElementById('deselect-all-button').addEventListener('click', function() {
             unitSelect.clear();
         });
-
     });
 </script>
 @endpush

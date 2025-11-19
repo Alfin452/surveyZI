@@ -53,21 +53,37 @@ class SurveyResultController extends Controller
         $user = Auth::user();
         $unitKerja = $user->unitKerja;
 
-        if (!$unitKerja || !$program->targetedUnitKerjas->contains($unitKerja)) {
-            abort(403, 'Akses ditolak.');
+        // --- PERBAIKAN LOGIKA IZIN AKSES ---
+        // 1. Cek apakah user punya unit kerja
+        if (!$unitKerja) {
+            abort(403, 'Akun Anda tidak terikat dengan Unit Kerja.');
         }
+
+        // 2. Cek Hak Akses:
+        //    A. Apakah ini program mandiri milik unit ini? ($program->unit_kerja_id == $unitKerja->id)
+        //    B. ATAU Apakah ini program institusional yang menargetkan unit ini? ($program->targetedUnitKerjas->contains($unitKerja))
+        $isOwnProgram = $program->unit_kerja_id == $unitKerja->id;
+        $isTargetedProgram = $program->targetedUnitKerjas->contains($unitKerja);
+
+        if (!$isOwnProgram && !$isTargetedProgram) {
+            abort(403, 'Akses ditolak. Program ini bukan milik atau tidak ditargetkan untuk unit Anda.');
+        }
+        // -------------------------------------
 
         $program->load('questions.options');
 
         $respondentsQuery = Answer::where('answers.survey_program_id', $program->id)
             ->where('answers.unit_kerja_id', $unitKerja->id);
+
         if ($request->filled('gender') || $request->filled('status')) {
             $this->applyFilters($respondentsQuery, $request);
         }
 
         $totalRespondents = $respondentsQuery->distinct('answers.user_id')->count('answers.user_id');
+
         $answerCountsQuery = Answer::where('answers.survey_program_id', $program->id)
             ->where('answers.unit_kerja_id', $unitKerja->id);
+
         if ($request->filled('gender') || $request->filled('status')) {
             $this->applyFilters($answerCountsQuery, $request);
         }

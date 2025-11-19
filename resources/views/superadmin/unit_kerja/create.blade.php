@@ -1,28 +1,47 @@
 @extends('layouts.superadmin')
 
 @section('content')
-<div class="p-2 space-y-6">
+{{-- Background Aurora --}}
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+    <div class="absolute top-0 right-1/4 w-96 h-96 bg-teal-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-1/3 w-96 h-96 bg-cyan-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+</div>
 
-    {{-- Header Halaman --}}
-    <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm">
-        <div class="flex items-start gap-3">
-            <div class="flex-shrink-0 bg-blue-500 text-white p-2 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+<div class="relative z-10 space-y-6">
+
+    {{-- 1. Hero Header Section --}}
+    <div class="bg-white/60 backdrop-blur-xl rounded-3xl px-6 py-5 border border-white/40 shadow-lg relative overflow-hidden group hover:shadow-emerald-100/50 transition-all duration-500">
+        <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+        <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                {{-- 3D Icon --}}
+                <div class="w-14 h-14 flex-shrink-0 drop-shadow-lg">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Office%20Building.png" alt="Create Unit" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Tambah Unit Kerja</h1>
+                    <p class="text-slate-500 text-sm font-medium mt-0.5">Daftarkan fakultas, lembaga, atau unit layanan baru.</p>
+                </div>
+            </div>
+
+            <a href="{{ route('superadmin.unit-kerja.index') }}"
+                class="group flex items-center gap-2 px-5 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl font-bold shadow-sm hover:bg-slate-50 hover:text-emerald-600 transition-all duration-300 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold text-gray-800">Tambah Unit Kerja Baru</h1>
-                <p class="text-sm text-gray-500 mt-1">Isi detail di bawah untuk mendaftarkan unit kerja baru.</p>
-            </div>
+                <span>Kembali</span>
+            </a>
         </div>
     </div>
 
-    {{-- Form --}}
+    {{-- 2. Form Section --}}
     <form action="{{ route('superadmin.unit-kerja.store') }}" method="POST">
         @csrf
         @include('superadmin.unit_kerja._form')
     </form>
+
 </div>
 @endsection
 
@@ -55,12 +74,28 @@
 <style>
     /* Style untuk error border pada TomSelect */
     .tomselect-error .ts-control {
-        @apply border-red-500 ring-1 ring-red-500;
+        border-color: #f43f5e !important;
+        /* Rose-500 */
+        box-shadow: 0 0 0 1px #f43f5e !important;
     }
 
-    .min-h-5 {
-        min-height: 1.25rem;
-        /* 20px */
+    /* Penyesuaian TomSelect dengan Desain Aurora */
+    .ts-control {
+        border-radius: 0.75rem !important;
+        /* rounded-xl */
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        border-color: #e2e8f0 !important;
+        /* slate-200 */
+        background-color: #f8fafc !important;
+        /* slate-50 */
+    }
+
+    .ts-wrapper.focus .ts-control {
+        background-color: #ffffff !important;
+        border-color: #10b981 !important;
+        /* emerald-500 */
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
     }
 </style>
 @endpush

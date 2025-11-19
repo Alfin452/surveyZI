@@ -1,99 +1,143 @@
-{{--
-PERBAIKAN:
-1. Menyamakan style card (rounded-lg, shadow-sm, space-y-8).
-2. Menambahkan class styling ke <select> (SANGAT PENTING).
-3. Mengelompokkan field dengan h3 (Info Akun, Password, dll).
-4. Menyamakan warna tombol "Simpan" menjadi indigo.
---}}
-<div class="space-y-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200" x-data="{ roleId: '{{ old('role_id', $user->role_id ?? '') }}' }">
+<div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8"
+    x-data="{ roleId: '{{ old('role_id', $user->role_id ?? '') }}' }">
 
-    {{-- Grup 1: Info Akun --}}
-    <div class="space-y-4">
-        <h3 class="text-sm font-medium text-gray-900">Informasi Akun</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengguna</label>
-                <input type="text" name="username" id="username" value="{{ old('username', $user->username ?? '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('username') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+    <div class="space-y-10">
+
+        {{-- 1. Informasi Akun --}}
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Informasi Akun</h3>
             </div>
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
-                <input type="email" name="email" id="email" value="{{ old('email', $user->email ?? '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Username --}}
+                <div class="group">
+                    <label for="username" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Username <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <input type="text" name="username" id="username"
+                            value="{{ old('username', $user->username ?? '') }}" required
+                            class="block w-full pl-4 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                            placeholder="Contoh: alfin_admin">
+                    </div>
+                    @error('username') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Email --}}
+                <div class="group">
+                    <label for="email" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Alamat Email <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <input type="email" name="email" id="email"
+                            value="{{ old('email', $user->email ?? '') }}" required
+                            class="block w-full pl-4 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                            placeholder="email@uin-antasari.ac.id">
+                    </div>
+                    @error('email') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            {{-- Password (Hanya wajib saat create) --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="group">
+                    {{-- PERBAIKAN DI SINI: Menggunakan @if untuk logika tampilan label --}}
+                    <label for="password" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
+                        Password
+                        @if(isset($user->id))
+                        <span class="text-slate-400 font-normal text-[10px] lowercase ml-1">(opsional)</span>
+                        @else
+                        <span class="text-rose-500">*</span>
+                        @endif
+                    </label>
+                    <input type="password" name="password" id="password" {{ isset($user->id) ? '' : 'required' }}
+                        class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="••••••••">
+                    @error('password') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="group">
+                    <label for="password_confirmation" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Konfirmasi Password</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" {{ isset($user->id) ? '' : 'required' }}
+                        class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="••••••••">
+                </div>
             </div>
         </div>
-    </div>
 
-    {{-- Grup 2: Password --}}
-    <div class="space-y-4 pt-6 border-t border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900">Keamanan</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input type="password" name="password" id="password" {{ $user->exists ? '' : 'required' }} class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @if($user->exists) <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah password.</p> @endif
-                @error('password') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+        {{-- 2. Peran & Akses --}}
+        <div class="pt-6 border-t border-slate-100 space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Peran & Hak Akses</h3>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Role Selection --}}
+                <div class="group">
+                    <label for="role_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Peran Pengguna <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <select name="role_id" id="role_id" x-model="roleId" required
+                            class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer hover:bg-white">
+                            <option value="">-- Pilih Peran --</option>
+                            @foreach($roles as $role)
+                            <option value="{{ $role->id }}">{{ $role->role_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('role_id') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Unit Kerja (Hanya muncul jika role Admin Unit / ID 2) --}}
+                {{-- PERBAIKAN: Pastikan ID role sesuai dengan database Anda (biasanya 2 atau 3 untuk admin unit) --}}
+                <div class="group" x-show="roleId == 2" x-transition.opacity>
+                    <label for="unit_kerja_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Unit Kerja <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <select name="unit_kerja_id" id="unit_kerja_id"
+                            class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer hover:bg-white">
+                            <option value="">-- Pilih Unit --</option>
+                            @foreach($unitKerjas as $unit)
+                            <option value="{{ $unit->id }}" {{ (old('unit_kerja_id') ?? $user->unit_kerja_id ?? '') == $unit->id ? 'selected' : '' }}>
+                                {{ $unit->unit_kerja_name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1 ml-1">*Wajib diisi untuk Admin Unit</p>
+                    @error('unit_kerja_id') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            {{-- Status Aktif --}}
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <label class="relative cursor-pointer group inline-flex items-center gap-3">
+                    <input type="checkbox" name="is_active" value="1" class="peer sr-only" {{ old('is_active', $user->is_active ?? true) ? 'checked' : '' }}>
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    <span class="text-sm font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">Akun Aktif</span>
+                </label>
             </div>
         </div>
-    </div>
 
-    {{-- Grup 3: Peran & Unit Kerja --}}
-    <div class="space-y-4 pt-6 border-t border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900">Peran & Otorisasi</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="role_id_select" class="block text-sm font-medium text-gray-700 mb-1">Peran</label>
-                {{-- PERBAIKAN: Menambahkan class styling ke <select> --}}
-                <select name="role_id" id="role_id_select" required x-model="roleId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="">Pilih peran...</option>
-                    @foreach($roles as $role)
-                    <option value="{{ $role->id }}">{{ $role->role_name }}</option>
-                    @endforeach
-                </select>
-                @error('role_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-            </div>
-            <div x-show="roleId == 2" x-transition>
-                <label for="unit_kerja_id_select" class="block text-sm font-medium text-gray-700 mb-1">Unit Kerja</label>
-                {{-- PERBAIKAN: Menambahkan class styling ke <select> --}}
-                <select name="unit_kerja_id" id="unit_kerja_id_select" :required="roleId == 2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="">Pilih unit kerja...</option>
-                    @foreach($unitKerjas as $unit)
-                    <option value="{{ $unit->id }}" {{ old('unit_kerja_id', $user->unit_kerja_id ?? '') == $unit->id ? 'selected' : '' }}>
-                        {{ $unit->unit_kerja_name }}
-                    </option>
-                    @endforeach
-                </select>
-                @error('unit_kerja_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-            </div>
+        {{-- Footer --}}
+        <div class="pt-6 border-t border-slate-100 flex justify-end gap-3">
+            <a href="{{ route('superadmin.users.index') }}"
+                class="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all">
+                Batal
+            </a>
+            <button type="submit"
+                class="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg hover:shadow-amber-500/30 hover:-translate-y-1 transition-all flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Simpan Pengguna
+            </button>
         </div>
-    </div>
 
-    {{-- Grup 4: Opsi Status Aktif --}}
-    <div class="pt-6 border-t border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900">Status Akun</h3>
-        <div class="relative flex items-start mt-4">
-            <div class="flex h-6 items-center">
-                <input id="is_active" name="is_active" type="checkbox" value="1" {{ old('is_active', $user->is_active ?? true) ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-            </div>
-            <div class="ml-3 text-sm leading-6">
-                <label for="is_active" class="font-medium text-gray-900">Akun Aktif</label>
-                <p class="text-gray-500">Pengguna dengan akun tidak aktif tidak akan bisa login.</p>
-            </div>
-        </div>
     </div>
-</div>
-
-{{-- Tombol Aksi --}}
-<div class="mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3">
-    <a href="{{ route('superadmin.users.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
-        Batal
-    </a>
-    {{-- PERBAIKAN: Menyamakan warna tombol 'bg-indigo-600' --}}
-    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-        Simpan Pengguna
-    </button>
 </div>

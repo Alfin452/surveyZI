@@ -1,117 +1,153 @@
-<div class="space-y-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+{{-- Form Container Glassmorphism --}}
+<div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8">
+    <div class="space-y-10">
 
-    {{-- Grup 1: Info Dasar --}}
-    <div class="space-y-4">
-        <h3 class="text-sm font-medium text-gray-900">Informasi Dasar</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="unit_kerja_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Unit Kerja</label>
-                <input type="text" name="unit_kerja_name" id="unit_kerja_name" value="{{ old('unit_kerja_name', $unitKerja->unit_kerja_name ?? '') }}" required
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('unit_kerja_name') border-red-500 ring-1 ring-red-500 @enderror"
-                    placeholder="Contoh: Unit Teknologi Informasi dan Pangkalan Data">
-                <div class="mt-1 min-h-5">
-                    @error('unit_kerja_name') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+        {{-- 1. Identitas Unit --}}
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
                 </div>
+                <h3 class="text-lg font-bold text-slate-800">Identitas Unit Kerja</h3>
             </div>
-            <div>
-                <label for="uk_short_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Pendek / Akronim</label>
-                <input type="text" name="uk_short_name" id="uk_short_name" value="{{ old('uk_short_name', $unitKerja->uk_short_name ?? '') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('uk_short_name') border-red-500 ring-1 ring-red-500 @enderror"
-                    placeholder="Contoh: UTIPD">
-                <div class="mt-1 min-h-5">
-                    @error('uk_short_name') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Nama Unit --}}
+                <div class="group">
+                    <label for="unit_kerja_name" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Nama Unit <span class="text-rose-500">*</span></label>
+                    <input type="text" name="unit_kerja_name" id="unit_kerja_name"
+                        value="{{ old('unit_kerja_name', $unitKerja->unit_kerja_name ?? '') }}" required
+                        class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="Contoh: Fakultas Tarbiyah dan Keguruan">
+                    @error('unit_kerja_name') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Singkatan --}}
+                <div class="group">
+                    <label for="uk_short_name" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Singkatan / Alias</label>
+                    <input type="text" name="uk_short_name" id="uk_short_name"
+                        value="{{ old('uk_short_name', $unitKerja->uk_short_name ?? '') }}"
+                        class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="Contoh: FTK">
+                    @error('uk_short_name') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Tipe Unit --}}
+                <div class="group">
+                    <label for="tipe_unit_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Tipe Unit <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <select name="tipe_unit_id" id="tipe_unit_id" required
+                            class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all cursor-pointer hover:bg-white">
+                            <option value="">-- Pilih Tipe --</option>
+                            @foreach($tipeUnits as $tipe)
+                            <option value="{{ $tipe->id }}" {{ (old('tipe_unit_id') ?? $unitKerja->tipe_unit_id ?? '') == $tipe->id ? 'selected' : '' }}>
+                                {{ $tipe->nama_tipe_unit }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('tipe_unit_id') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Induk Unit --}}
+                <div class="group">
+                    <label for="parent_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Unit Induk (Opsional)</label>
+                    <div class="relative">
+                        <select name="parent_id" id="parent_id"
+                            class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all cursor-pointer hover:bg-white">
+                            <option value="">-- Tidak Ada (Top Level) --</option>
+                            @foreach($parentUnits as $parent)
+                            <option value="{{ $parent->id }}" {{ (old('parent_id') ?? $unitKerja->parent_id ?? '') == $parent->id ? 'selected' : '' }}>
+                                {{ $parent->unit_kerja_name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('parent_id') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Grup 2: Tipe Unit & Induk Unit --}}
-    <div class="space-y-4 pt-6 border-t border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900">Struktur Organisasi</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="tipe_unit_id" class="block text-sm font-medium text-gray-700 mb-1">Tipe Unit</label>
-                <select name="tipe_unit_id" id="tipe_unit_id" required
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('tipe_unit_id') border-red-500 ring-1 ring-red-500 @enderror">
-                    <option value="">Pilih tipe unit...</option>
-                    @foreach($tipeUnits as $tipe)
-                    <option value="{{ $tipe->id }}" {{ old('tipe_unit_id', $unitKerja->tipe_unit_id ?? '') == $tipe->id ? 'selected' : '' }}>
-                        {{ $tipe->nama_tipe_unit }}
-                    </option>
-                    @endforeach
-                </select>
-                <div class="mt-1 min-h-5">
-                    @error('tipe_unit_id') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+        {{-- 2. Kontak & Lokasi --}}
+        <div class="pt-6 border-t border-slate-100 space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="p-2 bg-teal-100 text-teal-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
                 </div>
+                <h3 class="text-lg font-bold text-slate-800">Kontak & Lokasi</h3>
             </div>
-            <div>
-                <label for="parent_id" class="block text-sm font-medium text-gray-700 mb-1">Induk Unit (Opsional)</label>
-                <select name="parent_id" id="parent_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('parent_id') border-red-500 ring-1 ring-red-500 @enderror">
-                    <option value="">Tidak ada induk</option>
-                    @foreach($parentUnits as $parent)
-                    @if(isset($unitKerja) && $unitKerja->id === $parent->id) @continue @endif
-                    <option value="{{ $parent->id }}" {{ old('parent_id', $unitKerja->parent_id ?? '') == $parent->id ? 'selected' : '' }}>
-                        {{ $parent->unit_kerja_name }}
-                    </option>
-                    @endforeach
-                </select>
-                <div class="mt-1 min-h-5">
-                    @error('parent_id') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Kontak --}}
+                <div class="group">
+                    <label for="contact" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Kontak (Email/Telp)</label>
+                    <input type="text" name="contact" id="contact"
+                        value="{{ old('contact', $unitKerja->contact ?? '') }}"
+                        class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="Contoh: admin.ftk@uin-antasari.ac.id">
+                    @error('contact') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Alamat --}}
+                <div class="group">
+                    <label for="address" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Alamat Lengkap</label>
+                    <input type="text" name="address" id="address"
+                        value="{{ old('address', $unitKerja->address ?? '') }}"
+                        class="block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="Contoh: Gedung A, Lantai 2, Kampus 1">
+                    @error('address') <span class="text-rose-500 text-xs mt-1 block ml-1">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Grup 3: Detail Kontak & Layanan --}}
-    <div class="space-y-4 pt-6 border-t border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900">Informasi Kontak & Layanan</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">Kontak (Email/No. Telepon)</label>
-                <input type="text" name="contact" id="contact" value="{{ old('contact', $unitKerja->contact ?? '') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('contact') border-red-500 ring-1 ring-red-500 @enderror">
-                <div class="mt-1 min-h-5">
-                    @error('contact') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+        {{-- 3. Jam Layanan --}}
+        <div class="pt-6 border-t border-slate-100 space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </div>
+                <h3 class="text-lg font-bold text-slate-800">Jam Pelayanan</h3>
             </div>
-            <div>
-                <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Alamat / Lokasi</label>
-                <input type="text" name="address" id="address" value="{{ old('address', $unitKerja->address ?? '') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('address') border-red-500 ring-1 ring-red-500 @enderror">
-                <div class="mt-1 min-h-5">
-                    @error('address') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="group">
+                    <label for="start_time" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Jam Buka</label>
+                    <input type="text" name="start_time" id="start_time"
+                        value="{{ old('start_time', $unitKerja->start_time ?? '') }}"
+                        class="timepicker block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="08:00">
                 </div>
-            </div>
-            <div>
-                <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai Layanan</label>
-                <input type="text" name="start_time" id="start_time" value="{{ old('start_time', $unitKerja->start_time ?? '') }}"
-                    class="timepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('start_time') border-red-500 ring-1 ring-red-500 @enderror"
-                    placeholder="Input jam mulai layanan">
-                <div class="mt-1 min-h-5">
-                    @error('start_time') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
-                </div>
-            </div>
-            <div>
-                <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">Jam Selesai Layanan</label>
-                <input type="text" name="end_time" id="end_time" value="{{ old('end_time', $unitKerja->end_time ?? '') }}"
-                    class="timepicker mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('end_time') border-red-500 ring-1 ring-red-500 @enderror"
-                    placeholder="Input jam selesai layanan">
-                <div class="mt-1 min-h-5">
-                    @error('end_time') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                <div class="group">
+                    <label for="end_time" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Jam Tutup</label>
+                    <input type="text" name="end_time" id="end_time"
+                        value="{{ old('end_time', $unitKerja->end_time ?? '') }}"
+                        class="timepicker block w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-slate-400 hover:bg-white"
+                        placeholder="16:00">
                 </div>
             </div>
         </div>
+
+        {{-- Footer Actions --}}
+        <div class="pt-6 border-t border-slate-100 flex justify-end gap-3">
+            <a href="{{ route('superadmin.unit-kerja.index') }}"
+                class="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all">
+                Batal
+            </a>
+            <button type="submit"
+                class="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Simpan Data
+            </button>
+        </div>
+
     </div>
-
-</div>
-
-{{-- Tombol Aksi --}}
-<div class="mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3">
-    <a href="{{ route('superadmin.unit-kerja.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
-        Batal
-    </a>
-    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-        Simpan Unit Kerja
-    </button>
 </div>

@@ -21,12 +21,12 @@
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Pencil.png" alt="Edit Icon" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Edit Program Survei</h1>
-                    <p class="text-slate-500 text-sm font-medium mt-0.5">Perbarui informasi: <span class="font-bold text-amber-600"><?php echo e($program->title); ?></span></p>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Edit Program</h1>
+                    <p class="text-slate-500 text-sm font-medium mt-0.5">Perbarui data: <span class="font-bold text-amber-600"><?php echo e($program->title); ?></span></p>
                 </div>
             </div>
 
-            <a href="<?php echo e(route('superadmin.programs.index')); ?>"
+            <a href="<?php echo e(route('unitkerja.admin.programs.index')); ?>"
                 class="group flex items-center gap-2 px-5 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl font-bold shadow-sm hover:bg-slate-50 hover:text-amber-600 transition-all duration-300 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -37,48 +37,13 @@
     </div>
 
     
-    <form action="<?php echo e(route('superadmin.programs.update', $program)); ?>" method="POST">
+    <form action="<?php echo e(route('unitkerja.admin.my-programs.update', $program)); ?>" method="POST"
+        @submit.prevent="if($el.checkValidity()) { Alpine.store('globals').isLoading = true; $el.submit(); } else { $el.reportValidity(); }">
         <?php echo csrf_field(); ?>
         <?php echo method_field('PUT'); ?>
-        <?php echo $__env->make('superadmin.programs._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php echo $__env->make('unit_kerja_admin.programs._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </form>
 
 </div>
 <?php $__env->stopSection(); ?>
-
-
-<?php $__env->startPush('scripts'); ?>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        // 1. Inisialisasi TomSelect
-        var unitSelect = new TomSelect('#targeted_unit_kerjas_select', {
-            plugins: ['remove_button'],
-            create: false,
-            placeholder: 'Cari dan pilih unit kerja...',
-            maxOptions: null,
-            render: {
-                option: function(data, escape) {
-                    return '<div class="flex items-center gap-2 py-1">' +
-                        '<span class="w-2 h-2 rounded-full bg-amber-400"></span>' + // Warna Amber untuk Edit
-                        '<span>' + escape(data.text) + '</span>' +
-                        '</div>';
-                }
-            }
-        });
-
-        // 2. Logika Pilih Semua
-        document.getElementById('select-all-button').addEventListener('click', function() {
-            var allValues = Object.keys(unitSelect.options);
-            unitSelect.setValue(allValues);
-        });
-
-        // 3. Logika Hapus Semua
-        document.getElementById('deselect-all-button').addEventListener('click', function() {
-            unitSelect.clear();
-        });
-
-    });
-</script>
-<?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.superadmin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\surveyZI\resources\views/superadmin/programs/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.unit_kerja_admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\surveyZI\resources\views/unit_kerja_admin/programs/edit.blade.php ENDPATH**/ ?>

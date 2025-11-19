@@ -1,4 +1,4 @@
-@php
+<?php
 // Data Default untuk AlpineJS
 $defaultOptions = [['id' => null, 'text' => '', 'score' => 1], ['id' => null, 'text' => '', 'score' => 1]];
 
@@ -10,19 +10,19 @@ $dbOptions = $question->options->map(fn($o) => ['id' => $o->id, 'text' => $o->op
 
 // Prioritas Data: Old Input > Database > Default
 $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
-@endphp
+?>
 
-{{-- Form Container Glassmorphism --}}
+
 <div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8"
     x-data="questionFormHandler()">
 
     <div class="space-y-8">
 
-        {{-- HIDDEN TYPE: Selalu kirim 'radio' (Pilihan Ganda) agar lolos validasi --}}
+        
         <input type="hidden" name="type" value="radio">
 
         <div class="grid grid-cols-1 gap-6">
-            {{-- Pilih Bagian --}}
+            
             <div class="space-y-2">
                 <label class="block text-xs font-bold text-slate-500 uppercase ml-1">Bagian Soal</label>
                 <div class="relative">
@@ -32,17 +32,25 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
                         </svg>
                     </div>
                     <select name="question_section_id" class="block w-full pl-10 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all shadow-sm cursor-pointer hover:bg-white">
-                        @foreach($program->questionSections as $sec)
-                        <option value="{{ $sec->id }}" {{ (old('question_section_id') ?? $question->question_section_id ?? $section->id ?? '') == $sec->id ? 'selected' : '' }}>
-                            {{ $sec->title }}
+                        <?php $__currentLoopData = $program->questionSections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sec): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($sec->id); ?>" <?php echo e((old('question_section_id') ?? $question->question_section_id ?? $section->id ?? '') == $sec->id ? 'selected' : ''); ?>>
+                            <?php echo e($sec->title); ?>
+
                         </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
-                @error('question_section_id') <p class="text-rose-500 text-xs mt-1 ml-1">{{ $message }}</p> @enderror
+                <?php $__errorArgs = ['question_section_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <p class="text-rose-500 text-xs mt-1 ml-1"><?php echo e($message); ?></p> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
-            {{-- Isi Pertanyaan --}}
+            
             <div class="space-y-2">
                 <label class="block text-xs font-bold text-slate-500 uppercase ml-1">Pertanyaan <span class="text-rose-500">*</span></label>
                 <div class="relative">
@@ -53,13 +61,20 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
                     </div>
                     <textarea name="question_body" rows="3" required
                         class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all shadow-sm resize-none placeholder-slate-400 hover:bg-white"
-                        placeholder="Tuliskan pertanyaan Anda di sini...">{{ old('question_body', $question->question_body ?? '') }}</textarea>
+                        placeholder="Tuliskan pertanyaan Anda di sini..."><?php echo e(old('question_body', $question->question_body ?? '')); ?></textarea>
                 </div>
-                @error('question_body') <p class="text-rose-500 text-xs mt-1 ml-1">{{ $message }}</p> @enderror
+                <?php $__errorArgs = ['question_body'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <p class="text-rose-500 text-xs mt-1 ml-1"><?php echo e($message); ?></p> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
         </div>
 
-        {{-- Opsi Jawaban (Selalu Muncul) --}}
+        
         <div class="space-y-4 pt-6 border-t border-slate-100">
             <div class="flex items-center justify-between">
                 <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
@@ -79,28 +94,28 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
             <div class="space-y-3">
                 <template x-for="(option, index) in options" :key="index">
                     <div class="flex items-center gap-3 group animate-fade-in-down">
-                        {{-- Handle --}}
+                        
                         <div class="text-slate-300 cursor-move"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
                             </svg></div>
 
-                        {{-- Input Teks --}}
+                        
                         <div class="flex-1 relative">
                             <input type="text" :name="'options[' + index + '][text]'" x-model="option.text" placeholder="Teks Jawaban" required
                                 class="block w-full pl-4 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all shadow-sm">
                         </div>
 
-                        {{-- Input Skor --}}
+                        
                         <div class="w-24 relative" title="Bobot Nilai">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-xs font-bold">pts</div>
                             <input type="number" :name="'options[' + index + '][score]'" x-model="option.score" placeholder="0" required
                                 class="block w-full pl-8 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-center focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all shadow-sm">
                         </div>
 
-                        {{-- Hidden ID --}}
+                        
                         <input type="hidden" :name="'options[' + index + '][id]'" x-model="option.id">
 
-                        {{-- Hapus --}}
+                        
                         <button type="button" @click="removeOption(index)" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Hapus">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -110,7 +125,7 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
                 </template>
             </div>
 
-            {{-- Tombol Tambah Besar --}}
+            
             <button type="button" @click="addOption()"
                 class="mt-4 w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:border-teal-400 hover:text-teal-600 hover:bg-teal-50 transition-all flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,9 +135,9 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
             </button>
         </div>
 
-        {{-- Footer Buttons --}}
+        
         <div class="pt-6 border-t border-slate-100 flex justify-end gap-3">
-            <a href="{{ route('unitkerja.admin.programs.questions.index', $program) }}" class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all">Batal</a>
+            <a href="<?php echo e(route('unitkerja.admin.programs.questions.index', $program)); ?>" class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-all">Batal</a>
             <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-lg hover:-translate-y-1 transition-all flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -136,7 +151,7 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
 <script>
     function questionFormHandler() {
         return {
-            options: @json($finalOptions),
+            options: <?php echo json_encode($finalOptions, 15, 512) ?>,
             addOption() {
                 this.options.push({
                     id: null,
@@ -167,4 +182,4 @@ $finalOptions = array_values(old('options') ?? $dbOptions ?? $defaultOptions);
             transform: translateY(0);
         }
     }
-</style>
+</style><?php /**PATH C:\laragon\www\surveyZI\resources\views/unit_kerja_admin/programs/questions/_form.blade.php ENDPATH**/ ?>

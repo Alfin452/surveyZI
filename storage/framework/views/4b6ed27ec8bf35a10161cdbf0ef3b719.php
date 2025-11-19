@@ -1,7 +1,7 @@
-@extends('layouts.unit_kerja_admin')
 
-@section('content')
-{{-- Background Aurora --}}
+
+<?php $__env->startSection('content'); ?>
+
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-teal-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
@@ -10,13 +10,13 @@
 
 <div class="relative z-10 space-y-6">
 
-    {{-- 1. Hero Header --}}
+    
     <div class="bg-white/60 backdrop-blur-xl rounded-3xl px-6 py-5 border border-white/40 shadow-lg relative overflow-hidden group hover:shadow-teal-100/50 transition-all duration-500">
         <div class="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-emerald-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                {{-- 3D Icon --}}
+                
                 <div class="w-14 h-14 flex-shrink-0 drop-shadow-lg">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Memo.png" alt="Create Icon" class="w-full h-full object-contain">
                 </div>
@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('unitkerja.admin.programs.index') }}"
+            <a href="<?php echo e(route('unitkerja.admin.programs.index')); ?>"
                 class="group flex items-center gap-2 px-5 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl font-bold shadow-sm hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -36,13 +36,14 @@
         </div>
     </div>
 
-    {{-- 2. Form Section --}}
-    {{-- Menggunakan Smart Loader (@submit) --}}
-    <form action="{{ route('unitkerja.admin.my-programs.store') }}" method="POST"
+    
+    
+    <form action="<?php echo e(route('unitkerja.admin.my-programs.store')); ?>" method="POST"
         @submit.prevent="if($el.checkValidity()) { Alpine.store('globals').isLoading = true; $el.submit(); } else { $el.reportValidity(); }">
-        @csrf
-        @include('unit_kerja_admin.programs._form')
+        <?php echo csrf_field(); ?>
+        <?php echo $__env->make('unit_kerja_admin.programs._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </form>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.unit_kerja_admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\surveyZI\resources\views/unit_kerja_admin/programs/create.blade.php ENDPATH**/ ?>
