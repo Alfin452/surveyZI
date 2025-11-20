@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Survei ZI UIN Antasari</title>
 
-    @vite('resources/css/app.css')
+    <?php echo app('Illuminate\Foundation\Vite')('resources/css/app.css'); ?>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -19,15 +19,15 @@
 
 <body class="min-h-screen bg-gradient-to-br from-cyan-50 to-teal-50 flex items-center justify-center p-4">
 
-    {{-- Main Container --}}
+    
     <div class="w-full max-w-5xl grid md:grid-cols-2 bg-white rounded-2xl shadow-2xl overflow-hidden">
 
-        {{-- Left - Brand Section --}}
+        
         <div class="bg-gradient-to-br from-cyan-600 via-teal-600 to-blue-600 text-white p-8 md:p-12 flex flex-col justify-center">
             <div class="mb-8">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12">
+                        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Logo" class="w-12 h-12">
                     </div>
                     <div>
                         <h2 class="text-2xl font-black">Survei ZI</h2>
@@ -43,28 +43,28 @@
             </div>
         </div>
 
-        {{-- Right - Form Section --}}
+        
         <div class="p-8 md:p-12">
             <div class="text-center mb-8">
                 <h3 class="text-2xl font-black text-gray-900 mb-2">Selamat Datang!</h3>
                 <p class="text-sm text-gray-600">Masuk ke akun Anda</p>
             </div>
 
-            {{-- Error Alert --}}
-            @if(session('error') || $errors->any())
+            
+            <?php if(session('error') || $errors->any()): ?>
             <div class="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm flex items-start">
                 <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                 </svg>
-                <span>{{ session('error') ?? $errors->first() }}</span>
+                <span><?php echo e(session('error') ?? $errors->first()); ?></span>
             </div>
-            @endif
+            <?php endif; ?>
 
-            {{-- Form --}}
-            <form method="POST" action="{{ route('login') }}" class="space-y-5">
-                @csrf
+            
+            <form method="POST" action="<?php echo e(route('login')); ?>" class="space-y-5">
+                <?php echo csrf_field(); ?>
 
-                {{-- Email --}}
+                
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Email Admin</label>
                     <div class="relative">
@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                {{-- Password --}}
+                
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Password Admin</label>
                     <div class="relative">
@@ -109,7 +109,7 @@
                     </div>
                 </div>
 
-                {{-- Submit --}}
+                
                 <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white font-bold py-3.5 rounded-xl hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 group">
                     <span>Login sebagai Admin</span>
                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -118,7 +118,7 @@
                 </button>
             </form>
 
-            {{-- Divider --}}
+            
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-300"></div>
@@ -128,13 +128,13 @@
                 </div>
             </div>
 
-            {{-- Google Login --}}
-            <a href="{{ route('google.redirect') }}" class="flex items-center justify-center w-full py-3.5 border-2 border-gray-300 rounded-xl hover:bg-teal-50 hover:border-teal-400 transition-all duration-200 font-semibold text-gray-700 group">
+            
+            <a href="<?php echo e(route('google.redirect')); ?>" class="flex items-center justify-center w-full py-3.5 border-2 border-gray-300 rounded-xl hover:bg-teal-50 hover:border-teal-400 transition-all duration-200 font-semibold text-gray-700 group">
                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="w-5 h-5 mr-2">
                 <span class="group-hover:text-teal-700">Masuk dengan Google</span>
             </a>
 
-            {{-- Privacy --}}
+            
             <div class="bg-gradient-to-r from-cyan-50 to-teal-50 border border-teal-200 rounded-lg p-3 mt-6">
                 <p class="text-xs text-center text-teal-800 flex items-center justify-center">
                     <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
@@ -144,9 +144,9 @@
                 </p>
             </div>
 
-            {{-- Back --}}
+            
             <div class="text-center mt-6">
-                <a href="{{ route('home') }}" class="inline-flex items-center text-sm text-gray-600 hover:text-teal-600 font-semibold transition-colors">
+                <a href="<?php echo e(route('home')); ?>" class="inline-flex items-center text-sm text-gray-600 hover:text-teal-600 font-semibold transition-colors">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    @vite('resources/js/app.js')
+    <?php echo app('Illuminate\Foundation\Vite')('resources/js/app.js'); ?>
 
     <script>
         const toggle = document.getElementById('togglePassword');
@@ -182,4 +182,4 @@
     </script>
 </body>
 
-</html>
+</html><?php /**PATH C:\laragon\www\surveyZI\resources\views/auth/login.blade.php ENDPATH**/ ?>

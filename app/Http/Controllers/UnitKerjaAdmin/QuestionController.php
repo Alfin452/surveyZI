@@ -18,28 +18,59 @@ class QuestionController extends Controller
         $this->authorize('update', $section->surveyProgram);
         $question = new Question();
         $program = $section->surveyProgram;
-        return view('unit_kerja_admin.programs.questions.create', compact('program', 'section', 'question'));
+
+        // Load sections agar dropdown "Bagian Soal" tidak error jika dipanggil
+        $sections = $program->questionSections;
+
+        return view('unit_kerja_admin.programs.questions.create', compact('program', 'section', 'sections', 'question'));
     }
 
     public function store(Request $request, QuestionSection $section)
     {
         $this->authorize('update', $section->surveyProgram);
+
+        // 1. Validasi disesuaikan dengan nama field di Form Baru
         $validated = $request->validate([
+            'question_section_id' => 'required|exists:question_sections,id', // Tambahan: Support pindah section
             'question_body' => 'required|string',
-            'type' => 'required|in:multiple_choice',
-            'options' => 'required|array|min:1',
-            'options.*.option_body' => 'required|string|max:255',
-            'options.*.option_score' => 'required|integer',
+            'type' => 'required|in:radio,text', // Form kirim 'radio', bukan 'multiple_choice'
+            'options' => 'nullable|array',
+            'options.*.text' => 'required_if:type,radio|string|max:255', // Form kirim 'text'
+            'options.*.score' => 'required_if:type,radio|integer', // Form kirim 'score'
         ]);
-        DB::transaction(function () use ($section, $validated) {
-            $question = $section->questions()->create([
+
+        DB::transaction(function () use ($validated) {
+            // 2. Mapping Tipe Form (radio) ke Database (multiple_choice)
+            $dbType = $validated['type'] === 'radio' ? 'multiple_choice' : 'essay';
+
+            $question = Question::create([
+                'question_section_id' => $validated['question_section_id'],
                 'question_body' => $validated['question_body'],
-                'type' => $validated['type'],
+                'type' => $dbType,
             ]);
-            $question->options()->createMany($validated['options']);
+
+            // 3. Simpan Opsi dengan Mapping yang Benar
+            if ($validated['type'] === 'radio' && !empty($validated['options'])) {
+                $optionsData = [];
+                foreach ($validated['options'] as $opt) {
+                    if (!empty($opt['text'])) {
+                        $optionsData[] = [
+                            'option_body' => $opt['text'],   // Mapping: text -> option_body
+                            'option_score' => $opt['score'] ?? 0, // Mapping: score -> option_score
+                        ];
+                    }
+                }
+                if (count($optionsData) > 0) {
+                    $question->options()->createMany($optionsData);
+                }
+            }
         });
-        return redirect()->route('unitkerja.admin.programs.questions.index', $section->surveyProgram)
-            ->with('success', 'Pertanyaan berhasil ditambahkan ke bagian "' . $section->title . '".');
+
+        // Redirect kembali ke section yang dipilih (bisa jadi beda dengan $section awal)
+        $targetSection = QuestionSection::find($validated['question_section_id']);
+
+        return redirect()->route('unitkerja.admin.programs.questions.index', $targetSection->surveyProgram)
+            ->with('success', 'Pertanyaan berhasil ditambahkan.');
     }
 
     public function edit(QuestionSection $section, Question $question)
@@ -47,26 +78,71 @@ class QuestionController extends Controller
         $this->authorize('update', $section->surveyProgram);
         $question->load('options');
         $program = $section->surveyProgram;
-        return view('unit_kerja_admin.programs.questions.edit', compact('program', 'section', 'question'));
+        $sections = $program->questionSections;
+
+        // Konversi Tipe DB ke Tipe Form agar terbaca di View
+        if ($question->type === 'multiple_choice') {
+            $question->type = 'radio';
+        } elseif ($question->type === 'essay') {
+            $question->type = 'text';
+        }
+
+        return view('unit_kerja_admin.programs.questions.edit', compact('program', 'section', 'sections', 'question'));
     }
 
     public function update(Request $request, QuestionSection $section, Question $question)
     {
         $this->authorize('update', $section->surveyProgram);
+
         $validated = $request->validate([
+            'question_section_id' => 'required|exists:question_sections,id',
             'question_body' => 'required|string',
-            'options' => 'required|array|min:1',
-            'options.*.option_body' => 'required|string|max:255',
-            'options.*.option_score' => 'required|integer',
+            'type' => 'required|in:radio,text',
+            'options' => 'nullable|array',
+            'options.*.id' => 'nullable',
+            'options.*.text' => 'required_if:type,radio|string|max:255',
+            'options.*.score' => 'required_if:type,radio|integer',
         ]);
+
         DB::transaction(function () use ($question, $validated) {
-            $question->update(['question_body' => $validated['question_body']]);
-            $question->options()->delete();
-            $question->options()->createMany($validated['options']);
+            $dbType = $validated['type'] === 'radio' ? 'multiple_choice' : 'essay';
+
+            $question->update([
+                'question_section_id' => $validated['question_section_id'],
+                'question_body' => $validated['question_body'],
+                'type' => $dbType,
+            ]);
+
+            if ($validated['type'] === 'radio') {
+                // Logika Sync Opsi (Hapus yang tidak ada, Update yang ada, Create yang baru)
+                $submittedIds = collect($validated['options'])->pluck('id')->filter()->toArray();
+                $question->options()->whereNotIn('id', $submittedIds)->delete();
+
+                if (!empty($validated['options'])) {
+                    foreach ($validated['options'] as $opt) {
+                        if (!empty($opt['text'])) {
+                            $question->options()->updateOrCreate(
+                                ['id' => $opt['id'] ?? null],
+                                [
+                                    'option_body' => $opt['text'],
+                                    'option_score' => $opt['score'] ?? 0,
+                                    'question_id' => $question->id
+                                ]
+                            );
+                        }
+                    }
+                }
+            } else {
+                $question->options()->delete(); // Hapus opsi jika ganti jadi esai
+            }
         });
-        return redirect()->route('unitkerja.admin.programs.questions.index', $section->surveyProgram)
+
+        $targetSection = QuestionSection::find($validated['question_section_id']);
+
+        return redirect()->route('unitkerja.admin.programs.questions.index', $targetSection->surveyProgram)
             ->with('success', 'Pertanyaan berhasil diperbarui.');
     }
+
     public function destroy(QuestionSection $section, Question $question)
     {
         $this->authorize('update', $section->surveyProgram);

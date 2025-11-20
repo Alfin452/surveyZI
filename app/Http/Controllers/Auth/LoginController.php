@@ -35,9 +35,17 @@ class LoginController extends Controller
     /**
      * Menampilkan halaman form login kustom.
      */
-    public function showLoginForm()
+    public function showAdminLoginForm()
     {
-        return view('auth.login');
+        return view('auth.login-admin'); 
+    }
+
+    /**
+     * Menampilkan Halaman Login User (Hanya Tombol Google)
+     */
+    public function showPublicLoginForm()
+    {
+        return view('auth.login-public'); 
     }
 
     /**

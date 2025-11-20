@@ -44,8 +44,9 @@ Route::get('/dashboard', [LoginController::class, 'dashboardRedirect'])->middlew
 
 //=======//
 Route::middleware('guest')->group(function () {
-    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [LoginController::class, 'login']);
+    Route::get('masuk', [LoginController::class, 'showPublicLoginForm'])->name('login');
+    Route::get('portal-admin/masuk', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
+    Route::post('portal-admin/masuk', [LoginController::class, 'login']); // Proses login tetap sama
     Route::get('auth/google/redirect', [LoginController::class, 'redirectToGoogle'])->name('google.redirect');
     Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallback'])->name('google.callback');
 });
