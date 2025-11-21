@@ -251,7 +251,7 @@
 
     {{-- Main Content --}}
     {{-- PENTING: class 'flex-grow' membuat footer selalu di bawah (sticky bottom) --}}
-    <main class="relative z-0 flex-grow pt-10">
+    <main class="relative z-0 flex-grow pt-1">
         {{ $slot }}
     </main>
 

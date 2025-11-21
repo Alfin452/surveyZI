@@ -101,7 +101,7 @@
                         </a>
                         <a href="{{ route('public.programs.list') }}"
                             class="inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-                            Lihat Semua Kuesioner
+                            Lihat Semua Survei
                         </a>
                     </div>
 
@@ -169,7 +169,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">1. Pilih Kuesioner</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">1. Pilih Survei</h3>
                     <p class="text-sm text-slate-500 leading-relaxed">Temukan survei yang relevan dengan status atau unit layanan Anda.</p>
                 </div>
 
@@ -216,7 +216,7 @@
             <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4 animate-on-scroll">
                 <div>
                     <h2 class="text-3xl font-black text-slate-900 mb-2">Program Prioritas</h2>
-                    <p class="text-slate-500">Daftar kuesioner utama yang sedang berjalan.</p>
+                    <p class="text-slate-500">Daftar Survei utama yang sedang berjalan.</p>
                 </div>
 
                 <div class="relative w-full md:w-72 group">
@@ -304,7 +304,7 @@
 
                 <div class="mt-auto">
                     <a href="{{ route('public.survey.directory', $program->alias) }}" class="flex items-center justify-center w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm shadow-lg group-hover:bg-teal-600 group-hover:shadow-teal-500/30 transition-all transform group-hover:-translate-y-1">
-                        Isi Kuesioner
+                        Isi Survei
                         <svg class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -367,7 +367,7 @@
                             </svg></span>
                     </button>
                     <div x-show="active === 2" x-collapse x-cloak>
-                        <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">Jawaban yang sudah dikirim tidak dapat diedit. Hubungi LPM untuk bantuan reset data jika kesalahan fatal.</div>
+                        <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">Jawaban yang sudah dikirim tidak dapat diedit. Hubungi UTIPD untuk bantuan reset data jika kesalahan fatal.</div>
                     </div>
                 </div>
                 <div class="group bg-slate-50 hover:bg-white border border-slate-200 rounded-2xl transition-all duration-300 hover:shadow-lg overflow-hidden">

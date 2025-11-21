@@ -253,7 +253,7 @@
 
     
     
-    <main class="relative z-0 flex-grow pt-10">
+    <main class="relative z-0 flex-grow pt-1">
         <?php echo e($slot); ?>
 
     </main>
