@@ -11,77 +11,58 @@ use Illuminate\Support\Facades\Auth;
 
 class PublicSurveyController extends Controller
 {
-    /**
-     * Halaman 1: Menampilkan halaman landing page utama (welcome.blade.php).
-     * PERBAIKAN: Sekarang mengambil Program Unggulan & Unit Kerjanya.
-     */
+
     public function showHome()
     {
-        // 1. Ambil Program Unggulan yang aktif
-        $featuredProgram = SurveyProgram::where('is_featured', true)
-            ->where('is_active', true)
+        // 1. Ambil Program UNGGULAN (Featured) & AKTIF
+        // Kita ambil misal 3 program unggulan teratas
+        $featuredPrograms = SurveyProgram::where('is_active', true)
+            ->where('is_featured', true)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
-            ->first(); // Ambil satu saja
+            ->latest()
+            ->take(3)
+            ->get();
 
-        // 2. Ambil Unit Kerja dari Program Unggulan tersebut
-        $unitKerjas = collect(); // Buat koleksi kosong
-        if ($featuredProgram) {
-            // Logika baru: Ambil unit kerja yang ditargetkan oleh program unggulan
-            $unitKerjas = $featuredProgram->targetedUnitKerjas()
-                ->orderBy('unit_kerja_name')
-                ->get();
-        }
-
-        // 3. Ambil Statistik Global untuk Hero Section
-        $totalPrograms = SurveyProgram::where('is_active', true)
+        // 2. Ambil Program LAINNYA (Aktif tapi tidak featured, atau sisa featured)
+        // Untuk ditampilkan di list bawah jika mau, atau cukup featuredPrograms saja
+        $activePrograms = SurveyProgram::where('is_active', true)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
-            ->count();
+            ->latest()
+            ->take(6) // Ambil 6 program terbaru
+            ->get();
+
+        // 3. Statistik Global
         $totalRespondents = Answer::distinct('user_id')->count();
-        $averageScore = Answer::avg('answer_skor');
-        $maxScore = 4; // Asumsi skala 1-4
-        $satisfactionPercentage = $totalRespondents > 0 ? ($averageScore / $maxScore) * 100 : 0;
+        $totalPrograms = SurveyProgram::where('is_active', true)->count();
+
+        // Hitung kepuasan (contoh logika sederhana)
+        $avgScore = Answer::avg('answer_skor') ?? 0;
+        $satisfactionPercentage = ($avgScore / 4) * 100; // Asumsi skala 4
 
         return view('welcome', compact(
-            'featuredProgram', // Program unggulan (atau null)
-            'unitKerjas',      // Unit kerja dari program unggulan
-            'totalPrograms',   // Statistik total program
+            'featuredPrograms',
+            'activePrograms',
             'totalRespondents',
+            'totalPrograms',
             'satisfactionPercentage'
         ));
     }
 
-    /**
-     * Halaman 2: Menampilkan halaman "Program Survei" (daftar semua program).
-     */
     public function showProgramList()
     {
-        $programs = SurveyProgram::where('is_active', true)
-            ->whereDate('start_date', '<=', now())
-            ->whereDate('end_date', '>=', now())
-            ->withCount('targetedUnitKerjas')
-            ->latest()
-            ->get();
-
+        $programs = SurveyProgram::where('is_active', true)->latest()->paginate(9);
         return view('public.programs-list', compact('programs'));
     }
 
-    /**
-     * Halaman 3: Menampilkan halaman "Tentang".
-     */
     public function showTentangPage()
     {
         return view('public.tentang');
     }
 
-    /**
-     * Halaman 4: Menampilkan halaman direktori unit kerja.
-     * INI ADALAH HALAMAN 'DETAIL' DARI 'programs-list'
-     */
     public function showDirectory(SurveyProgram $program)
     {
-        // PERBAIKAN: Logika disederhanakan. Cukup ambil unit yang ditargetkan.
         $unitKerjas = $program->targetedUnitKerjas()
             ->orderBy('unit_kerja_name')
             ->get();
@@ -89,20 +70,13 @@ class PublicSurveyController extends Controller
         return view('public.directory', compact('program', 'unitKerjas'));
     }
 
-    /**
-     * Halaman 5: Menampilkan halaman "landing" per unit kerja.
-     */
     public function showUnitLanding(SurveyProgram $program, $unitKerjaAlias)
     {
         $unitKerja = UnitKerja::where('alias', $unitKerjaAlias)->firstOrFail();
 
-        // Validasi: Pastikan unit kerja ini memang ditargetkan oleh program
         if (!$program->targetedUnitKerjas->contains($unitKerja)) {
             abort(404, 'Unit kerja tidak ditemukan untuk program survei ini.');
         }
-
-        // PERBAIKAN: Kita tidak perlu lagi mencari $pelaksanaan.
-        // Cukup kirim $program dan $unitKerja ke view.
 
         return view('public.unit-landing', compact('program', 'unitKerja'));
     }

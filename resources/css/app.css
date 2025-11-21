@@ -2,211 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-|--------------------------------------------------------------------------
-| Style Awal Animasi GSAP
-|--------------------------------------------------------------------------
-*/
-
-/* Animasi Fade & Slide dari bawah */
-.section-title-anim,
-.feature-card-anim,
-.survey-item-anim {
-    opacity: 0;
-    transform: translateY(50px);
-}
-
-/* Animasi Fade & Slide dari atas */
-.fade-down-anim {
-    opacity: 0;
-    transform: translateY(-30px);
-}
-
-/* Animasi Fade & Slide dari kiri */
-.fade-left-anim {
-    opacity: 0;
-    transform: translateX(-50px);
-}
-
-/* Animasi Fade & Slide dari kanan */
-.fade-right-anim {
-    opacity: 0;
-    transform: translateX(50px);
-}
-
-/* Animasi Scale (zoom in) */
-.scale-anim {
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-/* Animasi untuk form fields */
-.form-field-anim {
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-/* Animasi untuk buttons */
-.button-anim {
-    opacity: 0;
-    transform: scale(0.9);
-}
-
-/* Animasi untuk cards/boxes */
-.card-anim {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-}
-
-/* Animasi untuk list items */
-.list-item-anim {
-    opacity: 0;
-    transform: translateX(-20px);
-}
-
-/* Animasi untuk images */
-.image-anim {
-    opacity: 0;
-    transform: scale(0.9);
-}
-
-/* Style untuk link navigasi yang aktif */
-.nav-active {
-    color: #14b8a6; /* teal-600 - DIUBAH dari indigo-600 */
-    font-weight: 600;
-}
-
-/* Loading state */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-}
-
-.loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* Add spinner */
-.loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #14b8a6; /* teal-600 - DIUBAH dari indigo-600 */
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Smooth transitions untuk hover effects */
-.hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-/* PERBAIKAN: Mengganti nama kelas agar sesuai dengan HTML Anda */
-.program-card {
-    opacity: 0;
-    transform: translateY(60px) scale(0.9) rotateY(-15deg);
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-/* Survey question card styles */
-.survey-question-card {
-    border: 1px solid #e5e7eb; /* gray-200 */
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    background: white;
-    transition: border-color 0.3s ease;
-}
-
-.survey-question-card.error {
-    border-color: #ef4444; /* red-500 */
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); /* Soft red glow for errors */
-}
-
-.progress-bar-anim {
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: left;
-}
-
-/* Responsiveness for mobile */
-@media (max-width: 768px) {
-    .section-title-anim,
-    .feature-card-anim,
-    .survey-item-anim {
-        transform: translateY(30px);
-    }
-
-    .fade-left-anim,
-    .fade-right-anim {
-        transform: translateX(0); 
-        transform: translateY(20px); 
-    }
-
-    ::-webkit-scrollbar {
-        width: 6px; 
+/* --- GLOBAL STYLES --- */
+@layer base {
+    body {
+        @apply font-sans text-slate-800 bg-slate-50 antialiased;
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
-/* Accessibility for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-    .section-title-anim,
-    .feature-card-anim,
-    .survey-item-anim,
-    .fade-down-anim,
-    .fade-left-anim,
-    .fade-right-anim,
-    .scale-anim,
-    .form-field-anim,
-    .button-anim,
-    .card-anim,
-    .list-item-anim,
-    .image-anim,
-    .program-card { /* Ditambahkan */
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
+/* --- CUSTOM UTILITIES (Aurora Theme) --- */
+@layer utilities {
+    /* 1. Hide Scrollbar (Clean Look) */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 
-    .hover-lift:hover {
-        transform: none;
-        box-shadow: none;
+    /* 2. Glassmorphism Utilities */
+    .glass {
+        @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl;
     }
+    
+    .glass-dark {
+        @apply bg-slate-900/80 backdrop-blur-md border border-slate-700/50 shadow-xl;
+    }
+    
+    .glass-card {
+        @apply bg-white/60 backdrop-blur-lg border border-white/40 shadow-lg rounded-3xl;
+    }
+
+    /* 3. Text Gradients */
+    .text-gradient-teal {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-cyan-600;
+    }
+    
+    .text-gradient-indigo {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600;
+    }
+}
+
+/* --- GLOBAL ANIMATIONS --- */
+
+/* Aurora Blob Animation */
+@keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+}
+.animate-blob {
+    animation: blob 7s infinite;
+}
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+/* Float Animation (Naik Turun Halus) */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Fade In Down (Masuk dari atas) */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down {
+    animation: fadeInDown 0.8s ease-out forwards;
+}
+
+/* Pulse Glow */
+@keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+.animate-pulse-slow {
+    animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
