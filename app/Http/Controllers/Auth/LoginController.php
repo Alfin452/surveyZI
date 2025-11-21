@@ -53,21 +53,26 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        // 1. Validasi Input (Username atau Email)
+        $request->validate([
+            'username' => ['required', 'string'], // Ubah jadi 'username' agar sesuai form
+            'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // 2. Tentukan apakah input adalah Email atau Username
+        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        // 3. Coba Login
+        if (Auth::attempt([$loginType => $request->username, 'password' => $request->password], $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Panggil metode redirect cerdas kita
             return $this->dashboardRedirect();
         }
 
+        // 4. Jika Gagal
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan catatan kami.',
-        ])->onlyInput('email');
+            'username' => 'Username atau password salah.',
+        ])->onlyInput('username');
     }
 
     /**

@@ -105,7 +105,7 @@
                     <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-75 group-hover:opacity-100 transition duration-200 blur"></div>
                     <img src="{{ asset('images/logo.png') }}" alt="Logo UIN" class="relative w-16 h-16 rounded-full bg-white p-1">
                 </div>
-                <h1 class="mt-4 text-lg font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200">SURVEYZI ADMIN</h1>
+                <h1 class="mt-4 text-lg font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200">SURVEY SUPERADMIN</h1>
                 <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded-full mt-1">UIN Antasari</span>
             </div>
 

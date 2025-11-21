@@ -120,7 +120,7 @@
                 <a href="<?php echo e(route('unitkerja.admin.dashboard')); ?>"
                     class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 <?php echo e(isActive('unitkerja.admin.dashboard')); ?>">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
                     <span class="font-medium text-sm">Dashboard</span>
                 </a>
@@ -159,7 +159,7 @@
         </aside>
 
         <main class="flex-1 overflow-y-auto bg-slate-50 relative">
-            <div class="p-2 space-y-6 max-w-7xl mx-auto">
+            <div class="p-6 space-y-6 max-w-7xl mx-auto">
                 <?php echo $__env->yieldContent('content'); ?>
             </div>
         </main>
@@ -179,6 +179,44 @@
                 <form action="<?php echo e(route('logout')); ?>" method="POST">
                     <?php echo csrf_field(); ?>
                     <button type="submit" class="px-6 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold shadow-lg hover:shadow-rose-500/30 transition">Ya, Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <div x-cloak x-show="openDeleteModal" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div x-show="openDeleteModal" @click.away="openDeleteModal = false" x-transition.scale class="bg-white/90 rounded-3xl shadow-2xl p-8 w-full max-w-md text-center border border-white/50 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-pink-500/5 pointer-events-none"></div>
+            <div class="w-20 h-20 mx-auto mb-4 drop-shadow-lg">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png" alt="Warning" class="w-full h-full object-contain">
+            </div>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Hapus Data Permanen?</h2>
+            <p class="text-slate-500 mb-8 text-sm">Anda akan menghapus <strong x-text="deleteItemName" class="text-slate-800 bg-slate-100 px-1 rounded"></strong>. <br>Tindakan ini tidak bisa dibatalkan.</p>
+            <div class="flex justify-center gap-3 relative z-10">
+                <button @click="openDeleteModal = false" class="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition shadow-sm">Batal</button>
+                <form x-bind:action="deleteUrl" method="POST" @submit.prevent="$store.globals.isLoading = true; $el.submit();">
+                    <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold shadow-lg hover:shadow-red-500/30 transition">Ya, Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <div x-cloak x-show="openCloneModal" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div x-show="openCloneModal" @click.away="openCloneModal = false" x-transition.scale class="bg-white/90 rounded-3xl shadow-2xl p-8 w-full max-w-md text-center border border-white/50 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 pointer-events-none"></div>
+            <div class="w-20 h-20 mx-auto mb-4 drop-shadow-lg">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clipboard.png" alt="Clone" class="w-full h-full object-contain">
+            </div>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Duplikasi Data?</h2>
+            <p class="text-slate-500 mb-8 text-sm">Kami akan menyalin program <strong x-text="cloneItemName" class="text-slate-800 bg-slate-100 px-1 rounded"></strong> beserta seluruh pertanyaannya.</p>
+            <div class="flex justify-center gap-3 relative z-10">
+                <button @click="openCloneModal = false" class="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition shadow-sm">Batal</button>
+                <form x-bind:action="cloneUrl" method="POST" @submit.prevent="$store.globals.isLoading = true; $el.submit();">
+                    <?php echo csrf_field(); ?>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg hover:shadow-blue-500/30 transition">Ya, Duplikasi</button>
                 </form>
             </div>
         </div>
@@ -225,6 +263,7 @@
         window.addEventListener('pageshow', (event) => {
             if (event.persisted && Alpine.store('globals')) Alpine.store('globals').isLoading = false;
         });
+
         document.addEventListener('DOMContentLoaded', function() {
             flatpickr(".datepicker", {
                 altInput: true,

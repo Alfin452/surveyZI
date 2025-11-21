@@ -64,41 +64,29 @@ class SurveyProgramController extends Controller
         return view('superadmin.programs.create', compact('program', 'unitKerjas'));
     }
 
-    private function handleFeaturedStatus(Request $request, ?SurveyProgram $program = null)
-    {
-        $isFeatured = $request->boolean('is_featured');
-        if ($isFeatured) {
-            $query = SurveyProgram::query();
-            if ($program) {
-                $query->where('id', '!=', $program->id);
-            }
-            $query->update(['is_featured' => false]);
-        }
-        return $isFeatured;
-    }
-
     public function store(StoreSurveyProgramRequest $request)
     {
         $validated = $request->validated();
-
-        $isFeatured = $this->handleFeaturedStatus($request);
 
         $program = SurveyProgram::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
-            'alias' => Str::slug($validated['title']),
+            'alias' => Str::slug($validated['title']) . '-' . Str::random(5),
             'is_active' => $request->boolean('is_active'),
             'requires_pre_survey' => $request->boolean('requires_pre_survey'),
-            'is_featured' => $isFeatured,
-            'unit_kerja_id' => null,
+            'is_featured' => $request->boolean('is_featured'), // Langsung simpan statusnya
+            'unit_kerja_id' => null, // Program buatan Superadmin selalu Global (null)
         ]);
 
-        $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
+        // Sinkronisasi target unit
+        if (isset($validated['targeted_unit_kerjas'])) {
+            $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
+        }
 
         return redirect()->route('superadmin.programs.questions.index', $program)
-            ->with('success', 'Program Survei berhasil dibuat. Silakan tambahkan bagian dan pertanyaan.');
+            ->with('success', 'Program Survei berhasil dibuat.');
     }
 
     public function show(SurveyProgram $program)
@@ -117,20 +105,27 @@ class SurveyProgramController extends Controller
     {
         $validated = $request->validated();
 
-        $isFeatured = $this->handleFeaturedStatus($request, $program);
-
         $program->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
-            'alias' => Str::slug($validated['title']),
+            // Jangan update alias agar link lama tidak rusak, atau update jika perlu:
+            // 'alias' => Str::slug($validated['title']), 
             'is_active' => $request->boolean('is_active'),
             'requires_pre_survey' => $request->boolean('requires_pre_survey'),
-            'is_featured' => $isFeatured,
+            'is_featured' => $request->boolean('is_featured'), // Update status featured
+            // PERBAIKAN: Jangan ubah unit_kerja_id. Jika ini program unit, biarkan tetap milik unit.
         ]);
 
-        $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
+        // Update target unit HANYA JIKA ini program Institusional (milik Superadmin)
+        if ($program->unit_kerja_id === null) {
+            if (isset($validated['targeted_unit_kerjas'])) {
+                $program->targetedUnitKerjas()->sync($validated['targeted_unit_kerjas']);
+            } else {
+                $program->targetedUnitKerjas()->detach();
+            }
+        }
 
         return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil diperbarui.');
     }

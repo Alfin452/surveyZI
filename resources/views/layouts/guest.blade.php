@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <style>
@@ -98,7 +99,7 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 leading-none group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-cyan-600 transition-all">
-                            SURVEI
+                            Survei
                         </span>
                         <span class="text-[10px] sm:text-xs font-bold text-slate-400 tracking-widest uppercase">UIN Antasari</span>
                     </div>
@@ -250,7 +251,7 @@
 
     {{-- Main Content --}}
     {{-- PENTING: class 'flex-grow' membuat footer selalu di bawah (sticky bottom) --}}
-    <main class="relative z-0 flex-grow pt-20">
+    <main class="relative z-0 flex-grow pt-10">
         {{ $slot }}
     </main>
 
@@ -276,7 +277,7 @@
                             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 w-9">
                         </div>
                         <div>
-                            <span class="block text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors">SURVEYZI</span>
+                            <span class="block text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors">SURVEI</span>
                             <span class="block text-[10px] font-bold text-slate-500 tracking-widest uppercase">UIN Antasari</span>
                         </div>
                     </a>

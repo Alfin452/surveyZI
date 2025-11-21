@@ -3,6 +3,7 @@ import Alpine from "alpinejs";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import collapse from '@alpinejs/collapse'; // <--- 1. Tambahkan baris ini
 
 // Register GSAP Plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -11,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 window.gsap = gsap;
 window.ScrollTrigger = ScrollTrigger;
 
-// Start Alpine
+Alpine.plugin(collapse); // <--- 2. Tambahkan baris ini
 window.Alpine = Alpine;
 Alpine.start();
 

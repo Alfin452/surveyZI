@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-// HAPUS: use App\Models\Survey; // Kita tidak menggunakan model ini lagi
 use App\Models\SurveyProgram;
 use App\Models\UnitKerja;
 use App\Models\Answer;
@@ -11,48 +10,51 @@ use Illuminate\Support\Facades\Auth;
 
 class PublicSurveyController extends Controller
 {
-
     public function showHome()
     {
-        // 1. Ambil Program UNGGULAN (Featured) & AKTIF
-        // Kita ambil misal 3 program unggulan teratas
-        $featuredPrograms = SurveyProgram::where('is_active', true)
+        // 1. Ambil Program UNGGULAN (Featured) & AKTIF (Multiple)
+        $featuredPrograms = SurveyProgram::with('unitKerja') // Eager load unit kerja
             ->where('is_featured', true)
+            ->where('is_active', true)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->latest()
-            ->take(3)
+            ->take(6)
             ->get();
 
-        // 2. Ambil Program LAINNYA (Aktif tapi tidak featured, atau sisa featured)
-        // Untuk ditampilkan di list bawah jika mau, atau cukup featuredPrograms saja
+        // 2. Ambil Program LAINNYA (Opsional untuk list di bawah jika perlu)
         $activePrograms = SurveyProgram::where('is_active', true)
+            ->where('is_featured', false)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->latest()
-            ->take(6) // Ambil 6 program terbaru
+            ->take(6)
             ->get();
 
         // 3. Statistik Global
-        $totalRespondents = Answer::distinct('user_id')->count();
         $totalPrograms = SurveyProgram::where('is_active', true)->count();
-
-        // Hitung kepuasan (contoh logika sederhana)
-        $avgScore = Answer::avg('answer_skor') ?? 0;
-        $satisfactionPercentage = ($avgScore / 4) * 100; // Asumsi skala 4
+        $totalRespondents = Answer::distinct('user_id')->count();
+        $averageScore = Answer::avg('answer_skor');
+        $satisfactionPercentage = $averageScore ? ($averageScore / 4) * 100 : 0;
 
         return view('welcome', compact(
             'featuredPrograms',
             'activePrograms',
-            'totalRespondents',
             'totalPrograms',
+            'totalRespondents',
             'satisfactionPercentage'
         ));
     }
 
     public function showProgramList()
     {
-        $programs = SurveyProgram::where('is_active', true)->latest()->paginate(9);
+        $programs = SurveyProgram::with('unitKerja')
+            ->where('is_active', true)
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->latest()
+            ->paginate(9); // Pakai paginate agar rapi
+
         return view('public.programs-list', compact('programs'));
     }
 
@@ -61,11 +63,53 @@ class PublicSurveyController extends Controller
         return view('public.tentang');
     }
 
+    /**
+     * Logika Cerdas: Show Directory (Pilih Unit) ATAU Redirect Langsung
+     */
     public function showDirectory(SurveyProgram $program)
     {
+        // LOGIKA BARU: Cek apakah program ini milik Unit Kerja Spesifik?
+        if ($program->unit_kerja_id && $program->unitKerja) {
+            $targetUnit = $program->unitKerja;
+
+            // Jika ya, LEWATI direktori dan LEWATI landing page unit.
+            // Langsung masuk ke alur pengisian.
+
+            if ($program->requires_pre_survey) {
+                // Ke Form Data Diri
+                return redirect()->route('public.pre-survey.create', [
+                    'program' => $program->alias,
+                    'unitKerja' => $targetUnit->alias
+                ]);
+            } else {
+                // Langsung Isi Soal
+                return redirect()->route('public.survey.fill', [
+                    'program' => $program->alias,
+                    'unitKerja' => $targetUnit->alias
+                ]);
+            }
+        }
+
+        // Jika Program Institusional (Pusat), tampilkan daftar unit target
         $unitKerjas = $program->targetedUnitKerjas()
             ->orderBy('unit_kerja_name')
             ->get();
+
+        // Optimasi Tambahan: Jika targetnya cuma 1 unit, langsung redirect juga
+        if ($unitKerjas->count() === 1) {
+            $singleUnit = $unitKerjas->first();
+            if ($program->requires_pre_survey) {
+                return redirect()->route('public.pre-survey.create', [
+                    'program' => $program->alias,
+                    'unitKerja' => $singleUnit->alias
+                ]);
+            } else {
+                return redirect()->route('public.survey.fill', [
+                    'program' => $program->alias,
+                    'unitKerja' => $singleUnit->alias
+                ]);
+            }
+        }
 
         return view('public.directory', compact('program', 'unitKerjas'));
     }
@@ -75,7 +119,10 @@ class PublicSurveyController extends Controller
         $unitKerja = UnitKerja::where('alias', $unitKerjaAlias)->firstOrFail();
 
         if (!$program->targetedUnitKerjas->contains($unitKerja)) {
-            abort(404, 'Unit kerja tidak ditemukan untuk program survei ini.');
+            // Cek juga kalau ini unit pemilik program (untuk case program mandiri)
+            if ($program->unit_kerja_id != $unitKerja->id) {
+                abort(404, 'Unit kerja tidak terdaftar dalam program ini.');
+            }
         }
 
         return view('public.unit-landing', compact('program', 'unitKerja'));
