@@ -1,318 +1,291 @@
 <x-guest-layout :title="$unitKerja->unit_kerja_name . ' - ' . $program->title">
 
-    {{-- Hero Section with Gradient Background --}}
-    <section class="relative bg-gradient-to-br from-cyan-600 via-teal-600 to-blue-600 pt-32 sm:pt-36 pb-20 sm:pb-24 overflow-hidden min-h-screen flex items-center">
-        {{-- Animated Background --}}
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="floating-shape absolute top-20 left-10 w-32 h-32 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div class="floating-shape absolute top-40 right-20 w-48 h-48 sm:w-96 sm:h-96 bg-cyan-300/10 rounded-full blur-3xl"></div>
-            <div class="floating-shape absolute bottom-20 left-1/4 w-40 h-40 sm:w-80 sm:h-80 bg-blue-300/10 rounded-full blur-3xl"></div>
+    @push('styles')
+    <style>
+        /* Background System */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -20;
+            background: radial-gradient(circle at 0% 0%, #f8fafc 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, #f1f5f9 0%, transparent 50%);
+            background-color: #ffffff;
+        }
 
-            {{-- Grid Pattern --}}
-            <div class="absolute inset-0 opacity-5">
-                <div class="absolute inset-0" style="background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px); background-size: 50px 50px;"></div>
-            </div>
-        </div>
+        .bg-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            {{-- Breadcrumb --}}
-            <nav class="breadcrumb flex items-center justify-center space-x-2 text-sm mb-8 sm:mb-10">
-                <a href="{{ route('home') }}" class="text-white/80 hover:text-white transition-colors flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Beranda
-                </a>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -15;
+            opacity: 0.4;
+            animation: float 10s infinite alternate;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(20px, -20px);
+            }
+        }
+    </style>
+    @endpush
+
+    <div class="bg-mesh"></div>
+    <div class="bg-noise"></div>
+
+    <div class="blob bg-teal-200 w-96 h-96 top-0 left-0 rounded-full mix-blend-multiply"></div>
+    <div class="blob bg-blue-200 w-80 h-80 bottom-0 right-0 rounded-full mix-blend-multiply animation-delay-2000"></div>
+
+    <section class="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
+
+        <div class="max-w-5xl w-full">
+
+            {{-- BREADCRUMB --}}
+            <nav class="flex items-center justify-center space-x-2 text-sm font-medium text-slate-500 mb-10 animate-fade-down">
+                <a href="{{ route('home') }}" class="hover:text-teal-600 transition-colors">Beranda</a>
+                <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-                <a href="{{ route('public.survey.directory', $program) }}" class="text-white/80 hover:text-white transition-colors">
-                    {{ Str::limit($program->title, 20) }}
-                </a>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                <a href="{{ route('public.survey.directory', $program->alias) }}" class="hover:text-teal-600 transition-colors">Pilih Unit Layanan</a>
+                <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-                <span class="text-white font-semibold">{{ Str::limit($unitKerja->unit_kerja_name, 25) }}</span>
+                <span class="text-slate-800 font-bold">{{ Str::limit($unitKerja->unit_kerja_name, 30) }}</span>
             </nav>
 
-            {{-- Main Content Card --}}
-            <div class="max-w-4xl mx-auto">
-                <div class="unit-card bg-white rounded-3xl shadow-2xl overflow-hidden">
-                    {{-- Gradient Header --}}
-                    <div class="h-2 bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-500"></div>
+            {{-- MAIN SPLIT CARD --}}
+            <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white/50 overflow-hidden flex flex-col lg:flex-row min-h-[600px] unit-card-anim">
 
-                    <div class="p-8 sm:p-12 text-center">
-                        {{-- Icon with Animation --}}
-                        <div class="unit-icon-wrapper mb-8">
-                            <div class="relative inline-block">
-                                <div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-teal-600 rounded-3xl blur-2xl opacity-50 animate-pulse"></div>
-                                <div class="relative bg-gradient-to-br from-cyan-100 via-teal-100 to-blue-100 text-teal-600 h-24 w-24 sm:h-28 sm:w-28 rounded-3xl flex items-center justify-center shadow-2xl transform hover:rotate-6 hover:scale-110 transition-all duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-14 sm:w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
+                {{-- LEFT: UNIT INFO & QR CODE --}}
+                <div class="lg:w-2/5 bg-slate-50/80 border-r border-slate-100 p-10 flex flex-col relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#64748b 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+                    <div class="relative z-10 flex flex-col h-full">
+
+                        {{-- Icon & Badge --}}
+                        <div class="mb-6">
+                            <div class="w-20 h-20 bg-white rounded-3xl shadow-sm border border-slate-100 flex items-center justify-center text-teal-600 mb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                            </div>
+
+                            <span class="inline-block px-3 py-1 bg-teal-100 text-teal-700 rounded-lg text-[10px] font-bold uppercase tracking-widest mb-3">
+                                Unit Layanan
+                            </span>
+
+                            <h1 class="text-3xl md:text-4xl font-black text-slate-900 leading-tight mb-4">
+                                {{ $unitKerja->unit_kerja_name }}
+                            </h1>
+
+                            @if($unitKerja->address)
+                            <div class="flex items-start gap-3 text-slate-500 text-sm font-medium leading-relaxed mb-8">
+                                <svg class="w-5 h-5 shrink-0 mt-0.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <p>{{ $unitKerja->address }}</p>
+                            </div>
+                            @endif
+
+                            {{-- QR CODE SECTION (Posisi di Bawah Judul/Alamat) --}}
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm inline-block">
+                                <div class="flex flex-col items-center">
+                                    <div id="qrcode" class="mb-3"></div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Scan Masuk Cepat</p>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Unit Name --}}
-                        <h1 class="unit-title text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 leading-tight">
-                            {{ $unitKerja->unit_kerja_name }}
-                        </h1>
+                        {{-- JAM LAYANAN (Footer Kolom Kiri) --}}
+                        <div class="mt-auto pt-8 border-t border-slate-200">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Jam Layanan
+                            </p>
+                            <p class="text-slate-700 font-bold text-sm flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                @if($unitKerja->start_time && $unitKerja->end_time)
+                                {{ \Carbon\Carbon::parse($unitKerja->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($unitKerja->end_time)->format('H:i') }} WITA
+                                @else
+                                Senin - Jumat (Sesuai Jam Kerja)
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-                        {{-- Short Name Badge --}}
-                        @if($unitKerja->uk_short_name)
-                        <div class="unit-badge inline-block mb-6">
-                            <span class="bg-gradient-to-r from-cyan-100 to-teal-100 text-teal-700 px-6 py-2 rounded-full text-sm font-bold border-2 border-teal-200">
-                                {{ $unitKerja->uk_short_name }}
+                {{-- RIGHT: ACTION --}}
+                <div class="lg:w-3/5 bg-white p-10 flex flex-col justify-center relative" x-data="{ copied: false }">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-50 to-transparent rounded-bl-[3rem] pointer-events-none"></div>
+
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-indigo-500 font-bold text-xs tracking-widest uppercase block">Program Survei</span>
+
+                            {{-- Periode Badge --}}
+                            @php $daysLeft = \Carbon\Carbon::now()->diffInDays($program->end_date, false); @endphp
+                            @if($daysLeft > 0 && $daysLeft <= 7)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wider border border-rose-100 animate-pulse">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Sisa {{ ceil($daysLeft) }} Hari
+                                </span>
+                                @elseif($daysLeft > 7)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider border border-emerald-100">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    Aktif s.d {{ \Carbon\Carbon::parse($program->end_date)->format('d M Y') }}
+                                </span>
+                                @endif
+                        </div>
+
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+                            {{ $program->title }}
+                        </h2>
+
+                        {{-- Social Proof --}}
+                        @if(isset($respondentCount))
+                        <div class="flex items-center gap-3 mb-6 bg-slate-50 w-fit px-4 py-2 rounded-full border border-slate-100">
+                            <div class="flex -space-x-2">
+                                @forelse($latestRespondents as $idx => $resp)
+                                @php
+                                $colors = ['bg-teal-100 text-teal-700', 'bg-indigo-100 text-indigo-700', 'bg-rose-100 text-rose-700'];
+                                $colorClass = $colors[$idx % count($colors)];
+                                @endphp
+                                <div class="w-6 h-6 rounded-full {{ $colorClass }} border-2 border-white flex items-center justify-center text-[8px] font-black shadow-sm">
+                                    {{ strtoupper(substr($resp->user->username ?? 'A', 0, 1)) }}
+                                </div>
+                                @empty
+                                <div class="w-6 h-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-bold text-slate-500">?</div>
+                                @endforelse
+                            </div>
+
+                            <span class="text-xs font-medium text-slate-500">
+                                @if($respondentCount > 0)
+                                <span class="font-black text-slate-900">{{ number_format($respondentCount) }}</span> Partisipan telah mengisi
+                                @else
+                                Jadilah <span class="font-bold text-teal-600">Responden Pertama!</span>
+                                @endif
                             </span>
                         </div>
                         @endif
 
-                        {{-- Address/Description --}}
-                        <p class="unit-address text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-                            {{ $unitKerja->address ?? 'Layanan ' . $unitKerja->unit_kerja_name . ' UIN Antasari Banjarmasin.' }}
+                        <p class="text-slate-500 text-lg leading-relaxed border-l-4 border-teal-500 pl-4">
+                            {{ $program->description ?? 'Partisipasi Anda sangat berharga. Bantu kami meningkatkan kualitas layanan dengan mengisi survei singkat ini.' }}
                         </p>
+                    </div>
 
-                        {{-- Divider --}}
-                        <div class="divider-line flex items-center justify-center my-8">
-                            <div class="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent w-full max-w-md"></div>
+                    {{-- Benefit Pills --}}
+                    <div class="flex flex-wrap gap-3 mb-10">
+                        <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 text-xs font-bold">
+                            <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Anonim & Aman
+                        </div>
+                        <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 text-xs font-bold">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Cepat (< 5 Menit)
+                                </div>
                         </div>
 
-                        {{-- Survey Action Card --}}
-                        <div class="survey-action-card bg-gradient-to-br from-slate-50 to-cyan-50 p-6 sm:p-8 rounded-2xl border-2 border-cyan-100 shadow-lg">
-                            {{-- Program Info --}}
-                            <div class="mb-6">
-                                <div class="flex items-center justify-center mb-3">
-                                    <div class="bg-gradient-to-r from-cyan-500 to-teal-500 text-white px-4 py-1.5 rounded-full text-xs font-black">
-                                        PROGRAM SURVEI
-                                    </div>
-                                </div>
-                                <h2 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2">
-                                    {{ $program->title }}
-                                </h2>
-                                <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
-                                    {{ $program->description ?? 'Berikan feedback untuk meningkatkan kualitas layanan kami.' }}
-                                </p>
-                            </div>
-
-                            {{-- Features List --}}
-                            <div class="features-list grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                                <div class="feature-item bg-white p-4 rounded-xl shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <p class="text-xs font-bold text-gray-700">Cepat & Mudah</p>
-                                </div>
-                                <div class="feature-item bg-white p-4 rounded-xl shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
-                                    <p class="text-xs font-bold text-gray-700">Aman & Anonim</p>
-                                </div>
-                                <div class="feature-item bg-white p-4 rounded-xl shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                    <p class="text-xs font-bold text-gray-700">Berdampak Nyata</p>
-                                </div>
-                            </div>
-
-                            {{-- CTA Button --}}
-                            <a href="{{ route('public.survey.fill', ['program' => $program, 'unitKerja' => $unitKerja]) }}"
-                                class="cta-button group relative inline-flex items-center justify-center w-full bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white font-black py-5 px-8 rounded-2xl text-base sm:text-lg overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
-                                <span class="absolute inset-0 bg-gradient-to-r from-blue-600 via-teal-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                                <span class="relative flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Isi Survei Sekarang
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
-                                </span>
-                            </a>
-
-                            {{-- Info Text --}}
-                            <p class="info-text mt-4 text-xs text-gray-500">
-                                🔒 Data Anda aman dan bersifat rahasia
-                            </p>
-                        </div>
-
-                        {{-- Back Button --}}
-                        <div class="back-button mt-8">
-                            <a href="{{ route('public.survey.directory', $program) }}" class="inline-flex items-center text-gray-600 hover:text-teal-600 font-semibold transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        {{-- Big CTA Button --}}
+                        <a href="{{ route('public.survey.fill', ['program' => $program, 'unitKerja' => $unitKerja]) }}"
+                            class="group relative w-full inline-flex items-center justify-center bg-slate-900 text-white font-black py-5 px-8 rounded-2xl overflow-hidden shadow-xl shadow-slate-300 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-teal-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                            <span class="relative flex items-center gap-3">
+                                Mulai Pengisian
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
-                                Kembali ke Daftar Unit
+                            </span>
+                        </a>
+
+                        {{-- Share Buttons --}}
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <button @click="navigator.clipboard.writeText(window.location.href); copied=true; setTimeout(()=>copied=false, 2000)"
+                                class="flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 hover:text-slate-900 transition-all">
+                                <svg x-show="!copied" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                <svg x-show="copied" class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span x-text="copied ? 'Tersalin!' : 'Salin Link'"></span>
+                            </button>
+
+                            <a href="https://wa.me/?text=Ayo isi survei {{ $program->title }} di unit {{ $unitKerja->unit_kerja_name }}! {{ request()->url() }}"
+                                target="_blank"
+                                class="flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-all">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                </svg>
+                                WhatsApp
                             </a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        {{-- Wave Bottom --}}
-        <div class="absolute bottom-0 left-0 w-full">
-            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
-                <path d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" fill="#F8FAFC"></path>
-            </svg>
-        </div>
+            </div>
     </section>
 
-    {{-- GSAP Animations - FIXED --}}
+    {{-- SCRIPT QR CODE --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const isMobile = window.innerWidth < 768;
-
-            // === FORCE VISIBILITY FIRST (IMPORTANT!) ===
-            gsap.set('.cta-button, .survey-action-card, .unit-card', {
-                opacity: 1,
-                visibility: 'visible'
-            });
-
-            // === FLOATING SHAPES ===
-            gsap.to('.floating-shape', {
-                y: 30,
-                x: 20,
-                duration: 4,
-                stagger: 0.5,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-
-            // === MAIN TIMELINE ===
-            const tl = gsap.timeline({
-                defaults: {
-                    ease: "power3.out"
-                },
-                onStart: () => {
-                    // Ensure elements are visible when animation starts
-                    gsap.set('.cta-button', {
-                        opacity: 1,
-                        visibility: 'visible'
-                    });
-                }
-            });
-
-            tl.from('.breadcrumb', {
-                    opacity: 0,
-                    y: -20,
-                    duration: 0.6
-                })
-                .from('.unit-card', {
-                    opacity: 0,
-                    scale: 0.9,
+            if (typeof gsap !== 'undefined') {
+                gsap.from('.unit-card-anim', {
                     y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power3.out"
+                });
+                gsap.from('.animate-fade-down', {
+                    y: -20,
+                    opacity: 0,
                     duration: 0.8,
-                    ease: "back.out(1.3)",
-                    clearProps: "opacity,scale,y"
-                }, "-=0.3")
-                .from('.unit-icon-wrapper', {
-                    opacity: 0,
-                    scale: 0.5,
-                    rotation: -180,
-                    duration: 0.8,
-                    ease: "back.out(1.5)",
-                    clearProps: "opacity,scale,rotation"
-                }, "-=0.5")
-                .from('.unit-title', {
-                    opacity: 0,
-                    y: 20,
-                    duration: 0.6,
-                    clearProps: "opacity,y"
-                }, "-=0.4")
-                .from('.unit-badge', {
-                    opacity: 0,
-                    scale: 0.8,
-                    duration: 0.5,
-                    clearProps: "opacity,scale"
-                }, "-=0.3")
-                .from('.unit-address', {
-                    opacity: 0,
-                    y: 15,
-                    duration: 0.5,
-                    clearProps: "opacity,y"
-                }, "-=0.3")
-                .from('.divider-line', {
-                    opacity: 0,
-                    scaleX: 0,
-                    duration: 0.6,
-                    clearProps: "opacity,scaleX"
-                }, "-=0.2")
-                .from('.survey-action-card', {
-                    opacity: 0,
-                    y: 30,
-                    duration: 0.7,
-                    ease: "power2.out",
-                    clearProps: "opacity,y"
-                }, "-=0.3")
-                .from('.feature-item', {
-                    opacity: 0,
-                    y: 20,
-                    stagger: 0.1,
-                    duration: 0.5,
-                    clearProps: "opacity,y"
-                }, "-=0.4")
-                .from('.cta-button', {
-                    opacity: 0,
-                    scale: 0.9,
-                    duration: 0.6,
-                    ease: "back.out(1.5)",
-                    clearProps: "all"
-                }, "-=0.3")
-                .from('.info-text', {
-                    opacity: 0,
-                    duration: 0.4,
-                    clearProps: "opacity"
-                }, "-=0.2")
-                .from('.back-button', {
-                    opacity: 0,
-                    x: -20,
-                    duration: 0.5,
-                    clearProps: "opacity,x"
-                }, "-=0.2");
-
-            gsap.to('.cta-button', {
-                boxShadow: "0 0 40px rgba(20, 184, 166, 0.6)", 
-                duration: 2,
-                repeat: -1,
-                yoyo: true,
-                ease: "power1.inOut"
-            });
-
-            setTimeout(() => {
-                gsap.set('.cta-button, .survey-action-card, .unit-card, .feature-item', {
-                    opacity: 1,
-                    visibility: 'visible',
-                    clearProps: "all"
+                    delay: 0.2
                 });
-            }, 2000);
+            }
 
-            document.querySelectorAll('.feature-item').forEach((item, index) => {
-                item.addEventListener('mouseenter', () => {
-                    gsap.to(item, {
-                        y: -5,
-                        scale: 1.05,
-                        boxShadow: "0 10px 30px rgba(20, 184, 166, 0.2)", // teal-600 dengan opacity
-                        duration: 0.3,
-                        ease: "power2.out"
-                    });
-                });
+            // Generate QR Code (Ukuran Besar: 180)
+            const surveyUrl = "{{ route('public.survey.fill', ['program' => $program, 'unitKerja' => $unitKerja]) }}";
 
-                item.addEventListener('mouseleave', () => {
-                    gsap.to(item, {
-                        y: 0,
-                        scale: 1,
-                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                        duration: 0.3,
-                        ease: "power2.out"
-                    });
-                });
+            new QRCode(document.getElementById("qrcode"), {
+                text: surveyUrl,
+                width: 180,
+                height: 180,
+                colorDark: "#0f172a", // Slate 900
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
         });
     </script>
     @endpush
+
 </x-guest-layout>

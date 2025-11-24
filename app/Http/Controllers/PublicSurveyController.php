@@ -119,12 +119,26 @@ class PublicSurveyController extends Controller
         $unitKerja = UnitKerja::where('alias', $unitKerjaAlias)->firstOrFail();
 
         if (!$program->targetedUnitKerjas->contains($unitKerja)) {
-            // Cek juga kalau ini unit pemilik program (untuk case program mandiri)
             if ($program->unit_kerja_id != $unitKerja->id) {
                 abort(404, 'Unit kerja tidak terdaftar dalam program ini.');
             }
         }
 
-        return view('public.unit-landing', compact('program', 'unitKerja'));
+        // 1. Hitung Total Responden (Real)
+        $respondentCount = Answer::where('survey_program_id', $program->id)
+            ->where('unit_kerja_id', $unitKerja->id)
+            ->distinct('user_id')
+            ->count();
+
+        // 2. Ambil 3 Responden Terakhir (Real) untuk Avatar
+        $latestRespondents = Answer::with('user') // Pastikan relasi user ada di model Answer
+            ->where('survey_program_id', $program->id)
+            ->where('unit_kerja_id', $unitKerja->id)
+            ->latest()
+            ->get()
+            ->unique('user_id')
+            ->take(3);
+
+        return view('public.unit-landing', compact('program', 'unitKerja', 'respondentCount', 'latestRespondents'));
     }
 }

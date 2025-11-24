@@ -78,12 +78,140 @@
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden flex flex-col min-h-screen"
+    x-data="{ 
+        mobileMenuOpen: false, 
+        scrolled: false,
+        
+        /* --- LOGIC NOTIFIKASI (TOAST) --- */
+        notifications: [],
+        add(message, type = 'success') {
+            const id = Date.now();
+            this.notifications.push({ id, message, type });
+            setTimeout(() => this.remove(id), 5000);
+        },
+        remove(id) {
+            this.notifications = this.notifications.filter(n => n.id !== id);
+        },
+
+        /* --- LOGIC MODAL KONFIRMASI --- */
+        confirmOpen: false,
+        confirmTitle: '',
+        confirmMessage: '',
+        confirmCallback: null,
+        askConfirmation(title, message, callback) {
+            this.confirmTitle = title;
+            this.confirmMessage = message;
+            this.confirmCallback = callback;
+            this.confirmOpen = true;
+        },
+        confirmAction() {
+            if (this.confirmCallback) this.confirmCallback();
+            this.confirmOpen = false;
+        }
+    }"
+    @scroll.window="scrolled = (window.pageYOffset > 10)"
+    @notify.window="add($event.detail.message, $event.detail.type)"
+    @confirm-action.window="askConfirmation($event.detail.title, $event.detail.message, $event.detail.callback)">
+
+    
+    
+    
+    <div class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none">
+        <?php if(session()->has('success')): ?> <div x-init="add('<?php echo e(session('success')); ?>', 'success')"></div> <?php endif; ?>
+        <?php if(session()->has('error')): ?> <div x-init="add('<?php echo e(session('error')); ?>', 'error')"></div> <?php endif; ?>
+        <?php if(session()->has('info')): ?> <div x-init="add('<?php echo e(session('info')); ?>', 'info')"></div> <?php endif; ?>
+
+        <template x-for="notif in notifications" :key="notif.id">
+            <div x-show="true"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-x-8 scale-95"
+                x-transition:enter-end="opacity-100 translate-x-0 scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-x-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-x-8 scale-95"
+                class="pointer-events-auto w-full max-w-sm bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-100 p-4 flex items-start gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
+                @click="remove(notif.id)">
+
+                <div class="shrink-0">
+                    <template x-if="notif.type === 'success'">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg></div>
+                    </template>
+                    <template x-if="notif.type === 'error'">
+                        <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg></div>
+                    </template>
+                    <template x-if="notif.type === 'info'">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg></div>
+                    </template>
+                </div>
+                <div class="flex-1 pt-1">
+                    <p class="text-sm font-bold text-slate-800" x-text="notif.message"></p>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    
+    
+    
+    <div x-show="confirmOpen"
+        class="fixed inset-0 z-[200] flex items-center justify-center px-4"
+        style="display: none;">
+
+        
+        <div x-show="confirmOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+            @click="confirmOpen = false"></div>
+
+        
+        <div x-show="confirmOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+            x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+            class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 text-center overflow-hidden">
+
+            
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-teal-400 to-cyan-500"></div>
+
+            <div class="mx-auto w-14 h-14 bg-teal-50 rounded-full flex items-center justify-center text-teal-600 mb-4 mt-2">
+                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-900 mb-2" x-text="confirmTitle"></h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-6" x-text="confirmMessage"></p>
+
+            <div class="flex gap-3">
+                <button @click="confirmOpen = false"
+                    class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors text-sm">
+                    Batal
+                </button>
+                <button @click="confirmAction()"
+                    class="flex-1 px-4 py-2.5 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition-colors text-sm shadow-lg">
+                    Ya, Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
 
     
     <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        x-data="{ mobileMenuOpen: false, scrolled: false }"
-        @scroll.window="scrolled = (window.pageYOffset > 10)"
         :class="{ 'header-scrolled py-3': scrolled, 'bg-transparent py-5': !scrolled }">
 
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,7 +268,7 @@
                                     <?php if(auth()->user()->role_id == 1): ?>
                                     <a href="<?php echo e(route('superadmin.dashboard')); ?>" class="flex items-center gap-2 px-3 py-2 text-sm font-bold text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                                         </svg>
                                         Dashboard Admin
                                     </a>
@@ -308,18 +436,6 @@
                                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                             </svg>
                         </a>
-                        
-                        <a href="#" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-[#FF0000] hover:text-white transition-all hover:-translate-y-1" title="YouTube">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                            </svg>
-                        </a>
-                        
-                        <a href="#" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-black hover:text-white transition-all hover:-translate-y-1" title="TikTok">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 1 0 7.75 6.76V7.9A9 9 0 0 0 16 8.47 8.23 8.23 0 0 0 19.59 6.69z" />
-                            </svg>
-                        </a>
                     </div>
                 </div>
 
@@ -420,7 +536,7 @@
             
             <div class="border-t border-white/10 pt-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-xs text-slate-500">
-                    &copy; <?php echo e(date('Y')); ?> <strong class="text-slate-300">UIN Antasari Banjarmasin</strong>. All rights reserved.
+                    © <?php echo e(date('Y')); ?> <strong class="text-slate-300">UIN Antasari Banjarmasin</strong>. All rights reserved.
                 </p>
                 <p class="text-xs text-slate-600">Dikembangkan oleh Muhammad Alfin Nur Huda</p>
             </div>

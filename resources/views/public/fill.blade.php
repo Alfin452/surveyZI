@@ -1,283 +1,450 @@
+{{-- 1. DATA PREPARATION (PHP) --}}
+@php
+// Mapping ID Pertanyaan => Index Section
+$sectionMap = [];
+$allQuestionIds = [];
+
+foreach($program->questionSections as $sIndex => $section) {
+foreach($section->questions as $question) {
+$sectionMap[$question->id] = $sIndex;
+$allQuestionIds[] = $question->id;
+}
+}
+
+// Ambil data lama jika ada error validasi server (Old Input)
+$oldAnswers = old('answers', []);
+@endphp
+
 <x-guest-layout :title="$program->title">
 
-    <section class="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 pt-28 pb-12 overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute inset-0" style="background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px); background-size: 50px 50px;"></div>
+    @push('styles')
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        /* Background */
+        body {
+            background-color: #f8fafc;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar Minimalis */
+        .nav-scroll::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Animation Shake */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-4px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+        }
+    </style>
+    @endpush
+
+    {{-- MAIN WRAPPER --}}
+    <div x-data="{
+            step: 0,
+            totalSteps: {{ $program->questionSections->count() }},
+            answers: {{ json_encode((object)$oldAnswers) }}, // Load old inputs
+            sectionMap: {{ json_encode($sectionMap) }},
+            allQuestions: {{ json_encode($allQuestionIds) }},
+            showMobileNav: false,
+            isSubmitting: false, // STATE LOADING
+
+            init() {
+                window.scrollTo(0, 0);
+            },
+            nextStep() {
+                if (this.step < this.totalSteps - 1) {
+                    this.step++;
+                    this.scrollToTop();
+                }
+            },
+            prevStep() {
+                if (this.step > 0) {
+                    this.step--;
+                    this.scrollToTop();
+                }
+            },
+            jumpToSection(index, elementId = null) {
+                this.step = index;
+                if (elementId) {
+                    setTimeout(() => {
+                        const el = document.getElementById(elementId);
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.classList.add('ring-2', 'ring-emerald-500', 'ring-offset-2');
+                            setTimeout(() => el.classList.remove('ring-2', 'ring-emerald-500', 'ring-offset-2'), 1500);
+                        }
+                    }, 300);
+                } else {
+                    this.scrollToTop();
+                }
+            },
+            
+            // VALIDASI & SUBMIT DENGAN LOADING
+            validateAndSubmit() {
+                let firstUnansweredId = this.allQuestions.find(id => !this.answers[id]);
+
+                if (firstUnansweredId) {
+                    let targetSection = this.sectionMap[firstUnansweredId];
+                    this.step = targetSection;
+
+                    setTimeout(() => {
+                        const el = document.getElementById('q-' + firstUnansweredId);
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.classList.add('ring-2', 'ring-red-400', 'bg-red-50', 'animate-shake');
+                            
+                            window.dispatchEvent(new CustomEvent('notify', { 
+                                detail: { message: 'Mohon lengkapi semua pertanyaan!', type: 'error' } 
+                            }));
+
+                            setTimeout(() => {
+                                el.classList.remove('ring-2', 'ring-red-400', 'bg-red-50', 'animate-shake');
+                            }, 2000);
+                        }
+                    }, 300);
+                } else {
+                    // Modal Konfirmasi
+                    window.dispatchEvent(new CustomEvent('confirm-action', { 
+                        detail: { 
+                            title: 'Kirim Jawaban?', 
+                            message: 'Pastikan semua jawaban sudah sesuai. Data tidak dapat diubah setelah dikirim.',
+                            callback: () => {
+                                // Aktifkan Loading State
+                                this.isSubmitting = true; 
+                                document.getElementById('surveyForm').submit();
+                            }
+                        } 
+                    }));
+                }
+            },
+
+            handleAnswer(questionId, value, nextElementId = null) {
+                this.answers[questionId] = value;
+                if (nextElementId) {
+                    setTimeout(() => {
+                        const nextEl = document.getElementById(nextElementId);
+                        if (nextEl) {
+                            nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 500);
+                }
+            },
+            isAnswered(questionId) {
+                return this.answers[questionId] != null;
+            },
+            scrollToTop() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }"
+        class="min-h-screen flex flex-col pt-28 pb-24">
+
+        {{-- 1. HEADER PROGRAM --}}
+        <div class="container mx-auto px-4 mb-8">
+            <div class="bg-white border border-slate-200 rounded-lg shadow-sm p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+
+                <div class="flex items-center gap-5 w-full md:w-auto">
+                    <a href="{{ route('home') }}" class="p-3 rounded-md bg-slate-50 text-slate-500 hover:bg-emerald-600 hover:text-white transition-colors border border-slate-200">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </a>
+                    <div>
+                        <div class="flex items-center gap-3 mb-1 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            <span>{{ $unitKerja->unit_kerja_name }}</span>
+                            <span class="text-slate-300">|</span>
+                            <span x-text="'BAGIAN ' + (step + 1) + ' / ' + totalSteps"></span>
+                        </div>
+                        <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-none tracking-tight">
+                            {{ $program->title }}
+                        </h1>
+                    </div>
+                </div>
+
+                {{-- Progress Bar --}}
+                <div class="w-full md:w-64 flex flex-col gap-2">
+                    <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        <span>Kelengkapan</span>
+                        <span x-text="Math.round(((Object.keys(answers).length) / {{ $program->questionSections->flatMap->questions->count() }}) * 100) + '%'"></span>
+                    </div>
+                    <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-emerald-500 transition-all duration-500 ease-out"
+                            :style="`width: ${((Object.keys(answers).length) / {{ $program->questionSections->flatMap->questions->count() }}) * 100}%`"></div>
+                    </div>
+                </div>
+
+                {{-- Mobile Toggle --}}
+                <button @click="showMobileNav = !showMobileNav" class="lg:hidden absolute top-6 right-6 p-2 text-slate-400 hover:text-emerald-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="max-w-3xl mx-auto mb-8">
-                <div class="flex items-center justify-center gap-2">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-white text-indigo-600 font-black flex items-center justify-center">✓</div>
-                        <span class="ml-2 text-white text-sm font-semibold hidden sm:inline">Pilih Unit</span>
+        {{-- 2. MAIN CONTENT --}}
+        <div class="flex-1 container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+
+                {{-- GLOBAL COUNTER --}}
+                @php $qNumber = 1; @endphp
+
+                {{-- LEFT: NAVIGATOR --}}
+                @if($program->questionSections->count() > 0)
+                <aside class="hidden lg:block w-80 shrink-0 sticky top-32">
+                    <div class="bg-white rounded-[2rem] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col max-h-[calc(100vh-10rem)]">
+                        <div class="p-6 border-b border-slate-50">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-widest">Peta Soal</span>
+                        </div>
+
+                        <div class="p-6 overflow-y-auto nav-scroll space-y-8 flex-1">
+                            @php $navIndex = 1; @endphp
+                            @foreach($program->questionSections as $sIndex => $section)
+                            <div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Bagian {{ $sIndex + 1 }}</span>
+                                    <span x-show="step === {{ $sIndex }}" class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                                </div>
+                                <div class="grid grid-cols-5 gap-2">
+                                    @foreach($section->questions as $question)
+                                    <button type="button" @click="jumpToSection({{ $sIndex }}, 'q-{{ $question->id }}')"
+                                        class="w-10 h-10 rounded-2xl text-xs font-bold transition-all duration-300 flex items-center justify-center relative group"
+                                        :class="isAnswered({{ $question->id }}) 
+                                                ? 'bg-emerald-500 text-white shadow-md shadow-emerald-200 transform scale-105' 
+                                                : (step === {{ $sIndex }} ? 'bg-slate-800 text-white shadow-lg shadow-slate-300 scale-110' : 'bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500')">
+                                        {{ $navIndex++ }}
+                                    </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
-                    <div class="w-12 sm:w-20 h-1 bg-white/30"></div>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-white text-indigo-600 font-black flex items-center justify-center">✓</div>
-                        <span class="ml-2 text-white text-sm font-semibold hidden sm:inline">Data Diri</span>
-                    </div>
-                    <div class="w-12 sm:w-20 h-1 bg-white/30"></div>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-white text-indigo-600 font-black flex items-center justify-center">3</div>
-                        <span class="ml-2 text-white text-sm font-semibold hidden sm:inline">Isi Survei</span>
-                    </div>
+                </aside>
+                @endif
+
+                {{-- RIGHT: FORM QUESTIONS --}}
+                <div class="flex-1 w-full min-w-0">
+                    <form id="surveyForm" action="{{ route('public.survey.storeResponse', ['program' => $program, 'unitKerja' => $unitKerja]) }}" method="POST">
+                        @csrf
+
+                        @if($program->questionSections->count() > 0)
+                        @foreach($program->questionSections as $index => $section)
+                        <div x-show="step === {{ $index }}" x-cloak
+                            x-transition:enter="transition ease-out duration-700"
+                            x-transition:enter-start="opacity-0 translate-y-12"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            class="space-y-10">
+
+                            {{-- Section Header --}}
+                            <div class="px-4 md:px-0">
+                                <span class="inline-block px-3 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-widest mb-3">
+                                    Bagian {{ $index + 1 }}
+                                </span>
+                                <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">{{ $section->title }}</h2>
+                                @if($section->description)
+                                <p class="text-slate-500 text-lg leading-relaxed max-w-3xl">{{ $section->description }}</p>
+                                @endif
+                            </div>
+
+                            {{-- Questions List --}}
+                            <div class="space-y-8">
+                                @forelse($section->questions as $qIndex => $question)
+
+                                @php
+                                $nextQuestion = $section->questions->get($qIndex + 1);
+                                $nextElementId = $nextQuestion ? 'q-' . $nextQuestion->id : null;
+                                @endphp
+
+                                <div id="q-{{ $question->id }}"
+                                    class="group bg-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.03)] transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.07)] scroll-mt-40 relative"
+                                    :class="isAnswered({{ $question->id }}) ? 'bg-gradient-to-br from-white to-emerald-50/30' : ''">
+
+                                    {{-- Indikator Terjawab --}}
+                                    <div x-show="isAnswered({{ $question->id }})"
+                                        x-transition.scale.origin.center
+                                        class="absolute top-8 right-8 w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-sm">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="flex gap-6">
+                                        {{-- Nomor Soal --}}
+                                        <div class="shrink-0 text-3xl font-black text-slate-200 select-none group-hover:text-emerald-100 transition-colors duration-500">
+                                            {{ str_pad($qNumber++, 2, '0', STR_PAD_LEFT) }}
+                                        </div>
+
+                                        <div class="flex-1 pt-1.5">
+                                            <h3 class="text-xl font-bold text-slate-800 mb-8 leading-relaxed">
+                                                {{ $question->question_body }}
+                                            </h3>
+
+                                            {{-- Pilihan Jawaban Hijau --}}
+                                            <div class="grid gap-4">
+                                                @foreach($question->options as $option)
+                                                <label class="relative cursor-pointer group/opt">
+                                                    <input type="radio"
+                                                        name="answers[{{ $question->id }}]"
+                                                        value="{{ $option->id }}"
+                                                        {{-- Old value --}}
+                                                        {{ old('answers.'.$question->id) == $option->id ? 'checked' : '' }}
+                                                        @click="handleAnswer({{ $question->id }}, '{{ $option->id }}', '{{ $nextElementId }}')"
+                                                        class="peer sr-only">
+
+                                                    {{-- Card Styling (Green Focus) --}}
+                                                    <div class="px-6 py-5 rounded-2xl bg-slate-50 border-2 border-transparent transition-all duration-200
+                                                                    hover:bg-white hover:shadow-md hover:border-emerald-200 hover:-translate-y-0.5
+                                                                    peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:shadow-lg peer-checked:shadow-emerald-200/50
+                                                                    flex items-center gap-4">
+
+                                                        {{-- Radio Circle Filled --}}
+                                                        <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center transition-all duration-200
+                                                                        peer-checked:border-emerald-600 peer-checked:bg-emerald-600 shrink-0 group-hover/opt:border-emerald-400">
+                                                            {{-- Dot Putih --}}
+                                                            <div class="w-2 h-2 rounded-full bg-white opacity-0 transition-all duration-200 transform scale-0 peer-checked:opacity-100 peer-checked:scale-100"></div>
+                                                        </div>
+
+                                                        <span class="text-base font-semibold text-slate-600 group-hover/opt:text-slate-800 peer-checked:text-emerald-900 transition-colors">
+                                                            {{ $option->option_body }}
+                                                        </span>
+                                                    </div>
+                                                </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center py-20 bg-white rounded-[3rem] border border-dashed border-slate-200">
+                                    <p class="text-slate-400 font-medium">Tidak ada pertanyaan.</p>
+                                </div>
+                                @endforelse
+                            </div>
+
+                            {{-- Navigation Buttons --}}
+                            <div class="flex items-center justify-between pt-16 pb-8">
+                                <button type="button" @click="prevStep()" x-show="step > 0"
+                                    class="px-8 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-white hover:shadow-md hover:text-slate-900 transition-all flex items-center gap-3">
+                                    <span class="text-lg">&larr;</span> Sebelumnya
+                                </button>
+                                <div x-show="step === 0"></div>
+
+                                <div class="flex gap-4">
+                                    <button type="button" @click="nextStep()" x-show="step < totalSteps - 1"
+                                        class="bg-white text-slate-800 px-10 py-4 rounded-2xl font-bold text-sm shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                                        Selanjutnya <span class="text-lg">&rarr;</span>
+                                    </button>
+
+                                    {{-- TOMBOL KIRIM (Loading State) --}}
+                                    <button type="button"
+                                        x-show="step === totalSteps - 1"
+                                        @click="validateAndSubmit()"
+                                        :disabled="isSubmitting"
+                                        class="bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold text-sm shadow-xl shadow-emerald-500/30 hover:bg-emerald-700 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed">
+
+                                        <span x-show="!isSubmitting">Kirim Jawaban</span>
+                                        <svg x-show="!isSubmitting" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+
+                                        <svg x-show="isSubmitting" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span x-show="isSubmitting">Memproses...</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        @endforeach
+                        @else
+                        {{-- EMPTY STATE --}}
+                        <div class="text-center py-32 bg-white rounded-[3rem] shadow-sm">
+                            <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-black text-slate-900 mb-2">Belum Ada Soal</h3>
+                            <p class="text-slate-500 font-medium mb-8">Hubungi admin untuk input data.</p>
+                            <a href="{{ route('home') }}" class="px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-sm font-bold hover:bg-slate-800 transition-all">Kembali</a>
+                        </div>
+                        @endif
+
+                    </form>
                 </div>
+
             </div>
+        </div>
 
-            <div class="text-center mb-8">
-                <div class="inline-block mb-4">
-                    <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm">
-                        📝 {{ $unitKerja->unit_kerja_name }}
-                    </span>
+        {{-- MOBILE NAV --}}
+        <div x-show="showMobileNav" class="fixed inset-0 z-50 lg:hidden" style="display: none;">
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" @click="showMobileNav = false" x-transition.opacity></div>
+            <div class="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-2xl p-8 overflow-y-auto"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="translate-x-full"
+                x-transition:enter-end="translate-x-0">
+
+                <div class="flex justify-between items-center mb-10">
+                    <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest">Peta Soal</h3>
+                    <button @click="showMobileNav = false" class="text-slate-400 hover:text-slate-900"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg></button>
                 </div>
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">
-                    {{ $program->title }}
-                </h1>
-                <p class="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
-                    {{ $program->description ?? 'Berikan penilaian Anda untuk setiap pertanyaan berikut' }}
-                </p>
 
-                @if($program->questions)
-                <div class="inline-flex items-center bg-white/10 backdrop-blur-md rounded-full px-6 py-3 mt-6 border border-white/20">
-                    <svg class="w-5 h-5 text-yellow-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
-                    </svg>
-                    <span class="text-white font-bold">
-                        <span class="text-yellow-300">{{ $program->questions->count() }}</span> Pertanyaan
-                    </span>
+                @if($program->questionSections->count() > 0)
+                <div class="space-y-8">
+                    @php $mGlobalIndex = 1; @endphp
+                    @foreach($program->questionSections as $sIndex => $section)
+                    <div>
+                        <div class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-wider">Bagian {{ $sIndex + 1 }}</div>
+                        <div class="grid grid-cols-5 gap-3">
+                            @foreach($section->questions as $question)
+                            <button type="button" @click="jumpToSection({{ $sIndex }}, 'q-{{ $question->id }}'); showMobileNav = false"
+                                class="h-10 rounded-2xl text-xs font-bold flex items-center justify-center transition-all"
+                                :class="isAnswered({{ $question->id }}) ? 'bg-emerald-500 text-white shadow-md shadow-emerald-200' : 'bg-slate-50 text-slate-400'">
+                                {{ $mGlobalIndex++ }}
+                            </button>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
                 @endif
             </div>
         </div>
-    </section>
 
-    <main class="container mx-auto px-4 py-12 -mt-8 relative z-10">
-        <div class="max-w-4xl mx-auto">
-            <form action="{{ route('public.survey.storeResponse', ['program' => $program, 'unitKerja' => $unitKerja]) }}" method="POST" id="surveyForm">
-                @csrf
-
-                @php($questionCounter = 1)
-
-                <div class="space-y-12">
-                    @forelse($program->questionSections as $section)
-                    <div class="survey-section">
-                        <div class="pb-4 border-b-2 border-indigo-200 mb-8">
-                            <h2 class="text-2xl font-bold text-gray-800">{{ $section->title }}</h2>
-                            @if($section->description)
-                            <p class="mt-1 text-sm text-gray-600">{{ $section->description }}</p>
-                            @endif
-                        </div>
-
-                        <div class="space-y-6">
-                            @forelse($section->questions as $question)
-
-                            <div class="question-card bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-all duration-300">
-
-                                <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-6 py-4">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <span class="bg-white text-indigo-600 font-black text-lg px-4 py-2 rounded-lg shadow-lg">
-                                                {{ $questionCounter }}
-                                            </span>
-                                            @if($program->questions)
-                                            <span class="text-white text-sm font-semibold">dari {{ $program->questions->count() }}</span>
-                                            @endif
-                                        </div>
-                                        <div class="hidden sm:flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                            </svg>
-                                            <span class="text-white text-xs font-semibold">Wajib Dijawab</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="p-6 sm:p-8">
-                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-6 leading-relaxed">
-                                        {{ $questionCounter }}. {{ $question->question_body }}
-                                    </h3>
-
-                                    <fieldset>
-                                        <legend class="sr-only">Pilihan untuk pertanyaan {{ $questionCounter }}</legend>
-                                        <div class="space-y-3">
-                                            @forelse($question->options as $option)
-                                            <label for="option-{{ $option->id }}"
-                                                class="option-label group flex items-center p-4 sm:p-5 border-2 border-gray-300 rounded-xl cursor-pointer transition-all duration-300 hover:border-indigo-400 hover:bg-indigo-50 hover:shadow-md has-[:checked]:bg-gradient-to-r has-[:checked]:from-indigo-50 has-[:checked]:to-purple-50 has-[:checked]:border-indigo-600 has-[:checked]:ring-4 has-[:checked]:ring-indigo-100 has-[:checked]:shadow-lg">
-                                                <input id="option-{{ $option->id }}"
-                                                    name="answers[{{ $question->id }}]"
-                                                    type="radio"
-                                                    value="{{ $option->id }}"
-                                                    required
-                                                    class="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500 focus:ring-offset-2">
-                                                <span class="ml-4 text-sm sm:text-base font-semibold text-gray-700 group-has-[:checked]:text-indigo-700 flex-1">
-                                                    {{ $option->option_body }}
-                                                </span>
-                                                <svg class="w-6 h-6 text-indigo-600 opacity-0 group-has-[:checked]:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                                </svg>
-                                            </label>
-                                            @empty
-                                            <div class="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                                                <p class="text-gray-500 text-sm font-semibold">Tidak ada opsi untuk pertanyaan ini</p>
-                                            </div>
-                                            @endforelse
-                                        </div>
-                                        @error('answers.' . $question->id)
-                                        <p class="mt-3 text-sm text-red-600 flex items-center">
-                                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                            </svg>
-                                            {{ $message }}
-                                        </p>
-                                        @enderror
-                                    </fieldset>
-                                </div>
-                            </div>
-                            @php($questionCounter++)
-
-                            @empty
-                            <div class="text-center py-16 px-4 bg-white rounded-xl shadow-md border-2 border-dashed">
-                                <p class="font-semibold text-gray-600">Belum Ada Pertanyaan</p>
-                                <p class="text-sm mt-1">Admin belum menambahkan pertanyaan untuk bagian ini.</p>
-                            </div>
-                            @endforelse
-                        </div>
-                    </div>
-                    @empty
-                    <div class="text-center py-16 px-4 bg-white rounded-xl shadow-md border-2 border-dashed">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <p class="mt-4 font-semibold text-gray-600">Belum Ada Bagian Soal</p>
-                        <p class="text-sm mt-1">Admin belum menambahkan bagian soal atau pertanyaan untuk survei ini.</p>
-                    </div>
-                    @endforelse
-                </div>
-
-                <div class="mt-10 bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-6 sm:p-8">
-                    <div class="text-center mb-6">
-                        <h3 class="text-xl font-black text-gray-900 mb-2">
-                            Siap Mengirim Jawaban?
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Pastikan semua pertanyaan sudah dijawab sebelum mengirim
-                        </p>
-                    </div>
-
-                    <button type="submit"
-                        class="submit-button w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black py-4 px-8 rounded-xl hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 group">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Kirim Jawaban Survei</span>
-                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </button>
-
-                    <p class="text-xs text-center text-gray-500 mt-4">
-                        🔒 Jawaban Anda akan tersimpan secara anonim dan aman
-                    </p>
-                </div>
-            </form>
-        </div>
-    </main>
-
-    @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- AWAL PERBAIKAN ---
-            const firstError = document.querySelector('.text-red-600');
-            if (firstError) {
-                // 1. Temukan kartu error
-                const errorCard = firstError.closest('.question-card');
-
-                // 2. Cek apakah kartunya ada, baru scroll
-                if (errorCard) {
-                    errorCard.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-            }
-            // --- AKHIR PERBAIKAN ---
-
-            if (typeof gsap !== 'undefined') {
-                gsap.from('.question-card', {
-                    opacity: 0,
-                    y: 30,
-                    stagger: 0.1,
-                    duration: 0.6,
-                    ease: "power2.out",
-                    clearProps: "all"
-                });
-
-                gsap.from('.submit-button', {
-                    scrollTrigger: {
-                        trigger: '.submit-button',
-                        start: 'top 90%',
-                        once: true
-                    },
-                    opacity: 0,
-                    scale: 0.9,
-                    duration: 0.6,
-                    ease: "back.out(1.5)",
-                    clearProps: "all"
-                });
-
-                setTimeout(() => {
-                    gsap.set('.question-card, .submit-button', {
-                        opacity: 1,
-                        clearProps: "all"
-                    });
-                }, 2000);
-            }
-
-            const form = document.getElementById('surveyForm');
-            const questions = document.querySelectorAll('.question-card');
-
-            questions.forEach((card, index) => {
-                const radios = card.querySelectorAll('input[type="radio"]');
-                radios.forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        const badge = card.querySelector('.bg-white.text-indigo-600');
-                        if (badge && !badge.textContent.includes('✓')) {
-                            // badge.innerHTML = `${index + 1} <span class="text-green-500">✓</span>`;
-                        }
-                    });
-                });
-            });
-
-            form.addEventListener('submit', function(e) {
-                const unanswered = [];
-                questions.forEach((card, index) => {
-                    const radios = card.querySelectorAll('input[type="radio"]');
-                    const isAnswered = Array.from(radios).some(r => r.checked);
-                    if (!isAnswered) {
-                        unanswered.push(index + 1);
-                    }
-                });
-
-                if (unanswered.length > 0) {
-                    e.preventDefault();
-                    alert(`Mohon jawab pertanyaan nomor: ${unanswered.join(', ')}`);
-
-                    const firstUnanswered = questions[unanswered[0] - 1];
-                    firstUnanswered.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-
-                    firstUnanswered.classList.add('ring-4', 'ring-red-300');
-                    setTimeout(() => {
-                        firstUnanswered.classList.remove('ring-4', 'ring-red-300');
-                    }, 2000);
-                }
-            });
-        });
-    </script>
-    @endpush
+    </div>
 
 </x-guest-layout>

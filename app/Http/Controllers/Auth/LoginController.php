@@ -15,21 +15,24 @@ class LoginController extends Controller
 {
     /**
      * Mengarahkan pengguna ke dashboard yang sesuai setelah login.
-     * Ini akan menjadi "polisi lalu lintas" kita.
+     * PERBAIKAN: Menggunakan 'intended' agar redirect kembali ke halaman sebelumnya (misal: Form Survei).
      */
     public function dashboardRedirect()
     {
         $user = Auth::user();
 
+        // 1. Cek Role Admin
         if (strtolower($user->role?->role_name) === 'superadmin') {
-            return redirect()->route('superadmin.dashboard');
+            return redirect()->intended(route('superadmin.dashboard'));
         }
         if (strtolower($user->role?->role_name) === 'admin') {
-            return redirect()->route('unitkerja.admin.dashboard');
+            return redirect()->intended(route('unitkerja.admin.dashboard'));
         }
 
-        // Jika tidak ada peran admin, anggap sebagai responden dan arahkan ke halaman utama
-        return redirect()->route('home');
+        // 2. User Biasa / Responden
+        // PENTING: redirect()->intended(...) akan mengecek apakah ada URL tujuan sebelumnya (seperti link survei).
+        // Jika ada, user akan dilempar ke sana. Jika tidak ada, baru ke 'home'.
+        return redirect()->intended(route('home'));
     }
 
     /**
@@ -37,7 +40,7 @@ class LoginController extends Controller
      */
     public function showAdminLoginForm()
     {
-        return view('auth.login-admin'); 
+        return view('auth.login-admin');
     }
 
     /**
@@ -45,7 +48,7 @@ class LoginController extends Controller
      */
     public function showPublicLoginForm()
     {
-        return view('auth.login-public'); 
+        return view('auth.login-public');
     }
 
     /**
@@ -53,19 +56,20 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        // 1. Validasi Input (Username atau Email)
+        // 1. Validasi Input
         $request->validate([
-            'username' => ['required', 'string'], // Ubah jadi 'username' agar sesuai form
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        // 2. Tentukan apakah input adalah Email atau Username
+        // 2. Tentukan tipe login (Email/Username)
         $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         // 3. Coba Login
         if (Auth::attempt([$loginType => $request->username, 'password' => $request->password], $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Panggil fungsi redirect pintar
             return $this->dashboardRedirect();
         }
 
@@ -107,13 +111,12 @@ class LoginController extends Controller
                 ->first();
 
             if ($user) {
-                // Jika user admin mencoba login via Google, tetap arahkan ke dashboard yang benar
-                if (in_array(strtolower($user->role?->role_name), ['superadmin', 'admin'])) {
-                    Auth::login($user);
-                    return $this->dashboardRedirect();
+                // Update Google ID jika belum ada
+                if (!$user->google_id) {
+                    $user->update(['google_id' => $googleUser->id]);
                 }
-                $user->update(['google_id' => $googleUser->id]);
             } else {
+                // Buat User Baru
                 $userRole = Role::where('role_name', 'User')->firstOrFail();
                 $user = User::create([
                     'username' => $googleUser->name,
@@ -126,8 +129,9 @@ class LoginController extends Controller
             }
 
             Auth::login($user);
-            // Arahkan ke halaman utama untuk responden
-            return redirect()->route('home');
+
+            // PERBAIKAN: Gunakan dashboardRedirect agar logika 'intended' berjalan
+            return $this->dashboardRedirect();
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Terjadi kesalahan saat login dengan Google.');
         }

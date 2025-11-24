@@ -1,297 +1,43 @@
 <x-guest-layout>
-    {{-- HERO SECTION - MODERN DESIGN --}}
-    <section id="beranda" class="section-nav relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-cyan-900 to-teal-900 pt-16">
-        {{-- Animated Background Elements --}}
-        <div class="absolute inset-0">
-            <div class="absolute top-20 left-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-20 right-10 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-            <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
-        </div>
 
-        {{-- Floating Particles Effect --}}
-        <div class="absolute inset-0 overflow-hidden opacity-30">
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 5%; top: 10%; animation-delay: 0s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 15%; top: 25%; animation-delay: 0.5s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 25%; top: 40%; animation-delay: 1s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 35%; top: 15%; animation-delay: 1.5s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 45%; top: 60%; animation-delay: 2s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 55%; top: 30%; animation-delay: 2.5s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 65%; top: 70%; animation-delay: 3s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 75%; top: 20%; animation-delay: 3.5s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 85%; top: 50%; animation-delay: 4s;"></div>
-            <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="left: 95%; top: 35%; animation-delay: 4.5s;"></div>
-            <div class="absolute w-2 h-2 bg-teal-400 rounded-full animate-float" style="left: 10%; top: 80%; animation-delay: 5s;"></div>
-            <div class="absolute w-2 h-2 bg-teal-400 rounded-full animate-float" style="left: 20%; top: 55%; animation-delay: 5.5s;"></div>
-            <div class="absolute w-2 h-2 bg-teal-400 rounded-full animate-float" style="left: 30%; top: 75%; animation-delay: 6s;"></div>
-            <div class="absolute w-2 h-2 bg-teal-400 rounded-full animate-float" style="left: 40%; top: 45%; animation-delay: 6.5s;"></div>
-            <div class="absolute w-2 h-2 bg-teal-400 rounded-full animate-float" style="left: 50%; top: 85%; animation-delay: 7s;"></div>
-            <div class="absolute w-2 h-2 bg-blue-400 rounded-full animate-float" style="left: 60%; top: 10%; animation-delay: 7.5s;"></div>
-            <div class="absolute w-2 h-2 bg-blue-400 rounded-full animate-float" style="left: 70%; top: 65%; animation-delay: 8s;"></div>
-            <div class="absolute w-2 h-2 bg-blue-400 rounded-full animate-float" style="left: 80%; top: 90%; animation-delay: 8.5s;"></div>
-            <div class="absolute w-2 h-2 bg-blue-400 rounded-full animate-float" style="left: 90%; top: 5%; animation-delay: 9s;"></div>
-            <div class="absolute w-2 h-2 bg-blue-400 rounded-full animate-float" style="left: 12%; top: 48%; animation-delay: 9.5s;"></div>
-        </div>
-
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12">
-            <div class="max-w-6xl mx-auto">
-                {{-- Main Heading --}}
-                <div class="text-center mb-12 hero-title-anim">
-                    <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight">
-                        Suara Anda,<br />
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-400">
-                            Masa Depan
-                        </span>
-                        <span class="text-white">Kita</span>
-                    </h1>
-                    <p class="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                        Berikan penilaian Anda untuk meningkatkan kualitas layanan di UIN Antasari Banjarmasin
-                    </p>
-                </div>
-
-                {{-- CTA Buttons --}}
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16 hero-button-anim">
-                    <a href="#unit-layanan" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-900 bg-gradient-to-r from-cyan-400 to-teal-400 rounded-2xl overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50">
-                        <span class="relative z-10 flex items-center">
-                            Mulai Survei
-                            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                            </svg>
-                        </span>
-                    </a>
-                    <a href="{{ route('public.tentang') }}" class="group inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white border-2 border-cyan-400/50 rounded-2xl hover:bg-cyan-400/10 transition-all">
-                        Pelajari Lebih Lanjut
-                    </a>
-                </div>
-
-                {{-- Stats Cards --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                    <div class="stat-card card-anim group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="relative">
-                            <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-teal-400 mb-2 stat-number" data-target="{{ $totalRespondents }}">0</div>
-                            <div class="text-sm font-semibold text-slate-300">Total Responden</div>
-                        </div>
-                    </div>
-                    <div class="stat-card card-anim group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="relative">
-                            <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-teal-400 to-blue-400 mb-2 stat-number" data-target="{{ $totalPrograms }}">0</div>
-                            <div class="text-sm font-semibold text-slate-300">Program Aktif</div>
-                        </div>
-                    </div>
-                    <div class="stat-card card-anim group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="relative">
-                            <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-cyan-400 mb-2 stat-number" data-target="{{ round($satisfactionPercentage) }}">0</div>
-                            <div class="text-sm font-semibold text-slate-300">Tingkat Kepuasan</div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Scroll Indicator --}}
-                <div class="text-center mt-16 animate-bounce">
-                    <svg class="w-8 h-8 mx-auto text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- FEATURES SECTION --}}
-    <section id="tentang" class="section-nav py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
-        {{-- Decorative Background --}}
-        <div class="absolute inset-0 opacity-40">
-            <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-cyan-200 to-teal-200 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-20 right-10 w-72 h-72 bg-gradient-to-br from-teal-200 to-blue-200 rounded-full blur-3xl"></div>
-        </div>
-
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            {{-- Section Header --}}
-            <div class="text-center mb-20">
-                <span class="inline-flex items-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-full text-sm font-bold mb-6 shadow-lg">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                    </svg>
-                    Cara Kerja
-                </span>
-                <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight">
-                    Hanya <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600">3 Langkah</span><br />Mudah
-                </h2>
-                <p class="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                    Proses yang dirancang simpel dan efisien untuk kenyamanan Anda
-                </p>
-            </div>
-
-            {{-- Features Timeline --}}
-            <div class="max-w-5xl mx-auto">
-                {{-- Step 1 --}}
-                <div class="feature-card-anim flex flex-col md:flex-row items-center gap-8 mb-16 group">
-                    <div class="relative flex-shrink-0">
-                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                        <div class="relative w-32 h-32 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <div class="absolute -top-3 -right-3 w-12 h-12 bg-cyan-500 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">
-                            1
-                        </div>
-                    </div>
-                    <div class="flex-1 bg-white rounded-3xl p-8 shadow-xl group-hover:shadow-2xl transition-all duration-300 border-2 border-slate-100 group-hover:border-cyan-200">
-                        <h3 class="text-3xl font-black text-slate-900 mb-3 group-hover:text-cyan-600 transition-colors">
-                            Pilih Program Survei
-                        </h3>
-                        <p class="text-lg text-slate-600 leading-relaxed">
-                            Pilih program survei yang sesuai dengan kebutuhan Anda dari daftar program yang tersedia
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Step 2 --}}
-                <div class="feature-card-anim flex flex-col md:flex-row-reverse items-center gap-8 mb-16 group">
-                    <div class="relative flex-shrink-0">
-                        <div class="absolute inset-0 bg-gradient-to-br from-teal-400 to-teal-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                        <div class="relative w-32 h-32 bg-gradient-to-br from-teal-500 to-teal-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                        </div>
-                        <div class="absolute -top-3 -right-3 w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">
-                            2
-                        </div>
-                    </div>
-                    <div class="flex-1 bg-white rounded-3xl p-8 shadow-xl group-hover:shadow-2xl transition-all duration-300 border-2 border-slate-100 group-hover:border-teal-200">
-                        <h3 class="text-3xl font-black text-slate-900 mb-3 group-hover:text-teal-600 transition-colors md:text-right">
-                            Pilih Unit Layanan
-                        </h3>
-                        <p class="text-lg text-slate-600 leading-relaxed md:text-right">
-                            Tentukan unit kerja atau layanan yang ingin Anda nilai berdasarkan pengalaman Anda
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Step 3 --}}
-                <div class="feature-card-anim flex flex-col md:flex-row items-center gap-8 group">
-                    <div class="relative flex-shrink-0">
-                        <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                        <div class="relative w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                        </div>
-                        <div class="absolute -top-3 -right-3 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">
-                            3
-                        </div>
-                    </div>
-                    <div class="flex-1 bg-white rounded-3xl p-8 shadow-xl group-hover:shadow-2xl transition-all duration-300 border-2 border-slate-100 group-hover:border-blue-200">
-                        <h3 class="text-3xl font-black text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">
-                            Isi & Kirim Survei
-                        </h3>
-                        <p class="text-lg text-slate-600 leading-relaxed">
-                            Jawab pertanyaan dengan jujur sesuai pengalaman Anda untuk membantu kami meningkatkan layanan
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Bottom CTA --}}
-            <div class="text-center mt-20">
-                <a href="#unit-layanan" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white text-lg font-bold rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    Mulai Survei Sekarang
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    {{-- PROGRAMS SECTION --}}
-    <section id="unit-layanan" class="section-nav py-24 bg-white relative overflow-hidden">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            @if($featuredProgram)
-            {{-- Section Header --}}
-            <div class="text-center mb-16">
-                <span class="inline-block px-4 py-2 bg-gradient-to-r from-cyan-100 to-teal-100 text-teal-700 rounded-full text-sm font-bold mb-4">
-                    Unit Layanan
-                </span>
-                <h2 class="text-4xl sm:text-5xl font-black text-slate-900 mb-4">
-                    {{ $featuredProgram->title }}
-                </h2>
-                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                    Pilih unit layanan untuk memulai penilaian Anda
-                </p>
-            </div>
-
-            {{-- Programs Grid --}}
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                @forelse ($unitKerjas as $unitKerja)
-                <a href="{{ route('public.unit.landing', ['program' => $featuredProgram, 'unitKerja' => $unitKerja]) }}"
-                    class="program-card group relative bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 rounded-3xl p-6 hover:border-cyan-400 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-
-                    {{-- Decorative Element --}}
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                    <div class="relative">
-                        @if($unitKerja->uk_short_name)
-                        <span class="inline-block px-3 py-1 bg-gradient-to-r from-cyan-100 to-teal-100 text-teal-700 text-xs font-bold rounded-full mb-4">
-                            {{ $unitKerja->uk_short_name }}
-                        </span>
-                        @endif
-
-                        <h3 class="text-xl font-black text-slate-900 mb-4 group-hover:text-cyan-600 transition-colors min-h-[3.5rem]">
-                            {{ $unitKerja->unit_kerja_name }}
-                        </h3>
-
-                        <div class="flex items-center text-cyan-600 font-bold text-sm group-hover:text-cyan-700">
-                            <span class="mr-2">Mulai Survei</span>
-                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-100 group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-teal-500 group-hover:text-white transition-all">
-                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                @empty
-                <div class="col-span-full text-center py-16">
-                    <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-100 rounded-full mb-4">
-                        <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-900 mb-2">Unit Layanan Belum Tersedia</h3>
-                    <p class="text-slate-600 mb-6">Admin belum mengaktifkan survei untuk program ini</p>
-                    <a href="{{ route('public.programs.list') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-600 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg transition-all">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Lihat Program Lain
-                    </a>
-                </div>
-                @endforelse
-            </div>
-            @else
-            <div class="text-center py-16">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-100 rounded-full mb-4">
-                    <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-black text-slate-900 mb-2">Belum Ada Program Unggulan</h3>
-                <p class="text-slate-600 mb-6">Silakan kunjungi halaman Program Survei</p>
-                <a href="{{ route('public.programs.list') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-600 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg transition-all">
-                    Lihat Semua Program
-                </a>
-            </div>
-            @endif
-        </div>
-    </section>
-
-    @push('scripts')
+    {{-- Style Khusus Halaman Ini --}}
+    @push('styles')
     <style>
-        @keyframes float {
+        /* Initial States (Disembunyikan dulu agar tidak kedip) */
+        .hero-text-anim,
+        .hero-btn-anim,
+        .hero-stat-anim {
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: transform, opacity;
+        }
+
+        .hero-img-anim {
+            opacity: 0;
+            transform: translateX(30px);
+            will-change: transform, opacity;
+        }
+
+        /* Step Cards Initial State */
+        .step-card-anim {
+            opacity: 0;
+            transform: translateY(60px);
+            will-change: transform, opacity;
+        }
+
+        .program-card-anim {
+            opacity: 0;
+            transform: translateY(50px);
+            will-change: transform, opacity;
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Animasi Floating Custom */
+        @keyframes float-delayed {
 
             0%,
             100% {
@@ -299,13 +45,486 @@
             }
 
             50% {
-                transform: translateY(-20px);
+                transform: translateY(-10px);
             }
         }
 
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
+        .animate-float-delayed {
+            animation: float-delayed 5s ease-in-out infinite;
+            animation-delay: 1s;
         }
     </style>
     @endpush
+
+    {{-- 1. HERO SECTION --}}
+    <section id="beranda" class="relative min-h-screen flex items-start pt-24 pb-16 overflow-hidden bg-slate-50">
+
+        {{-- Background Abstrak Halus --}}
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[100px] animate-pulse"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+        </div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
+
+                {{-- Kiri: Teks Content --}}
+                <div class="lg:w-1/2 text-center lg:text-left space-y-8 mt-4 lg:mt-0">
+
+                    {{-- Badge Status --}}
+                    <div class="hero-text-anim inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-slate-200 shadow-sm backdrop-blur-sm">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </span>
+                        <span class="text-xs font-bold text-slate-600 tracking-widest uppercase">Sistem Penjaminan Mutu Internal</span>
+                    </div>
+
+                    {{-- Headline --}}
+                    <h1 class="hero-text-anim text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight">
+                        Portal Survei <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Terintegrasi.</span>
+                    </h1>
+
+                    <p class="hero-text-anim text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium">
+                        Platform resmi evaluasi layanan akademik dan non-akademik UIN Antasari. Partisipasi objektif Anda adalah kunci peningkatan mutu institusi.
+                    </p>
+
+                    {{-- Tombol Aksi --}}
+                    <div class="hero-btn-anim flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                        <a href="#program"
+                            class="group inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold text-white bg-slate-900 rounded-2xl hover:bg-teal-700 transition-all shadow-lg hover:shadow-teal-500/20 hover:-translate-y-1">
+                            Mulai Penilaian
+                            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                        </a>
+                        <a href="{{ route('public.programs.list') }}"
+                            class="inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+                            Lihat Semua Survei
+                        </a>
+                    </div>
+
+                    {{-- Statistik Simple --}}
+                    <div class="hero-stat-anim pt-8 border-t border-slate-200 flex items-center justify-center lg:justify-start gap-8">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-slate-800">{{ number_format($totalRespondents) }}+</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Partisipan</p>
+                        </div>
+                        <div class="w-px h-10 bg-slate-200"></div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-slate-800">{{ $totalPrograms }}</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Program</p>
+                        </div>
+                        <div class="w-px h-10 bg-slate-200"></div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-slate-800">{{ round($satisfactionPercentage) }}%</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Indeks Mutu</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Kanan: Gambar Utama (POLOS - Tanpa Kotak/Padding) --}}
+                <div class="lg:w-1/2 relative hero-img-anim mt-10 lg:mt-0 flex justify-center lg:justify-end">
+                    <div class="relative w-full max-w-[500px] z-10 group">
+
+                        {{-- Glow Belakang (Opsional: Tetap ada agar gambar 'pop-up' dari background, tapi samar) --}}
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-gradient-to-tr from-teal-500/20 via-blue-500/20 to-purple-500/20 rounded-full blur-[60px] -z-10 opacity-50 animate-pulse"></div>
+
+                        <img src="{{ asset('images/hero.png') }}"
+                            alt="Survey Illustration"
+                            class="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-1000 ease-out drop-shadow-2xl">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    {{-- 2. ALUR PARTISIPASI --}}
+    <section id="langkah" class="py-24 bg-white relative border-t border-slate-100">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+                <h2 class="text-3xl font-black text-slate-900 mb-4">Alur Partisipasi</h2>
+                <p class="text-slate-500">Proses pengisian survei yang dirancang efisien.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <div class="hidden md:block absolute top-16 left-0 w-full h-0.5 bg-slate-100 -z-10"></div>
+
+                {{-- Step 1 --}}
+                <div class="step-card-anim group bg-slate-50 hover:bg-white p-8 rounded-3xl border border-slate-100 hover:border-teal-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 text-center relative">
+                    <div class="w-16 h-16 mx-auto bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-teal-600 mb-6 shadow-sm group-hover:scale-110 transition-transform group-hover:bg-teal-50 group-hover:border-teal-100">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">1. Pilih Survei</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Temukan survei yang relevan dengan status atau unit layanan Anda.</p>
+                </div>
+
+                {{-- Step 2 --}}
+                <div class="step-card-anim group bg-slate-50 hover:bg-white p-8 rounded-3xl border border-slate-100 hover:border-blue-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 text-center relative">
+                    <div class="w-16 h-16 mx-auto bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-blue-600 mb-6 shadow-sm group-hover:scale-110 transition-transform group-hover:bg-blue-50 group-hover:border-blue-100">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">2. Isi Penilaian</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Lengkapi pertanyaan dengan objektif. Identitas Anda terjaga.</p>
+                </div>
+
+                {{-- Step 3 --}}
+                <div class="step-card-anim group bg-slate-50 hover:bg-white p-8 rounded-3xl border border-slate-100 hover:border-indigo-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 text-center relative">
+                    <div class="w-16 h-16 mx-auto bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 shadow-sm group-hover:scale-110 transition-transform group-hover:bg-indigo-50 group-hover:border-indigo-100">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">3. Kirim Data</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Selesai. Masukan Anda langsung masuk ke sistem untuk dianalisis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 3. PROGRAM UNGGULAN (Design Aesthetic & Complete Info) --}}
+    <section id="program" class="py-24 bg-slate-50 relative"
+        x-data="{ 
+                search: '', 
+                isSearching: false,
+                init() {
+                    this.$watch('search', value => {
+                        this.isSearching = true;
+                        setTimeout(() => this.isSearching = false, 500);
+                    });
+                }
+            }">
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+            {{-- Header Section --}}
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4 animate-on-scroll">
+                <div class="text-center md:text-left w-full md:w-auto">
+                    <h2 class="text-3xl font-black text-slate-900 mb-2">Program Prioritas</h2>
+                    <p class="text-slate-500">Daftar Survei utama yang sedang berjalan.</p>
+                </div>
+
+                <div class="relative w-full md:w-72 group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-slate-400 group-focus-within:text-teal-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    {{-- Input Search dengan Debounce --}}
+                    <input type="text"
+                        x-model.debounce.500ms="search"
+                        class="block w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm bg-white placeholder-slate-400 transition-all"
+                        placeholder="Cari Survei...">
+
+                    <div x-show="isSearching" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <svg class="animate-spin h-4 w-4 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            {{-- SKELETON LOADING --}}
+            <div x-show="isSearching"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                class="flex flex-wrap justify-center gap-8">
+
+                @for($i = 0; $i < 3; $i++)
+                    <div class="w-full md:w-[380px] bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm h-[400px] flex flex-col justify-between">
+                    <div class="animate-pulse space-y-6">
+                        <div class="flex justify-between">
+                            <div class="h-6 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-6 w-6 bg-slate-200 rounded-full"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="h-8 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-8 bg-slate-200 rounded w-1/2"></div>
+                        </div>
+                        <div class="h-20 bg-slate-200 rounded-xl"></div>
+                        <div class="space-y-2">
+                            <div class="h-3 bg-slate-200 rounded"></div>
+                            <div class="h-3 bg-slate-200 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="h-12 bg-slate-200 rounded-xl mt-4"></div>
+            </div>
+            @endfor
+        </div>
+
+        {{-- PROGRAM CARDS (Real Data) --}}
+        <div x-show="!isSearching"
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 translate-y-4"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="flex flex-wrap justify-center gap-8">
+
+            @forelse($featuredPrograms as $program)
+            <div class="program-card-anim group w-full md:w-[380px]"
+                data-title="{{ strtolower($program->title) }}"
+                x-show="search === '' || $el.dataset.title.includes(search.toLowerCase())">
+
+                <div class="h-full block bg-white rounded-[2rem] p-1 border border-slate-200 shadow-sm hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-500 relative overflow-hidden transform hover:-translate-y-2">
+
+                    {{-- Card Content Wrapper --}}
+                    <div class="bg-white rounded-[1.8rem] p-6 h-full flex flex-col relative overflow-hidden group-hover:bg-teal-50/10 transition-colors duration-500">
+
+                        {{-- Decoration Blur --}}
+                        <div class="absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-br from-teal-100/30 to-blue-100/30 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                        {{-- 1. Header: Kategori & Featured Star --}}
+                        <div class="flex justify-between items-start mb-5 relative z-10">
+                            @if($program->unit_kerja_id)
+                            <span class="px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-bold uppercase tracking-wider group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                Unit Lokal
+                            </span>
+                            @else
+                            <span class="px-3 py-1.5 rounded-lg bg-teal-50 border border-teal-100 text-teal-600 text-[10px] font-bold uppercase tracking-wider group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                                Institusional
+                            </span>
+                            @endif
+
+                            @if($program->is_featured)
+                            <div class="bg-amber-50 p-1.5 rounded-full border border-amber-100 group-hover:border-amber-200 transition-colors">
+                                <svg class="w-5 h-5 text-amber-500 fill-current" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                            @endif
+                        </div>
+
+                        {{-- 2. Judul Program --}}
+                        <h3 class="text-2xl font-black text-slate-800 leading-tight mb-5 group-hover:text-teal-700 transition-colors line-clamp-2 min-h-[4rem]">
+                            {{ $program->title }}
+                        </h3>
+
+                        {{-- 3. Info Box: Penyelenggara & Waktu --}}
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-5 space-y-3 group-hover:bg-white group-hover:border-teal-100 transition-colors">
+                            {{-- Penyelenggara --}}
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 shrink-0 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Penyelenggara</p>
+                                    <p class="text-sm font-bold text-slate-700 truncate">
+                                        {{ $program->unitKerja ? $program->unitKerja->unit_kerja_name : 'UIN Antasari Banjarmasin' }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {{-- Waktu --}}
+                            <div class="flex items-start gap-3 border-t border-slate-200/50 pt-3">
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-blue-500 shrink-0 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Periode Aktif</p>
+                                    <p class="text-sm font-bold text-slate-700">
+                                        {{ \Carbon\Carbon::parse($program->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($program->end_date)->format('d M Y') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- 4. Deskripsi Singkat --}}
+                        <p class="text-sm text-slate-500 mb-6 line-clamp-2 leading-relaxed px-1">
+                            {{ $program->description }}
+                        </p>
+
+                        {{-- 5. Tombol Action --}}
+                        <div class="mt-auto relative z-10">
+                            <a href="{{ route('public.survey.directory', $program->alias) }}" class="flex items-center justify-center w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm shadow-lg group-hover:bg-teal-600 group-hover:shadow-teal-500/30 transition-all transform group-hover:-translate-y-1">
+                                Isi Survei
+                                <svg class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="w-full max-w-lg py-20 text-center bg-white rounded-[2rem] border border-dashed border-slate-300">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-50 rounded-full mb-4 text-slate-400">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+                <p class="text-slate-500 font-medium">Belum ada program prioritas saat ini.</p>
+                <a href="{{ route('public.programs.list') }}" class="mt-4 inline-block text-teal-600 font-bold text-sm hover:underline">Lihat Arsip Program &rarr;</a>
+            </div>
+            @endforelse
+
+            {{-- Empty State Search --}}
+            <div class="w-full py-12 text-center" x-cloak x-show="search !== '' && !isSearching && $el.parentElement.querySelectorAll('.program-card-anim[style*=\'display: none\']').length === {{ count($featuredPrograms) }}">
+                <div class="inline-flex bg-slate-50 px-4 py-2 rounded-full border border-slate-200">
+                    <p class="text-slate-500 text-sm">Tidak ditemukan program dengan kata kunci "<span x-text="search" class="font-bold text-slate-800"></span>"</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Mobile View All --}}
+        <div class="mt-12 text-center md:hidden">
+            <a href="{{ route('public.programs.list') }}" class="inline-block px-6 py-3 bg-white border border-slate-200 text-teal-700 font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-all text-sm">
+                Lihat Semua Program →
+            </a>
+        </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-24 bg-white relative overflow-hidden border-t border-slate-100">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+                <h2 class="text-3xl font-black text-slate-900 mb-4">Pertanyaan Umum</h2>
+                <p class="text-slate-500">Informasi penting yang sering ditanyakan.</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-4" x-data="{ active: null }">
+                <div class="group bg-slate-50 hover:bg-white border border-slate-200 rounded-2xl transition-all duration-300 hover:shadow-lg overflow-hidden">
+                    <button @click="active = (active === 1 ? null : 1)" class="flex items-center justify-between w-full p-6 text-left focus:outline-none">
+                        <span class="text-lg font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Apakah identitas saya aman?</span>
+                        <span class="p-2 bg-white rounded-full shadow-sm text-slate-400 group-hover:text-teal-600 transition-transform duration-300" :class="active === 1 ? 'rotate-180' : ''"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg></span>
+                    </button>
+                    <div x-show="active === 1" x-collapse x-cloak>
+                        <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4"><strong class="text-teal-600">100% Aman.</strong> Sistem kami menggunakan enkripsi data. Identitas Anda hanya untuk validasi akses.</div>
+                    </div>
+                </div>
+                <div class="group bg-slate-50 hover:bg-white border border-slate-200 rounded-2xl transition-all duration-300 hover:shadow-lg overflow-hidden">
+                    <button @click="active = (active === 2 ? null : 2)" class="flex items-center justify-between w-full p-6 text-left focus:outline-none">
+                        <span class="text-lg font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Bagaimana jika salah pilih unit?</span>
+                        <span class="p-2 bg-white rounded-full shadow-sm text-slate-400 group-hover:text-teal-600 transition-transform duration-300" :class="active === 2 ? 'rotate-180' : ''"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg></span>
+                    </button>
+                    <div x-show="active === 2" x-collapse x-cloak>
+                        <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">Jawaban yang sudah dikirim tidak dapat diedit. Hubungi UTIPD untuk bantuan reset data jika kesalahan fatal.</div>
+                    </div>
+                </div>
+                <div class="group bg-slate-50 hover:bg-white border border-slate-200 rounded-2xl transition-all duration-300 hover:shadow-lg overflow-hidden">
+                    <button @click="active = (active === 3 ? null : 3)" class="flex items-center justify-between w-full p-6 text-left focus:outline-none">
+                        <span class="text-lg font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Apakah survei ini wajib?</span>
+                        <span class="p-2 bg-white rounded-full shadow-sm text-slate-400 group-hover:text-teal-600 transition-transform duration-300" :class="active === 3 ? 'rotate-180' : ''"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg></span>
+                    </button>
+                    <div x-show="active === 3" x-collapse x-cloak>
+                        <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">Beberapa survei mungkin bersifat wajib sebagai syarat administrasi akademik. Cek ketentuan yang berlaku.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    {{-- Footer (Dari Layout) --}}
+    <div class="h-10"></div>
+
+    {{-- Script Animations --}}
+    @push('scripts')
+    <script>
+        // Fungsi Penunggu (Agar GSAP tidak error)
+        function waitForGlobal(key, callback) {
+            if (window[key]) {
+                callback();
+            } else {
+                setTimeout(() => waitForGlobal(key, callback), 50);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            waitForGlobal("gsap", () => {
+                waitForGlobal("ScrollTrigger", () => {
+                    // Hero Anim
+                    const tl = gsap.timeline();
+                    tl.to(".hero-text-anim", {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.8,
+                            stagger: 0.1,
+                            ease: "power2.out"
+                        })
+                        .to(".hero-btn-anim", {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.6,
+                            ease: "back.out(1.7)"
+                        }, "-=0.4")
+                        .to(".hero-stat-anim", {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.6,
+                            ease: "power2.out"
+                        }, "-=0.2")
+                        .to(".hero-img-anim", {
+                            opacity: 1,
+                            x: 0,
+                            duration: 1,
+                            ease: "power3.out"
+                        }, "-=0.8");
+
+                    // Step Cards
+                    gsap.utils.toArray(".step-card-anim").forEach((card, i) => {
+                        gsap.to(card, {
+                            scrollTrigger: {
+                                trigger: "#langkah",
+                                start: "top 85%"
+                            },
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.8,
+                            delay: i * 0.1,
+                            ease: "back.out(1.2)"
+                        });
+                    });
+
+                    // Program Cards
+                    gsap.utils.toArray(".program-card-anim").forEach((card, i) => {
+                        gsap.to(card, {
+                            scrollTrigger: {
+                                trigger: "#program",
+                                start: "top 85%"
+                            },
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.6,
+                            delay: i * 0.1,
+                            ease: "power2.out"
+                        });
+                    });
+
+                    // Titles
+                    gsap.utils.toArray(".animate-on-scroll").forEach((el) => {
+                        gsap.to(el, {
+                            scrollTrigger: {
+                                trigger: el,
+                                start: "top 90%"
+                            },
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.8,
+                            ease: "power2.out"
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+    @endpush
+
 </x-guest-layout>
