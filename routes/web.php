@@ -81,6 +81,7 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::resource('users', SuperadminUserController::class);
         Route::resource('programs', SuperadminSurveyProgramController::class);
         Route::post('programs/{program}/clone', [SuperadminSurveyProgramController::class, 'cloneProgram'])->name('programs.clone');
+
         Route::get('programs/{program}/questions', [SuperadminSurveyProgramController::class, 'showQuestionsPage'])->name('programs.questions.index');
         Route::get('programs/{program}/questions/create', [SuperadminSurveyProgramController::class, 'createQuestion'])->name('programs.questions.create');
         Route::post('programs/{program}/questions', [SuperadminSurveyProgramController::class, 'storeQuestion'])->name('programs.questions.store');
@@ -88,11 +89,22 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::put('programs/{program}/questions/{question}', [SuperadminSurveyProgramController::class, 'updateQuestion'])->name('programs.questions.update');
         Route::delete('programs/{program}/questions/{question}', [SuperadminSurveyProgramController::class, 'destroyQuestion'])->name('programs.questions.destroy');
         Route::post('programs/{program}/questions/reorder', [SuperadminSurveyProgramController::class, 'reorderQuestions'])->name('programs.questions.reorder');
+        
         Route::get('programs/{program}/results', [ProgramResultController::class, 'showResults'])->name('programs.results');
-        Route::get('programs/{program}/results/export', [ProgramResultController::class, 'export'])->name('programs.results.export');
-        Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/laporan/{program_id}/{unit_kerja_id}', [ReportController::class, 'showUnitDetail'])->name('reports.showUnit');
-        Route::get('/laporan/export', [ReportController::class, 'export'])->name('reports.export');
+
+    Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
+
+    // 2. Export Global (Letakkan di ATAS detail unit)
+    Route::get('/laporan/{program}/export-average', [ReportController::class, 'exportAverage'])->name('reports.export.average');
+    Route::get('/laporan/{program}/export-respondents', [ReportController::class, 'exportRespondents'])->name('reports.export.respondents');
+
+    // 3. Export Per Unit (Tambahkan prefix /laporan agar seragam)
+    Route::get('/laporan/{program}/unit/{unit}/export', [ReportController::class, 'exportUnitRespondents'])->name('reports.export.unit');
+
+    // 4. Halaman Detail Unit (Wildcard - Letakkan PALING BAWAH)
+    Route::get('/laporan/{program_id}/{unit_kerja_id}', [ReportController::class, 'showUnitDetail'])->name('reports.showUnit');
+
+
         Route::get('programs/{program}/builder', [SuperadminSurveyProgramController::class, 'editFields'])->name('programs.builder');
         Route::put('programs/{program}/builder', [SuperadminSurveyProgramController::class, 'updateFields'])->name('programs.builder.update');
 
