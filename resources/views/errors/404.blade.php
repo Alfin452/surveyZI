@@ -56,12 +56,6 @@
     <div class="blob bg-rose-200 w-96 h-96 top-0 left-0 rounded-full mix-blend-multiply"></div>
     <div class="blob bg-indigo-200 w-80 h-80 bottom-0 right-0 rounded-full mix-blend-multiply animation-delay-2000"></div>
 
-    {{--
-       PERBAIKAN:
-       1. min-h-screen: Agar tinggi minimal setinggi layar penuh.
-       2. flex flex-col justify-center: Konten di tengah vertikal.
-       3. pt-32 pb-20: Memberi jarak aman dari Header dan Footer.
-    --}}
     <div class="min-h-screen flex flex-col items-center justify-center p-4 relative z-10 pt-32 pb-32">
 
         {{-- 404 Visual --}}
@@ -78,7 +72,7 @@
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-rose-400 via-pink-500 to-purple-500"></div>
 
             <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tight">
-                404 Not Found
+                Not Found
             </h2>
             <p class="text-slate-500 text-lg leading-relaxed mb-10">
                 Maaf, halaman yang Anda cari tidak dapat ditemukan. Mungkin tautan rusak atau halaman telah dihapus.

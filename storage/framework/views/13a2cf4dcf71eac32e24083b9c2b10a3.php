@@ -1,6 +1,6 @@
-@extends('layouts.superadmin')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="space-y-6">
 
     <div class="bg-white rounded-lg p-5 border border-gray-200 shadow-sm">
@@ -14,15 +14,15 @@
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-gray-800">Laporan Detail per Responden</h1>
-                        <p class="text-sm text-gray-500 mt-1">Unit Kerja: <span class="font-semibold">{{ $unitKerja->unit_kerja_name }}</span></p>
-                        <p class="text-sm text-gray-500">Program: {{ $program->title }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Unit Kerja: <span class="font-semibold"><?php echo e($unitKerja->unit_kerja_name); ?></span></p>
+                        <p class="text-sm text-gray-500">Program: <?php echo e($program->title); ?></p>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end mb-6">
-                <a href="{{ route('superadmin.programs.results.export', $program) }}"
+                <a href="<?php echo e(route('superadmin.programs.results.export', $program)); ?>"
                     class="inline-flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg hover:bg-emerald-700 hover:shadow-emerald-500/30 transition-all transform hover:-translate-y-0.5">
-                    {{-- Icon Excel / Download --}}
+                    
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
@@ -30,14 +30,14 @@
                 </a>
             </div>
             <div class="mt-4 md:mt-0 flex space-x-2 self-start md:self-end">
-                <a href="{{ route('superadmin.reports.index', ['program_id' => $program->id]) }}" class="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition border border-gray-300 shadow-sm">
+                <a href="<?php echo e(route('superadmin.reports.index', ['program_id' => $program->id])); ?>" class="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition border border-gray-300 shadow-sm">
                     &larr; Kembali ke Laporan Agregat
                 </a>
             </div>
         </div>
     </div>
 
-    @if (!empty($reportData))
+    <?php if(!empty($reportData)): ?>
     <div class="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -45,36 +45,36 @@
                     <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider sticky left-0 z-10">
                         Nama Responden
                     </th>
-                    @foreach ($sections as $section)
+                    <?php $__currentLoopData = $sections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $section): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <th class="px-6 py-3 border-b border-gray-200 bg-gray-800 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                        {{ $section->title }} (Rata-rata)
+                        <?php echo e($section->title); ?> (Rata-rata)
                     </th>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Rata-rata Total
                     </th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @foreach ($reportData as $row)
+                <?php $__currentLoopData = $reportData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr class="hover:bg-gray-50 group">
                     <td class="px-6 py-4 border-b border-gray-200 bg-white text-sm sticky left-0 group-hover:bg-gray-50">
-                        <p class="text-gray-900 font-semibold whitespace-no-wrap">{{ $row['respondent_name'] }}</p>
+                        <p class="text-gray-900 font-semibold whitespace-no-wrap"><?php echo e($row['respondent_name']); ?></p>
                     </td>
-                    @foreach ($row['section_scores'] as $score)
+                    <?php $__currentLoopData = $row['section_scores']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $score): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <td class="px-6 py-4 border-b border-gray-200 bg-white text-sm text-center">
-                        <p class="text-gray-900 whitespace-no-wrap">{{ number_format($score, 2) }}</p>
+                        <p class="text-gray-900 whitespace-no-wrap"><?php echo e(number_format($score, 2)); ?></p>
                     </td>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <td class="px-6 py-4 border-b border-gray-200 bg-white text-sm font-bold text-center">
-                        <p class="text-gray-900 whitespace-no-wrap">{{ number_format($row['total_avg'], 2) }}</p>
+                        <p class="text-gray-900 whitespace-no-wrap"><?php echo e(number_format($row['total_avg'], 2)); ?></p>
                     </td>
                 </tr>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
         </table>
     </div>
-    @else
+    <?php else: ?>
     <div class="text-center py-16 px-4 bg-white rounded-lg shadow-sm border-2 border-dashed">
         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -82,7 +82,8 @@
         <p class="mt-4 font-semibold text-gray-600">Belum Ada Data</p>
         <p class="text-sm mt-1 text-gray-500">Belum ada responden yang mengisi survei untuk unit kerja ini.</p>
     </div>
-    @endif
+    <?php endif; ?>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.superadmin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\surveyZI\resources\views/superadmin/reports/show_unit.blade.php ENDPATH**/ ?>

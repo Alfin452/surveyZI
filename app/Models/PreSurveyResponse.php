@@ -21,6 +21,11 @@ class PreSurveyResponse extends Model
         'age',
         'status',
         'unit_kerja_or_fakultas',
+        'dynamic_data', // <--- WAJIB ADA
+    ];
+
+    protected $casts = [
+        'dynamic_data' => 'array', // PENTING: Auto convert JSON <-> Array
     ];
 
     /**
@@ -36,4 +41,10 @@ class PreSurveyResponse extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function unitKerja()
+    {
+        return $this->belongsTo(UnitKerja::class);
+    }
 }
+

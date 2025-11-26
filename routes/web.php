@@ -89,9 +89,12 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         Route::delete('programs/{program}/questions/{question}', [SuperadminSurveyProgramController::class, 'destroyQuestion'])->name('programs.questions.destroy');
         Route::post('programs/{program}/questions/reorder', [SuperadminSurveyProgramController::class, 'reorderQuestions'])->name('programs.questions.reorder');
         Route::get('programs/{program}/results', [ProgramResultController::class, 'showResults'])->name('programs.results');
+        Route::get('programs/{program}/results/export', [ProgramResultController::class, 'export'])->name('programs.results.export');
         Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/laporan/{program_id}/{unit_kerja_id}', [ReportController::class, 'showUnitDetail'])->name('reports.showUnit');
         Route::get('/laporan/export', [ReportController::class, 'export'])->name('reports.export');
+        Route::get('programs/{program}/builder', [SuperadminSurveyProgramController::class, 'editFields'])->name('programs.builder');
+        Route::put('programs/{program}/builder', [SuperadminSurveyProgramController::class, 'updateFields'])->name('programs.builder.update');
 
     Route::prefix('programs/{program}/sections')->name('programs.sections.')->group(function () {
         Route::post('/', [SuperadminQuestionSectionController::class, 'store'])->name('store');

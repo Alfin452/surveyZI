@@ -67,4 +67,10 @@ class SurveyProgram extends Model
     {
         return $this->hasMany(PreSurveyResponse::class);
     }
+
+    public function formFields()
+    {
+        // Mengurutkan berdasarkan 'order' agar tampilannya rapi
+        return $this->hasMany(SurveyProgramFormField::class)->orderBy('order');
+    }
 }

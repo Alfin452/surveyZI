@@ -19,6 +19,13 @@ class SurveyResponseController extends Controller
      */
     public function showFillForm(SurveyProgram $program, $unitKerjaAlias)
     {
+        // 1. Cek Apakah Survei Masih Aktif (Berdasarkan Tanggal)
+        // Tambahkan logika ini di paling atas agar user tidak bisa akses jika tutup
+        $now = now();
+        if ($now->lt($program->start_date) || $now->gt($program->end_date)) {
+            return view('public.survey-inactive', compact('program'));
+        }
+
         $unitKerja = UnitKerja::where('alias', $unitKerjaAlias)->firstOrFail();
 
         $user = Auth::user();
@@ -46,12 +53,11 @@ class SurveyResponseController extends Controller
             }
         }
 
-        // PERBAIKAN: Memuat relasi nested (Bagian -> Pertanyaan -> Opsi)
+        // Memuat relasi nested (Bagian -> Pertanyaan -> Opsi)
         $program->load('questionSections.questions.options');
 
         return view('public.fill', compact('program', 'unitKerja'));
     }
-
     /**
      * Menyimpan jawaban dari survei utama.
      */

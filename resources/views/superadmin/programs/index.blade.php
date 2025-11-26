@@ -193,6 +193,7 @@
                         </td>
 
                         {{-- Aksi (Tombol Candy Glass) --}}
+                        {{-- Aksi (Tombol Candy Glass) --}}
                         <td class="py-4 px-6 text-center align-middle">
                             <div class="flex flex-col gap-2 max-w-[150px] mx-auto">
                                 {{-- Tombol Utama (Hasil) --}}
@@ -201,41 +202,51 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                     </svg>
-                                    Hasil Survei
+                                    Hasil
                                 </a>
 
-                                <div class="flex gap-1.5">
-                                    {{-- Pertanyaan --}}
-                                    <a href="{{ route('superadmin.programs.questions.index', $program) }}" class="flex-1 bg-white text-blue-600 border border-blue-100 p-1.5 rounded-lg hover:bg-blue-500 hover:text-white transition-colors shadow-sm" title="Kelola Pertanyaan">
+                                <div class="flex gap-1.5 flex-wrap justify-center">
+                                    {{-- 1. FORM BUILDER (BARU - UNGU) --}}
+                                    <a href="{{ route('superadmin.programs.builder', $program) }}"
+                                        class="flex-1 bg-white text-purple-600 border border-purple-100 p-1.5 rounded-lg hover:bg-purple-500 hover:text-white transition-colors shadow-sm"
+                                        title="Atur Data Diri (Pre-Survey)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                        </svg>
+                                    </a>
+
+                                    {{-- 2. Pertanyaan (BIRU) --}}
+                                    <a href="{{ route('superadmin.programs.questions.index', $program) }}" class="flex-1 bg-white text-blue-600 border border-blue-100 p-1.5 rounded-lg hover:bg-blue-500 hover:text-white transition-colors shadow-sm" title="Kelola Soal Survei">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </a>
 
-                                    {{-- Edit --}}
-                                    <a href="{{ route('superadmin.programs.edit', $program) }}" class="flex-1 bg-white text-amber-600 border border-amber-100 p-1.5 rounded-lg hover:bg-amber-500 hover:text-white transition-colors shadow-sm" title="Edit Program">
+                                    {{-- 3. Edit (AMBER) --}}
+                                    <a href="{{ route('superadmin.programs.edit', $program) }}" class="flex-1 bg-white text-amber-600 border border-amber-100 p-1.5 rounded-lg hover:bg-amber-500 hover:text-white transition-colors shadow-sm" title="Edit Info Program">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </a>
 
-                                    {{-- Kloning --}}
-                                    <button type="button"
-                                        @click="$dispatch('open-clone-modal', { url: '{{ route('superadmin.programs.clone', $program) }}', name: '{{ addslashes($program->title) }}' })"
-                                        class="flex-1 bg-white text-slate-600 border border-slate-200 p-1.5 rounded-lg hover:bg-slate-700 hover:text-white transition-colors shadow-sm" title="Kloning">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
+                                    {{-- 4. Kloning & Hapus (Grouped) --}}
+                                    <div class="w-full flex gap-1.5 mt-1.5">
+                                        <button type="button"
+                                            @click="$dispatch('open-clone-modal', { url: '{{ route('superadmin.programs.clone', $program) }}', name: '{{ addslashes($program->title) }}' })"
+                                            class="flex-1 bg-white text-slate-600 border border-slate-200 p-1.5 rounded-lg hover:bg-slate-700 hover:text-white transition-colors shadow-sm" title="Kloning">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
 
-                                    {{-- Hapus --}}
-                                    <button type="button"
-                                        @click="$dispatch('open-delete-modal', { url: '{{ route('superadmin.programs.destroy', $program) }}', name: '{{ addslashes($program->title) }}' })"
-                                        class="flex-1 bg-white text-rose-600 border border-rose-100 p-1.5 rounded-lg hover:bg-rose-500 hover:text-white transition-colors shadow-sm" title="Hapus">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
+                                        <button type="button"
+                                            @click="$dispatch('open-delete-modal', { url: '{{ route('superadmin.programs.destroy', $program) }}', name: '{{ addslashes($program->title) }}' })"
+                                            class="flex-1 bg-white text-rose-600 border border-rose-100 p-1.5 rounded-lg hover:bg-rose-500 hover:text-white transition-colors shadow-sm" title="Hapus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </td>

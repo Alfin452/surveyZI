@@ -152,4 +152,57 @@ class SurveyProgramController extends Controller
         }]);
         return view('superadmin.programs.questions.index', compact('program'));
     }
+
+    // ... method resource lainnya ...
+
+    /**
+     * Menampilkan Halaman Form Builder
+     */
+    public function editFields(SurveyProgram $program)
+    {
+        // Load field yang sudah ada, urutkan
+        $program->load(['formFields' => function ($q) {
+            $q->orderBy('order');
+        }]);
+
+        return view('superadmin.programs.builder', compact('program'));
+    }
+
+    /**
+     * Menyimpan Susunan Form Field
+     */
+    public function updateFields(Request $request, SurveyProgram $program)
+    {
+        $data = $request->validate([
+            'fields' => 'present|array',
+            'fields.*.label' => 'required|string|max:255',
+            'fields.*.type' => 'required|in:text,number,date,select,radio',
+            'fields.*.options' => 'nullable|string', // Opsi dipisah koma
+            'fields.*.required' => 'nullable|boolean',
+        ]);
+
+        // Strategi: Hapus semua field lama, buat ulang yang baru (Full Sync)
+        // Ini cara paling aman untuk menghindari konflik urutan/penghapusan
+        $program->formFields()->delete();
+
+        if (!empty($data['fields'])) {
+            foreach ($data['fields'] as $index => $fieldData) {
+                // Konversi opsi string "A, B, C" menjadi Array JSON ["A", "B", "C"]
+                $optionsArray = null;
+                if (in_array($fieldData['type'], ['select', 'radio']) && !empty($fieldData['options'])) {
+                    $optionsArray = array_map('trim', explode(',', $fieldData['options']));
+                }
+
+                $program->formFields()->create([
+                    'field_label' => $fieldData['label'],
+                    'field_type' => $fieldData['type'],
+                    'field_options' => $optionsArray,
+                    'is_required' => isset($fieldData['required']) ? 1 : 0,
+                    'order' => $index, // Simpan urutan sesuai array
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Formulir data diri berhasil diperbarui!');
+    }
 }

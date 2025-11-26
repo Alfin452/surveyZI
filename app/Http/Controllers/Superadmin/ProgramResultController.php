@@ -99,4 +99,11 @@ class ProgramResultController extends Controller
             'filterOptions'
         ));
     }
+
+    public function export(SurveyProgram $program)
+    {
+        $filename = 'Hasil_Survei_' . \Illuminate\Support\Str::slug($program->title) . '_' . date('Y-m-d_His') . '.xlsx';
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\RespondentDataExport($program), $filename);
+    }
 }
