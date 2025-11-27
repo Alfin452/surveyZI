@@ -73,4 +73,5 @@ class SurveyProgram extends Model
         // Mengurutkan berdasarkan 'order' agar tampilannya rapi
         return $this->hasMany(SurveyProgramFormField::class)->orderBy('order');
     }
+    
 }

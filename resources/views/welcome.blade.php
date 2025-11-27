@@ -43,20 +43,6 @@
                 transform: translate(20px, -20px);
             }
         }
-
-        /* Smooth Fade In */
-        .fade-in-up {
-            animation: fadeInUp 1s ease-out forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
     @endpush
 
@@ -66,13 +52,13 @@
     <div class="blob bg-teal-200 w-96 h-96 top-0 left-0 rounded-full mix-blend-multiply"></div>
     <div class="blob bg-blue-200 w-80 h-80 bottom-0 right-0 rounded-full mix-blend-multiply animation-delay-2000"></div>
 
-    {{-- 1. HERO SECTION --}}
-    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
+    {{-- 1. HERO SECTION (GSAP Animated) --}}
+    <section id="beranda" class="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col-reverse lg:flex-row items-center gap-16">
 
-                {{-- Left Content --}}
-                <div class="lg:w-1/2 text-center lg:text-left fade-in-up" style="animation-delay: 0.1s;">
+                {{-- Left Content: Ditambah class 'hero-content' untuk GSAP --}}
+                <div class="lg:w-1/2 text-center lg:text-left hero-content">
                     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 border border-slate-200/60 shadow-sm backdrop-blur-md mb-8">
                         <span class="relative flex h-2.5 w-2.5">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
@@ -103,7 +89,7 @@
                     </div>
 
                     {{-- Stats --}}
-                    <div class="hero-stat-anim pt-8 border-t border-slate-200 flex items-center justify-center lg:justify-start gap-8">
+                    <div class="pt-8 border-t border-slate-200 flex items-center justify-center lg:justify-start gap-8">
                         <div>
                             <p class="text-2xl sm:text-3xl font-black text-slate-800">{{ number_format($totalRespondents) }}+</p>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Partisipan</p>
@@ -121,8 +107,8 @@
                     </div>
                 </div>
 
-                {{-- Right Image --}}
-                <div class="lg:w-1/2 relative fade-in-up" style="animation-delay: 0.3s;">
+                {{-- Right Image: Ditambah class 'hero-image' untuk GSAP --}}
+                <div class="lg:w-1/2 relative hero-image">
                     <div class="relative z-10 bg-white/40 backdrop-blur-xl rounded-[3rem] p-4 border border-white/60 shadow-2xl shadow-indigo-500/10 transform hover:scale-[1.02] transition-transform duration-700">
                         <img src="{{ asset('images/hero-survey-uin5.png') }}" alt="Hero Image" class="w-full h-auto rounded-[2.5rem]">
                     </div>
@@ -136,7 +122,7 @@
         </div>
     </section>
 
-    {{-- 2. ALUR PARTISIPASI (Consistent Soft Modern Design) --}}
+    {{-- 2. ALUR PARTISIPASI (NO ANIMATION - Static for Performance) --}}
     <section id="langkah" class="py-32 relative overflow-hidden">
 
         {{-- Background Decoration --}}
@@ -147,8 +133,8 @@
 
         <div class="container mx-auto px-4 relative z-10">
 
-            {{-- Section Header --}}
-            <div class="text-center max-w-2xl mx-auto mb-20 animate-on-scroll">
+            {{-- Section Header (Static) --}}
+            <div class="text-center max-w-2xl mx-auto mb-20">
                 <span class="text-indigo-500 font-bold text-xs tracking-[0.2em] uppercase block mb-3">Panduan Pengguna</span>
                 <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-6 leading-tight">Tahapan Pengisian Survei</h2>
                 <p class="text-slate-500 text-lg leading-relaxed">Proses yang dirancang sederhana, cepat, dan aman untuk kenyamanan Anda.</p>
@@ -159,8 +145,8 @@
                 {{-- Connector Line (Desktop Only) --}}
                 <div class="hidden md:block absolute top-24 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-teal-100 via-indigo-100 to-rose-100 -z-10 rounded-full"></div>
 
-                {{-- Step 1 --}}
-                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all duration-500 relative step-card-anim">
+                {{-- Step 1 (Static) --}}
+                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all duration-500 relative">
                     <div class="w-20 h-20 mx-auto bg-teal-50 rounded-[1.5rem] flex items-center justify-center text-teal-600 mb-8 shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -172,8 +158,8 @@
                     </p>
                 </div>
 
-                {{-- Step 2 --}}
-                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all duration-500 relative step-card-anim" style="animation-delay: 150ms">
+                {{-- Step 2 (Static) --}}
+                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all duration-500 relative">
                     <div class="w-20 h-20 mx-auto bg-indigo-50 rounded-[1.5rem] flex items-center justify-center text-indigo-600 mb-8 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -185,8 +171,8 @@
                     </p>
                 </div>
 
-                {{-- Step 3 --}}
-                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all duration-500 relative step-card-anim" style="animation-delay: 300ms">
+                {{-- Step 3 (Static) --}}
+                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all duration-500 relative">
                     <div class="w-20 h-20 mx-auto bg-rose-50 rounded-[1.5rem] flex items-center justify-center text-rose-600 mb-8 shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -201,7 +187,7 @@
         </div>
     </section>
 
-    {{-- 3. FEATURED PROGRAMS (Same logic, new design) --}}
+    {{-- 3. FEATURED PROGRAMS --}}
     <section id="program" class="py-24 bg-slate-50 relative"
         x-data="{ 
                 search: '', 
@@ -281,7 +267,10 @@
             class="flex flex-wrap justify-center gap-8">
 
             @forelse($featuredPrograms as $program)
-            <div class="program-card-anim group w-full md:w-[380px]"
+            {{-- Tambahkan class 'program-card' jika ingin dianimasikan GSAP di section ini, 
+                 tapi biarkan 'program-card-anim' jika di JS Anda menargetnya. 
+                 Di kode JS sebelumnya targetnya '.program-card', jadi sebaiknya gunakan 'program-card' --}}
+            <div class="program-card group w-full md:w-[380px]"
                 data-title="{{ strtolower($program->title) }}"
                 x-show="search === '' || $el.dataset.title.includes(search.toLowerCase())">
 
@@ -383,7 +372,7 @@
             @endforelse
 
             {{-- Empty State Search --}}
-            <div class="w-full py-12 text-center" x-cloak x-show="search !== '' && !isSearching && $el.parentElement.querySelectorAll('.program-card-anim[style*=\'display: none\']').length === {{ count($featuredPrograms) }}">
+            <div class="w-full py-12 text-center" x-cloak x-show="search !== '' && !isSearching && $el.parentElement.querySelectorAll('.program-card[style*=\'display: none\']').length === {{ count($featuredPrograms) }}">
                 <div class="inline-flex bg-slate-50 px-4 py-2 rounded-full border border-slate-200">
                     <p class="text-slate-500 text-sm">Tidak ditemukan program dengan kata kunci "<span x-text="search" class="font-bold text-slate-800"></span>"</p>
                 </div>

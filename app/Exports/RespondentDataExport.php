@@ -16,18 +16,26 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class RespondentDataExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, ShouldQueue
 {
     protected $program;
-    protected $unitId; // Tambahan Property
+    protected $unitId;
     protected $formFields;
-    protected $questions;
+    protected $sections; // Kita pakai Section, bukan Questions lagi
 
-    // Constructor terima Unit ID (Opsional, Default null)
     public function __construct(SurveyProgram $program, $unitId = null)
     {
         $this->program = $program;
         $this->unitId = $unitId;
 
-        $this->formFields = $program->formFields()->orderBy('order')->get();
-        $this->questions = $program->questionSections->flatMap->questions;
+        // 1. Ambil Form Builder (Tapi filter "Nama" agar tidak double)
+        $this->formFields = $program->formFields()
+            ->orderBy('order')
+            ->get()
+            ->filter(function ($field) {
+                // Hapus field jika labelnya mengandung kata "Nama" (Case insensitive)
+                return !str_contains(strtolower($field->field_label), 'nama');
+            });
+
+        // 2. Ambil Section (Bukan Question per butir)
+        $this->sections = $program->questionSections()->orderBy('order_column')->get();
     }
 
     public function collection()
@@ -35,7 +43,6 @@ class RespondentDataExport implements FromCollection, WithHeadings, WithMapping,
         $query = PreSurveyResponse::with(['unitKerja'])
             ->where('survey_program_id', $this->program->id);
 
-        // Filter Jika Unit ID ada
         if ($this->unitId) {
             $query->where('unit_kerja_id', $this->unitId);
         }
@@ -45,50 +52,80 @@ class RespondentDataExport implements FromCollection, WithHeadings, WithMapping,
 
     public function headings(): array
     {
+        // Header Statis
         $headers = ['Tanggal', 'Unit Kerja', 'Nama Lengkap'];
 
+        // Header Dinamis (Biodata selain Nama)
         foreach ($this->formFields as $field) {
             $headers[] = $field->field_label;
         }
 
-        foreach ($this->questions as $index => $question) {
-            $headers[] = "Q" . ($index + 1);
+        // Header Nilai (Per BAGIAN / Section)
+        foreach ($this->sections as $section) {
+            $headers[] = "Skor: " . $section->title;
         }
+
+        // Tambahan: Rata-rata Total Individu
+        $headers[] = 'Skor Akhir';
 
         return $headers;
     }
 
     public function map($response): array
     {
+        // 1. Data Bawaan
         $row = [
             $response->created_at->format('d/m/Y H:i'),
-            $response->unitKerja->unit_kerja_name ?? 'N/A',
-            $response->full_name,
+            $response->unitKerja->unit_kerja_name ?? 'Global',
+            $response->full_name, // Ini Nama Utama
         ];
 
+        // 2. Data Biodata Dinamis (Tanpa Nama Double)
         $dynamicData = $response->dynamic_data ?? [];
         foreach ($this->formFields as $field) {
             $val = $dynamicData[$field->field_label] ?? '-';
             $row[] = is_array($val) ? implode(', ', $val) : $val;
         }
 
-        $answers = Answer::where('user_id', $response->user_id)
-            ->where('survey_program_id', $this->program->id)
-            // Filter jawaban agar sesuai unit (Penting jika user isi >1 unit di program yg sama)
-            ->where('unit_kerja_id', $response->unit_kerja_id)
-            ->get()
-            ->keyBy('question_id');
+        // 3. Hitung Skor Per Section (Rapor Individu)
+        $totalScoreAccumulator = 0;
+        $totalSectionCount = 0;
 
-        foreach ($this->questions as $question) {
-            $ans = $answers->get($question->id);
-            $row[] = $ans ? ($ans->option->option_score ?? $ans->option->option_body) : '-';
+        foreach ($this->sections as $section) {
+            // Query Jawaban User untuk Section ini
+            $avgSection = Answer::where('user_id', $response->user_id)
+                ->where('survey_program_id', $this->program->id)
+                // Kita gunakan filter unit kerja jika ada, jika tidak abaikan agar data tetap muncul
+                ->when($response->unit_kerja_id, function ($q) use ($response) {
+                    return $q->where('unit_kerja_id', $response->unit_kerja_id);
+                })
+                ->whereIn('question_id', $section->questions->pluck('id'))
+                ->avg('answer_skor');
+
+            if ($avgSection) {
+                $row[] = number_format($avgSection, 2);
+                $totalScoreAccumulator += $avgSection;
+                $totalSectionCount++;
+            } else {
+                $row[] = '-'; // Jika kosong/belum jawab
+            }
         }
+
+        // 4. Skor Akhir Individu
+        $finalScore = $totalSectionCount > 0 ? ($totalScoreAccumulator / $totalSectionCount) : 0;
+        $row[] = $finalScore > 0 ? number_format($finalScore, 2) : '-';
 
         return $row;
     }
 
     public function styles(Worksheet $sheet)
     {
-        return [1 => ['font' => ['bold' => true]]];
+        return [
+            1 => [
+                'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFF']],
+                'fill' => ['fillType' => 'solid', 'startColor' => ['argb' => '10B981']], // Warna Emerald/Hijau agar beda dengan Analisis
+                'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+            ]
+        ];
     }
 }

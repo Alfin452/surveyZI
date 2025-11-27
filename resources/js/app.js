@@ -98,9 +98,9 @@ window.GSAPAnimations = {
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     gsap.to(window, {
-                        duration: 1,
+                        duration: 0.6, // UBAH: Dari 1 menjadi 0.6 (atau 0.5 agar lebih ngebut)
                         scrollTo: { y: targetElement, offsetY: 80 },
-                        ease: "power3.inOut",
+                        ease: "power2.out", // UBAH: Gunakan 'out' agar start-nya instan/cepat
                     });
                 }
             });

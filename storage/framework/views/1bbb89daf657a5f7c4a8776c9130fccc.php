@@ -3,9 +3,8 @@
 <?php $__env->startSection('content'); ?>
 
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-    <div class="absolute top-0 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-8 left-1/3 w-96 h-96 bg-pink-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+    <div class="absolute top-0 right-1/4 w-96 h-96 bg-teal-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
 </div>
 
 <div class="relative z-10 space-y-6">
@@ -30,8 +29,8 @@
             <?php if($selectedProgram): ?>
             <div class="flex flex-wrap gap-2">
                 
-                <a href="<?php echo e(route('superadmin.reports.export.average', $selectedProgram->id)); ?>"
-                    class="group flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 rounded-xl font-bold shadow-sm transition-all text-xs">
+                <a href="<?php echo e(route('superadmin.reports.export.average', $selectedProgram)); ?>"
+                    class="group flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 rounded-xl font-bold shadow-sm transition-all text-xs">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
@@ -39,14 +38,12 @@
                 </a>
 
                 
-                <a href="<?php echo e(route('superadmin.reports.export.respondents', $selectedProgram->id)); ?>"
-                    class="group flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300 text-xs">
-                    <div class="bg-white/20 p-1 rounded-lg group-hover:rotate-12 transition-transform duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                    </div>
-                    <span>Data Responden (Semua)</span>
+                <a href="<?php echo e(route('superadmin.reports.export.respondents', $selectedProgram)); ?>"
+                    class="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-300 text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Data Responden</span>
                 </a>
             </div>
             <?php endif; ?>
@@ -155,9 +152,9 @@
                                 </a>
 
                                 
-                                <a href="<?php echo e(route('superadmin.reports.export.unit', ['program' => $selectedProgram->id, 'unit' => $unitReport['unit_id']])); ?>"
+                                <a href="<?php echo e(route('superadmin.reports.export.unit', ['program' => $selectedProgram, 'unit' => $unitReport['unit_id']])); ?>"
                                     class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all shadow-sm hover:shadow-md"
-                                    title="Export Data Unit Ini">
+                                    title="Export Unit Ini">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>

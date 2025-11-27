@@ -92,18 +92,20 @@ Route::middleware(['auth', 'verified', 'is.superadmin'])
         
         Route::get('programs/{program}/results', [ProgramResultController::class, 'showResults'])->name('programs.results');
 
-    Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
+    // --- MANAJEMEN LAPORAN (REPORT CENTER) ---
+    Route::controller(ReportController::class)->prefix('laporan')->name('reports.')->group(function () {
 
-    // 2. Export Global (Letakkan di ATAS detail unit)
-    Route::get('/laporan/{program}/export-average', [ReportController::class, 'exportAverage'])->name('reports.export.average');
-    Route::get('/laporan/{program}/export-respondents', [ReportController::class, 'exportRespondents'])->name('reports.export.respondents');
+        // 1. Halaman Utama Laporan
+        Route::get('/', 'index')->name('index');
 
-    // 3. Export Per Unit (Tambahkan prefix /laporan agar seragam)
-    Route::get('/laporan/{program}/unit/{unit}/export', [ReportController::class, 'exportUnitRespondents'])->name('reports.export.unit');
+        // 2. EXPORT EXCEL (Route Baru yang Anda cari)
+        Route::get('/unduh-analisis/{program}', 'exportAverage')->name('export.average');
+        Route::get('/unduh-responden/{program}', 'exportRespondents')->name('export.respondents');
+        Route::get('/unduh-unit/{program}/{unit}', 'exportUnitRespondents')->name('export.unit');
 
-    // 4. Halaman Detail Unit (Wildcard - Letakkan PALING BAWAH)
-    Route::get('/laporan/{program_id}/{unit_kerja_id}', [ReportController::class, 'showUnitDetail'])->name('reports.showUnit');
-
+        // 3. Detail per Unit (Wajib ditaruh paling bawah dalam grup ini)
+        Route::get('/{program_id}/{unit_kerja_id}', 'showUnitDetail')->name('showUnit');
+    });
 
         Route::get('programs/{program}/builder', [SuperadminSurveyProgramController::class, 'editFields'])->name('programs.builder');
         Route::put('programs/{program}/builder', [SuperadminSurveyProgramController::class, 'updateFields'])->name('programs.builder.update');
@@ -135,7 +137,19 @@ Route::middleware(['auth', 'verified', 'is.unitkerja.admin'])
         Route::get('/programs/{program}/results', [UnitKerjaSurveyResultController::class, 'show'])->name('programs.results');
         Route::resource('my-programs', UnitKerjaSurveyProgramController::class)->parameters(['my-programs' => 'program']);
         Route::post('my-programs/{program}/clone', [UnitKerjaSurveyProgramController::class, 'cloneProgram'])->name('my-programs.clone');Route::get('my-programs/{program}/questions', [UnitKerjaSurveyProgramController::class, 'showQuestionsPage'])->name('programs.questions.index');
-    
+
+    Route::controller(\App\Http\Controllers\UnitKerjaAdmin\ReportController::class)
+        ->prefix('laporan')
+        ->name('reports.')
+        ->group(function () {
+            // Halaman Index Laporan
+            Route::get('/', 'index')->name('index');
+
+            // Export Excel (Hanya data unit sendiri)
+            Route::get('/unduh-analisis/{program}', 'exportAverage')->name('export.average');
+            Route::get('/unduh-responden/{program}', 'exportRespondents')->name('export.respondents');
+        });
+
     Route::prefix('my-programs/{program}/sections')->name('programs.sections.')->group(function () {
         Route::post('/', [UnitKerjaQuestionSectionController::class, 'store'])->name('store');
         Route::post('/reorder', [UnitKerjaQuestionSectionController::class, 'reorder'])->name('reorder');

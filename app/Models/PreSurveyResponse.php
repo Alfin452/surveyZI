@@ -21,7 +21,8 @@ class PreSurveyResponse extends Model
         'age',
         'status',
         'unit_kerja_or_fakultas',
-        'dynamic_data', // <--- WAJIB ADA
+        'dynamic_data',
+        'unit_kerja_id',
     ];
 
     protected $casts = [
