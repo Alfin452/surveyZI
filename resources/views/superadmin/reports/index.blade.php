@@ -1,6 +1,103 @@
 @extends('layouts.superadmin')
 
 @section('content')
+{{-- Load CSS Select2 --}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+    /* Custom Scrollbar untuk Tabel Lebar */
+    .custom-scrollbar::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Animasi Mengambang */
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    /* Shadow untuk Sticky Columns */
+    .shadow-r {
+        box-shadow: 4px 0 12px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    .shadow-l {
+        box-shadow: -4px 0 12px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* --- CUSTOM SELECT2 STYLING (Tailwind Match) --- */
+    .select2-container .select2-selection--single {
+        height: 50px !important;
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        border: 1px solid #e5e7eb !important;
+        /* border-gray-200 */
+        border-radius: 0.75rem !important;
+        /* rounded-xl */
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #374151 !important;
+        /* text-slate-700 */
+        font-size: 0.875rem !important;
+        /* text-sm */
+        font-weight: 600;
+        padding-left: 12px;
+        line-height: normal !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 48px !important;
+        right: 12px !important;
+    }
+
+    .select2-dropdown {
+        border: 1px solid #e5e7eb !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+        overflow: hidden !important;
+        margin-top: 4px;
+    }
+
+    .select2-search__field {
+        border-radius: 0.5rem !important;
+        padding: 8px !important;
+        border: 1px solid #d1d5db !important;
+    }
+
+    .select2-results__option--highlighted[aria-selected] {
+        background-color: #4f46e5 !important;
+        /* indigo-600 */
+        color: white !important;
+    }
+</style>
+
 {{-- Background Aurora --}}
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-teal-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
@@ -50,20 +147,15 @@
         </div>
     </div>
 
-    {{-- 2. Filter Card --}}
+    {{-- 2. Filter Card (MODIFIKASI SELECT2) --}}
     <div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg rounded-2xl p-5 z-20 relative">
         <form action="{{ route('superadmin.reports.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
             <div class="flex-1 w-full">
                 <label for="program_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Pilih Program Survei</label>
-                <div class="relative group">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                    </div>
-                    <select id="program_id" name="program_id" required
-                        class="block w-full pl-10 pr-10 py-3 border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/80 placeholder-gray-400 transition-all shadow-sm cursor-pointer hover:bg-white">
-                        <option value="">-- Silakan Pilih Program --</option>
+                <div class="relative">
+                    {{-- Select ini akan diubah otomatis oleh Select2 --}}
+                    <select id="program_id" name="program_id" required class="select2-init w-full">
+                        <option value="">-- Ketik untuk Mencari Program --</option>
                         @foreach($programs as $program)
                         <option value="{{ $program->id }}" {{ $selectedProgram && $selectedProgram->id == $program->id ? 'selected' : '' }}>
                             {{ $program->title }}
@@ -73,7 +165,7 @@
                 </div>
             </div>
             <div class="w-full md:w-auto">
-                <button type="submit" class="w-full md:w-auto inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-md transition-all active:scale-95 text-sm">
+                <button type="submit" class="w-full md:w-auto inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-md transition-all active:scale-95 text-sm h-[50px]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -192,50 +284,22 @@
     @endif
 </div>
 
-<style>
-    /* Custom Scrollbar untuk Tabel Lebar */
-    .custom-scrollbar::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 4px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-    }
-
-    /* Animasi Mengambang */
-    @keyframes float {
-
-        0%,
-        100% {
-            transform: translateY(0px);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
-    }
-
-    .animate-float {
-        animation: float 4s ease-in-out infinite;
-    }
-
-    /* Shadow untuk Sticky Columns */
-    .shadow-r {
-        box-shadow: 4px 0 12px -4px rgba(0, 0, 0, 0.05);
-    }
-
-    .shadow-l {
-        box-shadow: -4px 0 12px -4px rgba(0, 0, 0, 0.05);
-    }
-</style>
+{{-- SCRIPT SELECT2 --}}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Inisialisasi Select2
+        $('.select2-init').select2({
+            placeholder: "Cari nama program survei...",
+            allowClear: true,
+            width: '100%',
+            language: {
+                noResults: function() {
+                    return "Program survei tidak ditemukan";
+                }
+            }
+        });
+    });
+</script>
 @endsection

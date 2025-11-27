@@ -151,4 +151,77 @@ class SurveyProgramController extends Controller
         }]);
         return view('unit_kerja_admin.programs.questions.index', compact('program'));
     }
+
+    public function editFields(SurveyProgram $program)
+    {
+        // PERBAIKAN: Definisikan $user atau $unitKerja terlebih dahulu
+        $user = Auth::user();
+
+        // 1. Validasi Kepemilikan (Security)
+        // Pastikan program ini milik unit kerja dari user yang sedang login
+        if ($program->unit_kerja_id !== $user->unit_kerja_id) {
+            abort(403, 'Akses ditolak. Program ini bukan milik unit kerja Anda.');
+        }
+
+        // 2. Load fields yang sudah ada, urutkan berdasarkan 'order'
+        $program->load(['formFields' => function ($q) {
+            $q->orderBy('order');
+        }]);
+
+        // 3. Tampilkan View Builder (Pastikan view ini sudah Anda buat di langkah sebelumnya)
+        return view('unit_kerja_admin.programs.builder', compact('program'));
+    }
+
+    /**
+     * Menyimpan Perubahan Field Pre-Survey (Unit Kerja Admin)
+     */
+    public function updateFields(Request $request, SurveyProgram $program)
+    {
+        // PERBAIKAN: Definisikan $user terlebih dahulu
+        $user = Auth::user();
+
+        // 1. Validasi Kepemilikan
+        if ($program->unit_kerja_id !== $user->unit_kerja_id) {
+            abort(403, 'Akses ditolak. Program ini bukan milik unit kerja Anda.');
+        }
+
+        // 2. Validasi Input (Sama dengan Superadmin)
+        $data = $request->validate([
+            'fields' => 'present|array',
+            'fields.*.label' => 'required|string|max:255',
+            'fields.*.type' => 'required|in:text,number,date,select,radio',
+            'fields.*.options' => 'nullable|string', // Opsi dipisah koma
+            'fields.*.required' => 'nullable|boolean',
+            'requires_pre_survey' => 'boolean', // Checkbox status aktif/tidak
+        ]);
+
+        // 3. Update Status 'requires_pre_survey' di tabel program
+        $program->update([
+            'requires_pre_survey' => $request->boolean('requires_pre_survey')
+        ]);
+
+        // 4. Strategi Update Fields: Hapus semua field lama, buat ulang yang baru (Full Sync)
+        // Menggunakan relasi formFields()
+        $program->formFields()->delete();
+
+        if (!empty($data['fields'])) {
+            foreach ($data['fields'] as $index => $fieldData) {
+                // Konversi opsi string "A, B, C" menjadi Array untuk disimpan
+                $optionsArray = null;
+                if (in_array($fieldData['type'], ['select', 'radio']) && !empty($fieldData['options'])) {
+                    $optionsArray = array_map('trim', explode(',', $fieldData['options']));
+                }
+
+                $program->formFields()->create([
+                    'field_label' => $fieldData['label'],
+                    'field_type' => $fieldData['type'],
+                    'field_options' => $optionsArray, // Pastikan model SurveyProgramFormField me-cast ini sebagai array/json
+                    'is_required' => isset($fieldData['required']) ? 1 : 0,
+                    'order' => $index, // Simpan urutan sesuai posisi di array
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Formulir data diri berhasil diperbarui!');
+    }
 }

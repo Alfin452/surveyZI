@@ -137,6 +137,9 @@ Route::middleware(['auth', 'verified', 'is.unitkerja.admin'])
         Route::get('/programs/{program}/results', [UnitKerjaSurveyResultController::class, 'show'])->name('programs.results');
         Route::resource('my-programs', UnitKerjaSurveyProgramController::class)->parameters(['my-programs' => 'program']);
         Route::post('my-programs/{program}/clone', [UnitKerjaSurveyProgramController::class, 'cloneProgram'])->name('my-programs.clone');Route::get('my-programs/{program}/questions', [UnitKerjaSurveyProgramController::class, 'showQuestionsPage'])->name('programs.questions.index');
+        Route::get('my-programs/{program}/builder', [UnitKerjaSurveyProgramController::class, 'editFields'])->name('my-programs.builder');
+        Route::put('my-programs/{program}/builder', [UnitKerjaSurveyProgramController::class, 'updateFields'])->name('my-programs.builder.update');
+
 
     Route::controller(\App\Http\Controllers\UnitKerjaAdmin\ReportController::class)
         ->prefix('laporan')
