@@ -95,12 +95,10 @@
                     </div>
 
                     
-
-                    
                     <?php if($program->formFields->count() > 0): ?>
                     <?php $__currentLoopData = $program->formFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <?php
-                    // Logic Autofill: Jika labelnya "Nama", otomatis isi dengan nama user login
+                    // Logic Autofill
                     $defaultValue = old('dynamic_data.'.$field->field_label);
                     if (!$defaultValue && (stripos($field->field_label, 'nama') !== false)) {
                     $defaultValue = Auth::user()->username;
@@ -115,23 +113,46 @@
                         </label>
 
                         
-                        <?php if(in_array($field->field_type, ['text', 'number', 'date'])): ?>
-                        <input type="<?php echo e($field->field_type); ?>"
+                        <?php if($field->field_type == 'text'): ?>
+                        <input type="text"
                             name="dynamic_data[<?php echo e($field->field_label); ?>]"
                             <?php echo e($field->is_required ? 'required' : ''); ?>
 
                             value="<?php echo e($defaultValue); ?>"
+                            maxlength="100"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
                             placeholder="Masukkan <?php echo e($field->field_label); ?>...">
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 100 karakter</p>
+
+                        
+                        <?php elseif($field->field_type == 'number'): ?>
+                        <input type="number"
+                            name="dynamic_data[<?php echo e($field->field_label); ?>]"
+                            <?php echo e($field->is_required ? 'required' : ''); ?>
+
+                            value="<?php echo e($defaultValue); ?>"
+                            oninput="if(this.value.length > 15) this.value = this.value.slice(0, 15);"
+                            class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
+                            placeholder="Hanya angka...">
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 15 digit</p>
+
+                        
+                        <?php elseif($field->field_type == 'date'): ?>
+                        <input type="date"
+                            name="dynamic_data[<?php echo e($field->field_label); ?>]"
+                            <?php echo e($field->is_required ? 'required' : ''); ?>
+
+                            value="<?php echo e($defaultValue); ?>"
+                            class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm">
 
                         
                         <?php elseif($field->field_type == 'select'): ?>
                         <div x-data="{ 
-                                            open: false, 
-                                            selected: '<?php echo e(old('dynamic_data.'.$field->field_label)); ?>',
-                                            options: <?php echo e(json_encode($field->field_options)); ?>
+                                open: false, 
+                                selected: '<?php echo e(old('dynamic_data.'.$field->field_label)); ?>',
+                                options: <?php echo e(json_encode($field->field_options)); ?>
 
-                                         }" class="relative">
+                             }" class="relative">
 
                             <input type="hidden" name="dynamic_data[<?php echo e($field->field_label); ?>]" :value="selected" <?php echo e($field->is_required ? 'required' : ''); ?>>
 
@@ -178,14 +199,21 @@
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <p class="mt-2 text-xs text-red-500 font-medium ml-1"><?php echo e($message); ?></p> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-2 text-xs text-red-500 font-bold ml-1 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <?php echo e($message); ?>
+
+                        </p>
+                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php else: ?>
-                    
                     <div class="text-center py-10 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
                         <p class="text-slate-400 text-sm font-medium">Formulir data diri belum dikonfigurasi oleh Admin.</p>
                     </div>

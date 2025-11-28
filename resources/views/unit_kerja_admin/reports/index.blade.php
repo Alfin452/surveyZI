@@ -5,8 +5,8 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
-    /* Animasi Mengambang */
-    @keyframes float {
+    /* --- ANIMATIONS --- */
+    @keyframes float-slow {
 
         0%,
         100% {
@@ -14,161 +14,250 @@
         }
 
         50% {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
         }
     }
 
-    .animate-float {
-        animation: float 4s ease-in-out infinite;
+    .animate-float-slow {
+        animation: float-slow 5s ease-in-out infinite;
     }
 
-    /* --- CUSTOM SELECT2 STYLING (Agar matching dengan Tailwind SurveyZI) --- */
+    /* --- CUSTOM SCROLLBAR --- */
+    .custom-scrollbar::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* --- SELECT2 CUSTOMIZATION (Integrated Capsule Style) --- */
+
+    /* 1. Wadah Utama: Transparan & Hilangkan Border Bawaan */
     .select2-container .select2-selection--single {
-        height: 50px !important;
-        background-color: rgba(255, 255, 255, 0.8) !important;
-        border: 1px solid #e5e7eb !important;
-        /* border-gray-200 */
-        border-radius: 0.75rem !important;
-        /* rounded-xl */
+        height: 100% !important;
+        /* Ikuti tinggi parent (56px) */
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
         display: flex !important;
         align-items: center !important;
+        /* Center Flex Parent */
+        outline: none !important;
     }
 
+    /* 2. Teks Pilihan & Placeholder: PADDING MANUAL AGAR TENGAH */
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #374151 !important;
-        /* text-slate-700 */
-        font-size: 0.875rem !important;
-        /* text-sm */
-        font-weight: 600;
-        padding-left: 12px;
+        color: #1e293b !important;
+        /* slate-800 */
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+
+        /* Padding Search Solution */
+        padding-top: 14px !important;
+        /* Dorong teks ke bawah agar tengah */
+        padding-left: 0 !important;
         line-height: normal !important;
+        height: 100% !important;
+        display: block !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 48px !important;
-        right: 12px !important;
+    /* Placeholder Text Style */
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #94a3b8 !important;
+        /* slate-400 */
+        font-weight: 500;
     }
 
+    /* 3. Hilangkan Elemen Pengganggu */
+    .select2-container--default .select2-selection--single .select2-selection__arrow,
+    .select2-container--default .select2-selection--single .select2-selection__clear {
+        display: none !important;
+        /* Hapus panah dan tombol X */
+    }
+
+    /* 4. Dropdown Menu (Glassmorphism) */
     .select2-dropdown {
-        border: 1px solid #e5e7eb !important;
-        border-radius: 0.75rem !important;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-        overflow: hidden !important;
-        margin-top: 4px;
+        border: 0 !important;
+        border-radius: 1.5rem !important;
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 10px 15px -5px rgba(0, 0, 0, 0.05) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(12px);
+        padding: 10px !important;
+        margin-top: 10px !important;
         z-index: 9999;
     }
 
+    /* Search Input dalam Dropdown */
+    .select2-search--dropdown {
+        padding: 5px 10px 10px 10px !important;
+    }
+
     .select2-search__field {
-        border-radius: 0.5rem !important;
-        padding: 8px !important;
-        border: 1px solid #d1d5db !important;
+        border-radius: 0.75rem !important;
+        padding: 10px 15px !important;
+        border: 1px solid #e2e8f0 !important;
+        background-color: #f8fafc !important;
+        font-size: 0.9rem;
+    }
+
+    .select2-search__field:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+        outline: none !important;
+    }
+
+    /* Item Hasil */
+    .select2-results__option {
+        padding: 12px 16px !important;
+        border-radius: 0.75rem !important;
+        margin-bottom: 4px;
+        font-size: 0.95rem;
+        color: #475569;
+        font-weight: 500;
+        transition: all 0.2s;
     }
 
     .select2-results__option--highlighted[aria-selected] {
-        background-color: #4f46e5 !important;
-        /* indigo-600 */
-        color: white !important;
+        background-color: #e0e7ff !important;
+        /* indigo-50 */
+        color: #4338ca !important;
+        /* indigo-700 */
+        font-weight: 700;
+        padding-left: 20px !important;
+        /* Efek geser saat hover */
     }
 
-    /* Styling khusus untuk badge Lokal/Pusat di dalam dropdown */
+    /* Badge Lokal/Pusat di dalam dropdown */
     .badge-option {
-        font-size: 0.75rem;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 4px;
-        margin-left: 8px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 6px;
+        margin-left: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 </style>
 
 {{-- Background Aurora --}}
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-    <div class="absolute top-0 right-1/4 w-96 h-96 bg-teal-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-teal-400/10 rounded-full mix-blend-multiply filter blur-[100px] animate-blob"></div>
+    <div class="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-indigo-400/10 rounded-full mix-blend-multiply filter blur-[80px] animate-blob animation-delay-2000"></div>
 </div>
 
-<div class="relative z-10 space-y-6">
+<div class="relative z-10 space-y-8 pb-20">
 
     {{-- 1. Header Section --}}
-    <div class="bg-white/60 backdrop-blur-xl rounded-3xl px-6 py-5 border border-white/40 shadow-lg">
-        <div class="flex items-center gap-4">
-            <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+        <div class="flex items-center gap-5">
+            {{-- Icon Container with Glow --}}
+            <div class="relative group">
+                <div class="absolute inset-0 bg-indigo-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                <div class="w-16 h-16 relative bg-white/80 backdrop-blur-xl rounded-2xl border border-white/60 shadow-lg flex items-center justify-center overflow-hidden">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bar%20Chart.png" alt="Report" class="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500">
+                </div>
             </div>
+
             <div>
-                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Laporan Unit Saya</h1>
-                <p class="text-slate-500 text-sm font-medium">Pantau kinerja unit Anda baik dari survei mandiri maupun survei institusional.</p>
+                <h1 class="text-3xl font-black text-slate-800 tracking-tight">Laporan Unit Saya</h1>
+                <p class="text-slate-500 font-medium mt-1 text-base">Pantau kinerja unit Anda secara real-time.</p>
             </div>
         </div>
     </div>
 
-    {{-- 2. Filter Card (MODIFIKASI SELECT2) --}}
-    <div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg rounded-2xl p-5 z-20">
-        <form action="{{ route('unitkerja.admin.reports.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
-            <div class="flex-1 w-full">
-                <label for="program_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Pilih Program Survei</label>
-                <div class="relative">
-                    {{-- Select ini akan diubah otomatis oleh Select2 --}}
-                    {{-- Note: 'onchange' dihapus agar tidak submit otomatis saat mengetik/memilih (UX lebih baik pakai tombol) --}}
-                    <select id="program_id" name="program_id" required class="select2-init w-full">
-                        <option value="">-- Ketik untuk Mencari Program --</option>
+    {{-- 2. SEARCH BAR (Kapsul Terintegrasi) --}}
+    <div class="max-w-3xl mx-auto mt-4 relative z-30">
+        <form action="{{ route('unitkerja.admin.reports.index') }}" method="GET">
+
+            {{-- Main Capsule Container (Tinggi 56px) --}}
+            <div class="group bg-white rounded-full p-1 pl-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 hover:border-indigo-100 transition-all duration-300 flex items-center gap-3 relative overflow-visible focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-500/50 h-[56px]">
+
+                {{-- Search Icon (Left) --}}
+                <div class="shrink-0 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                {{-- Select2 Wrapper --}}
+                <div class="flex-1 h-full relative">
+                    <select id="program_id" name="program_id" required class="select2-init w-full h-full opacity-0 cursor-pointer">
+                        <option value=""></option>
                         @foreach($programs as $program)
                         <option value="{{ $program->id }}" {{ $selectedProgram && $selectedProgram->id == $program->id ? 'selected' : '' }}>
                             {{ $program->title }}
-                            {{-- Teks tambahan untuk pencarian --}}
+                            {{-- Teks tambahan untuk pencarian (hidden in view by custom template, but good for search logic) --}}
                             ({{ $program->unit_kerja_id == auth()->user()->unit_kerja_id ? 'Lokal' : 'Pusat' }})
                         </option>
                         @endforeach
                     </select>
                 </div>
-            </div>
 
-            {{-- Tombol Submit Baru --}}
-            <div class="w-full md:w-auto">
-                <button type="submit" class="w-full md:w-auto inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-md transition-all active:scale-95 text-sm h-[50px]">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                {{-- Submit Button (Right) --}}
+                <button type="submit"
+                    class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-8 h-full font-bold text-sm shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all duration-300 transform active:scale-95 flex items-center gap-2">
                     Tampilkan
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
                 </button>
             </div>
+
         </form>
+
+        {{-- Helper Text --}}
+        @if(!$selectedProgram)
+        <div class="text-center mt-4">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100/50 border border-slate-200/50 text-xs font-semibold text-slate-500 animate-pulse">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                Silakan pilih program survei untuk memulai
+            </span>
+        </div>
+        @endif
     </div>
 
     {{-- 3. Hasil Laporan --}}
     @if($selectedProgram)
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-duration: 0.6s;">
 
         {{-- Kolom Kiri: Info Program, Statistik & Export --}}
         <div class="lg:col-span-1 space-y-6">
 
             {{-- Info Program Card --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                {{-- Decorative Blob --}}
+                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-8 -mt-8 opacity-50"></div>
 
                 {{-- BADGE KATEGORI PROGRAM --}}
-                <div class="mb-4">
+                <div class="mb-5 relative z-10">
                     @if($selectedProgram->unit_kerja_id == auth()->user()->unit_kerja_id)
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-700 text-[10px] font-bold uppercase tracking-wider border border-teal-100">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-50 text-teal-700 text-[10px] font-extrabold uppercase tracking-wider border border-teal-100">
+                        <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
                         Program Unit Sendiri
                     </span>
                     @else
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-wider border border-indigo-100">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-                        </svg>
-                        Program Institusional (Pusat)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-extrabold uppercase tracking-wider border border-indigo-100">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                        Program Institusional
                     </span>
                     @endif
                 </div>
 
-                <h2 class="text-lg font-black text-slate-800 mb-2 leading-tight">{{ $selectedProgram->title }}</h2>
-                <p class="text-xs text-slate-500 mb-4 line-clamp-3">{{ $selectedProgram->description }}</p>
+                <h2 class="text-xl font-black text-slate-800 mb-3 leading-tight relative z-10">{{ $selectedProgram->title }}</h2>
+                <p class="text-sm text-slate-500 mb-6 leading-relaxed relative z-10">{{ $selectedProgram->description }}</p>
 
-                <div class="text-xs text-slate-400 font-medium flex items-center gap-2 pt-4 border-t border-slate-50">
+                <div class="text-xs text-slate-400 font-bold flex items-center gap-2 pt-6 border-t border-slate-50">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -177,18 +266,32 @@
             </div>
 
             {{-- Kartu Statistik --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Statistik Unit Anda</h3>
+            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+                <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-6">Statistik Unit Anda</h3>
 
                 <div class="flex flex-col gap-4">
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <span class="text-xs font-bold text-slate-500 uppercase">Responden</span>
-                        <span class="text-2xl font-black text-slate-700">{{ $stats['respondents'] }}</span>
+                    <div class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 uppercase">Responden</span>
+                        </div>
+                        <span class="text-3xl font-black text-slate-700">{{ $stats['respondents'] }}</span>
                     </div>
 
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <span class="text-xs font-bold text-slate-500 uppercase">Rata-rata</span>
-                        <span class="text-2xl font-black {{ $stats['average'] >= 3 ? 'text-emerald-600' : ($stats['average'] >= 2 ? 'text-amber-600' : 'text-rose-600') }}">
+                    <div class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 uppercase">Rata-rata</span>
+                        </div>
+                        <span class="text-3xl font-black {{ $stats['average'] >= 3 ? 'text-emerald-500' : ($stats['average'] >= 2 ? 'text-amber-500' : 'text-rose-500') }}">
                             {{ number_format($stats['average'], 2) }}
                         </span>
                     </div>
@@ -196,16 +299,18 @@
             </div>
 
             {{-- Kartu Export --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Unduh Laporan</h3>
+            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+                <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-6">Unduh Laporan</h3>
                 <div class="space-y-3">
-                    <a href="{{ route('unitkerja.admin.reports.export.average', $selectedProgram) }}" class="flex items-center justify-center gap-3 w-full py-3 bg-white border-2 border-slate-100 hover:border-indigo-500 hover:text-indigo-600 text-slate-600 font-bold rounded-xl transition-all text-sm">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
+                    <a href="{{ route('unitkerja.admin.reports.export.average', $selectedProgram) }}" class="flex items-center justify-center gap-3 w-full py-4 bg-white border-2 border-slate-100 hover:border-indigo-500 hover:text-indigo-600 text-slate-600 font-bold rounded-2xl transition-all text-sm group">
+                        <div class="p-1 rounded-lg bg-slate-100 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
                         Excel Analisis
                     </a>
-                    <a href="{{ route('unitkerja.admin.reports.export.respondents', $selectedProgram) }}" class="flex items-center justify-center gap-3 w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition-all text-sm">
+                    <a href="{{ route('unitkerja.admin.reports.export.respondents', $selectedProgram) }}" class="flex items-center justify-center gap-3 w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-lg shadow-slate-900/20 hover:shadow-slate-900/30 hover:-translate-y-0.5 transition-all text-sm">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
@@ -217,39 +322,46 @@
 
         {{-- Kolom Kanan: Tabel Rincian Per Bagian --}}
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden h-full flex flex-col">
-                <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+            <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/60 overflow-hidden h-full flex flex-col">
+                <div class="p-8 border-b border-slate-100 bg-slate-50/30 flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-slate-700">Rincian Skor per Bagian</h3>
-                        <p class="text-xs text-slate-400">Detail performa unit Anda berdasarkan aspek penilaian.</p>
+                        <h3 class="text-lg font-black text-slate-800">Rincian Skor per Bagian</h3>
+                        <p class="text-sm text-slate-500 font-medium">Detail performa unit Anda berdasarkan aspek penilaian.</p>
                     </div>
                 </div>
-                <div class="overflow-x-auto flex-1">
+                <div class="overflow-x-auto flex-1 custom-scrollbar">
                     <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-50/50 border-b border-slate-100">
                             <tr>
-                                <th class="px-6 py-4 font-bold">Bagian (Section)</th>
-                                <th class="px-6 py-4 font-bold text-center w-32">Skor</th>
-                                <th class="px-6 py-4 font-bold text-center w-40">Kategori</th>
+                                <th class="px-8 py-5 font-extrabold tracking-wider">Bagian (Section)</th>
+                                <th class="px-6 py-5 font-extrabold text-center w-32 tracking-wider">Skor</th>
+                                <th class="px-6 py-5 font-extrabold text-center w-40 tracking-wider">Kategori</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach($sectionScores as $section)
-                            <tr class="hover:bg-indigo-50/30 transition-colors">
-                                <td class="px-6 py-4 font-medium text-slate-700">
+                            <tr class="hover:bg-slate-50 transition-colors group">
+                                <td class="px-8 py-6 font-bold text-slate-700">
                                     {{ $section['title'] }}
                                 </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-3 py-1 rounded-lg font-bold {{ $section['score'] >= 3 ? 'bg-emerald-100 text-emerald-700' : ($section['score'] >= 2 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700') }}">
+                                <td class="px-6 py-6 text-center">
+                                    <span class="inline-block px-4 py-1.5 rounded-xl font-bold text-sm {{ $section['score'] >= 3 ? 'bg-emerald-100 text-emerald-700' : ($section['score'] >= 2 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700') }}">
                                         {{ number_format($section['score'], 2) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase">
-                                    @if($section['score'] >= 3.26) Sangat Baik
-                                    @elseif($section['score'] >= 2.51) Baik
-                                    @elseif($section['score'] >= 1.76) Cukup
-                                    @else Kurang
-                                    @endif
+                                <td class="px-6 py-6 text-center">
+                                    <span class="text-xs font-bold uppercase tracking-wide 
+                                        @if($section['score'] >= 3.26) text-emerald-600
+                                        @elseif($section['score'] >= 2.51) text-emerald-500
+                                        @elseif($section['score'] >= 1.76) text-amber-500
+                                        @else text-rose-500
+                                        @endif">
+                                        @if($section['score'] >= 3.26) Sangat Baik
+                                        @elseif($section['score'] >= 2.51) Baik
+                                        @elseif($section['score'] >= 1.76) Cukup
+                                        @else Kurang
+                                        @endif
+                                    </span>
                                 </td>
                             </tr>
                             @endforeach
@@ -262,7 +374,7 @@
 
     @elseif(request('program_id'))
     {{-- State: Dipilih tapi kosong --}}
-    <div class="flex flex-col items-center justify-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-slate-300">
+    <div class="flex flex-col items-center justify-center py-20 bg-white/50 backdrop-blur-sm rounded-[2rem] border-2 border-dashed border-slate-300">
         <div class="w-24 h-24 mb-4 opacity-60">
             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Card%20File%20Box.png" alt="Empty" class="w-full h-full object-contain">
         </div>
@@ -270,12 +382,13 @@
     </div>
     @else
     {{-- State: Belum Pilih --}}
-    <div class="flex flex-col items-center justify-center py-24 px-4 bg-white/60 backdrop-blur-xl rounded-3xl shadow-sm border-2 border-dashed border-slate-200">
-        <div class="w-32 h-32 mb-6 drop-shadow-sm animate-float">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Magnifying%20Glass%20Tilted%20Right.png" alt="Search" class="w-full h-full object-contain">
+    <div class="flex flex-col items-center justify-center py-32 px-4">
+        <div class="w-40 h-40 bg-white rounded-full shadow-2xl shadow-indigo-100 flex items-center justify-center mb-8 animate-float-slow relative">
+            <div class="absolute inset-0 bg-indigo-50 rounded-full animate-ping opacity-20"></div>
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Magnifying%20Glass%20Tilted%20Right.png" alt="Search" class="w-24 h-24 object-contain">
         </div>
-        <h3 class="text-xl font-black text-slate-700 mb-2">Mulai Analisis</h3>
-        <p class="text-slate-500 text-center max-w-md">Silakan pilih program survei di atas untuk melihat laporan detail unit Anda.</p>
+        <h3 class="text-2xl font-black text-slate-800 mb-2">Mulai Analisis Unit</h3>
+        <p class="text-slate-500 text-center max-w-md">Silakan pilih program survei di atas untuk melihat laporan detail performa unit Anda.</p>
     </div>
     @endif
 
@@ -289,16 +402,27 @@
         // Inisialisasi Select2
         $('.select2-init').select2({
             placeholder: "Cari nama program survei...",
-            allowClear: true,
+            allowClear: false, // Hilangkan tombol X
             width: '100%',
             language: {
                 noResults: function() {
-                    return "Program survei tidak ditemukan";
+                    return '<span class="text-xs text-slate-400 p-2 block">Program tidak ditemukan</span>';
                 }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
             },
             // Custom Template agar info Lokal/Pusat terlihat rapi di dropdown
             templateResult: formatProgram,
             templateSelection: formatProgram
+        });
+
+        // Event listener untuk focus ring effect pada parent capsule
+        $('.select2-init').on('select2:open', function(e) {
+            $(this).closest('.group').addClass('ring-4 ring-indigo-500/10 border-indigo-500/50');
+        });
+        $('.select2-init').on('select2:close', function(e) {
+            $(this).closest('.group').removeClass('ring-4 ring-indigo-500/10 border-indigo-500/50');
         });
 
         // Fungsi format tampilan dropdown
@@ -308,7 +432,6 @@
             }
 
             // Logika sederhana memisahkan Nama dan (Label)
-            // Format asli: "Nama Program (Lokal)"
             var text = program.text;
             var label = "";
             var cleanText = text;
@@ -322,7 +445,7 @@
             }
 
             var $program = $(
-                '<span>' + cleanText + label + '</span>'
+                '<span class="flex items-center">' + cleanText + label + '</span>'
             );
             return $program;
         };

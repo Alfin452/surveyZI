@@ -25,28 +25,36 @@ class PreSurveyResponseController extends Controller
     {
         $unitKerja = UnitKerja::where('alias', $unitKerjaAlias)->firstOrFail();
 
-        // 1. Validasi Dinamis
+        // 1. Validasi Dinamis (Server Side)
         $dynamicRules = [];
         $customAttributes = [];
 
         foreach ($program->formFields as $field) {
-            if ($field->is_required) {
-                $rule = 'required';
-                if ($field->field_type == 'number') $rule .= '|numeric';
-                if ($field->field_type == 'date')   $rule .= '|date';
+            $rule = $field->is_required ? 'required' : 'nullable';
 
-                $dynamicRules['dynamic_data.' . $field->field_label] = $rule;
-                $customAttributes['dynamic_data.' . $field->field_label] = $field->field_label;
+            if ($field->field_type == 'text') {
+                $rule .= '|string|max:100'; // Mencegah spam text panjang
+            } elseif ($field->field_type == 'number') {
+                $rule .= '|numeric|digits_between:1,15'; // Mencegah angka tidak wajar
+            } elseif ($field->field_type == 'date') {
+                $rule .= '|date';
             }
+
+            $dynamicRules['dynamic_data.' . $field->field_label] = $rule;
+            $customAttributes['dynamic_data.' . $field->field_label] = $field->field_label;
         }
 
-        $request->validate($dynamicRules, [], $customAttributes);
+        $request->validate($dynamicRules, [
+            'dynamic_data.*.required' => 'Kolom :attribute wajib diisi.',
+            'dynamic_data.*.max' => 'Isian :attribute terlalu panjang (maksimal :max karakter).',
+            'dynamic_data.*.numeric' => 'Isian :attribute harus berupa angka.',
+            'dynamic_data.*.digits_between' => 'Isian :attribute harus berupa angka valid (maksimal :max digit).',
+        ], $customAttributes);
 
-        // 2. Ambil Data Input
+        // 2. Simpan Data
         $inputData = $request->input('dynamic_data', []);
-
-        // Auto-detect Nama (Prioritas: Input Form -> Auth User)
         $detectedName = Auth::user()->username ?? Auth::user()->name;
+
         foreach ($inputData as $key => $value) {
             if (stripos($key, 'nama') !== false) {
                 $detectedName = $value;
@@ -54,21 +62,15 @@ class PreSurveyResponseController extends Controller
             }
         }
 
-        // 3. SIMPAN KE DATABASE (SOLUSI ERROR DUPLICATE)
-        // Gunakan updateOrCreate agar tidak error jika user resubmit/back
         PreSurveyResponse::updateOrCreate(
             [
                 'user_id' => Auth::id(),
                 'survey_program_id' => $program->id,
-                // Kita kunci berdasarkan User & Program. 
-                // Artinya 1 User hanya punya 1 Data Diri per Program.
             ],
             [
-                'unit_kerja_id' => $unitKerja->id, // Update unit kerja jika berubah
+                'unit_kerja_id' => $unitKerja->id,
                 'full_name' => $detectedName,
                 'dynamic_data' => $inputData,
-
-                // Kolom legacy null
                 'age' => null,
                 'gender' => null,
                 'status' => null,
@@ -76,7 +78,6 @@ class PreSurveyResponseController extends Controller
             ]
         );
 
-        // Redirect ke pengisian survei utama
         return redirect()->route('public.survey.fill', [
             'program' => $program->alias,
             'unitKerja' => $unitKerja->alias

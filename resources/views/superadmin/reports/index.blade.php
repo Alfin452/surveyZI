@@ -5,13 +5,30 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
-    /* Custom Scrollbar untuk Tabel Lebar */
+    /* --- ANIMATIONS --- */
+    @keyframes float-slow {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    .animate-float-slow {
+        animation: float-slow 5s ease-in-out infinite;
+    }
+
+    /* --- CUSTOM SCROLLBAR --- */
     .custom-scrollbar::-webkit-scrollbar {
         height: 8px;
     }
 
     .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f5f9;
+        background: #f8fafc;
         border-radius: 4px;
     }
 
@@ -24,24 +41,7 @@
         background: #94a3b8;
     }
 
-    /* Animasi Mengambang */
-    @keyframes float {
-
-        0%,
-        100% {
-            transform: translateY(0px);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
-    }
-
-    .animate-float {
-        animation: float 4s ease-in-out infinite;
-    }
-
-    /* Shadow untuk Sticky Columns */
+    /* --- TABLE STICKY STYLING --- */
     .shadow-r {
         box-shadow: 4px 0 12px -4px rgba(0, 0, 0, 0.05);
     }
@@ -50,112 +50,164 @@
         box-shadow: -4px 0 12px -4px rgba(0, 0, 0, 0.05);
     }
 
-    /* --- CUSTOM SELECT2 STYLING (Tailwind Match) --- */
+    /* --- SELECT2 CUSTOMIZATION (Manual Padding Fix) --- */
+
+    /* 1. Wadah Utama: Transparan */
     .select2-container .select2-selection--single {
-        height: 50px !important;
-        background-color: rgba(255, 255, 255, 0.8) !important;
-        border: 1px solid #e5e7eb !important;
-        /* border-gray-200 */
-        border-radius: 0.75rem !important;
-        /* rounded-xl */
-        display: flex !important;
-        align-items: center !important;
+        height: 100% !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
+    /* 2. Teks Pilihan & Placeholder: PADDING MANUAL AGAR TENGAH */
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #374151 !important;
-        /* text-slate-700 */
-        font-size: 0.875rem !important;
-        /* text-sm */
-        font-weight: 600;
-        padding-left: 12px;
+        color: #1e293b !important;
+        /* slate-800 */
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+
+        /* Padding Search Solution */
+        padding-top: 14px !important;
+        /* Dorong teks ke bawah agar tengah */
+        padding-left: 0 !important;
         line-height: normal !important;
+        height: 100% !important;
+        display: block !important;
+        /* Pastikan block agar padding works */
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 48px !important;
-        right: 12px !important;
+    /* Warna Placeholder */
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #94a3b8 !important;
+        /* slate-400 */
+        font-weight: 500;
     }
 
+    /* 3. Hilangkan Panah & Tombol X */
+    .select2-container--default .select2-selection--single .select2-selection__arrow,
+    .select2-container--default .select2-selection--single .select2-selection__clear {
+        display: none !important;
+    }
+
+    /* 4. Dropdown Menu (Glassmorphism) */
     .select2-dropdown {
-        border: 1px solid #e5e7eb !important;
-        border-radius: 0.75rem !important;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-        overflow: hidden !important;
-        margin-top: 4px;
+        border: 0 !important;
+        border-radius: 1.5rem !important;
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 10px 15px -5px rgba(0, 0, 0, 0.05) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(12px);
+        padding: 10px !important;
+        margin-top: 10px !important;
+        z-index: 9999;
+    }
+
+    /* Search Input dalam Dropdown */
+    .select2-search--dropdown {
+        padding: 5px 10px 10px 10px !important;
     }
 
     .select2-search__field {
-        border-radius: 0.5rem !important;
-        padding: 8px !important;
-        border: 1px solid #d1d5db !important;
+        border-radius: 0.75rem !important;
+        padding: 10px 15px !important;
+        border: 1px solid #e2e8f0 !important;
+        background-color: #f8fafc !important;
+        font-size: 0.9rem;
+    }
+
+    .select2-search__field:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+        outline: none !important;
+    }
+
+    /* Item Hasil */
+    .select2-results__option {
+        padding: 12px 16px !important;
+        border-radius: 0.75rem !important;
+        margin-bottom: 4px;
+        font-size: 0.95rem;
+        color: #475569;
+        font-weight: 500;
+        transition: all 0.2s;
     }
 
     .select2-results__option--highlighted[aria-selected] {
-        background-color: #4f46e5 !important;
-        /* indigo-600 */
-        color: white !important;
+        background-color: #e0e7ff !important;
+        /* indigo-50 */
+        color: #4338ca !important;
+        /* indigo-700 */
+        font-weight: 700;
+        padding-left: 20px !important;
+        /* Efek geser saat hover */
     }
 </style>
 
 {{-- Background Aurora --}}
 <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-    <div class="absolute top-0 right-1/4 w-96 h-96 bg-teal-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-400/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-indigo-400/10 rounded-full mix-blend-multiply filter blur-[100px] animate-blob"></div>
+    <div class="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-teal-400/10 rounded-full mix-blend-multiply filter blur-[80px] animate-blob animation-delay-2000"></div>
 </div>
 
-<div class="relative z-10 space-y-6">
+<div class="relative z-10 space-y-8 pb-20">
 
-    {{-- 1. Hero Header Section --}}
-    <div class="bg-white/60 backdrop-blur-xl rounded-3xl px-6 py-5 border border-white/40 shadow-lg relative overflow-hidden group hover:shadow-indigo-100/50 transition-all duration-500">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-        <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                {{-- 3D Icon --}}
-                <div class="w-14 h-14 flex-shrink-0 drop-shadow-lg">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bar%20Chart.png" alt="Report Icon" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Laporan Agregat</h1>
-                    <p class="text-slate-500 text-sm font-medium mt-0.5">Rekapitulasi skor rata-rata per unit kerja untuk analisis data.</p>
+    {{-- 1. Header Section --}}
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+        <div class="flex items-center gap-5">
+            {{-- Icon Container with Glow --}}
+            <div class="relative group">
+                <div class="absolute inset-0 bg-indigo-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                <div class="w-16 h-16 relative bg-white/80 backdrop-blur-xl rounded-2xl border border-white/60 shadow-lg flex items-center justify-center overflow-hidden">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bar%20Chart.png" alt="Report" class="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500">
                 </div>
             </div>
 
-            {{-- Tombol Global Export (Jika Program Dipilih) --}}
-            @if($selectedProgram)
-            <div class="flex flex-wrap gap-2">
-                {{-- Export Analisis --}}
-                <a href="{{ route('superadmin.reports.export.average', $selectedProgram) }}"
-                    class="group flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 rounded-xl font-bold shadow-sm transition-all text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span>Excel Analisis</span>
-                </a>
-
-                {{-- Export Data Responden (Semua) --}}
-                <a href="{{ route('superadmin.reports.export.respondents', $selectedProgram) }}"
-                    class="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-300 text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    <span>Data Responden</span>
-                </a>
+            <div>
+                <h1 class="text-3xl font-black text-slate-800 tracking-tight">Laporan Agregat</h1>
+                <p class="text-slate-500 font-medium mt-1 text-base">Analisis skor rata-rata per unit kerja secara real-time.</p>
             </div>
-            @endif
         </div>
+
+        {{-- Action Buttons --}}
+        @if($selectedProgram)
+        <div class="flex gap-3 animate-fade-in-up">
+            <a href="{{ route('superadmin.reports.export.average', $selectedProgram) }}"
+                class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 rounded-xl font-bold shadow-sm hover:shadow-md transition-all text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Export Analisis</span>
+            </a>
+            <a href="{{ route('superadmin.reports.export.respondents', $selectedProgram) }}"
+                class="px-5 py-2.5 bg-slate-900 text-white hover:bg-slate-800 rounded-xl font-bold shadow-lg shadow-slate-900/20 hover:shadow-slate-900/30 hover:-translate-y-0.5 transition-all text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Data Responden</span>
+            </a>
+        </div>
+        @endif
     </div>
 
-    {{-- 2. Filter Card (MODIFIKASI SELECT2) --}}
-    <div class="bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg rounded-2xl p-5 z-20 relative">
-        <form action="{{ route('superadmin.reports.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
-            <div class="flex-1 w-full">
-                <label for="program_id" class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Pilih Program Survei</label>
-                <div class="relative">
-                    {{-- Select ini akan diubah otomatis oleh Select2 --}}
-                    <select id="program_id" name="program_id" required class="select2-init w-full">
-                        <option value="">-- Ketik untuk Mencari Program --</option>
+    {{-- 2. SEARCH BAR (Kapsul Terintegrasi) --}}
+    <div class="max-w-3xl mx-auto mt-4 relative z-30">
+        <form action="{{ route('superadmin.reports.index') }}" method="GET">
+
+            {{-- Main Capsule Container (Tinggi 56px) --}}
+            <div class="group bg-white rounded-full p-1 pl-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 hover:border-indigo-100 transition-all duration-300 flex items-center gap-3 relative overflow-visible focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-500/50 h-[56px]">
+
+                {{-- Search Icon (Left) --}}
+                <div class="shrink-0 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                {{-- Select2 Wrapper (Flexible & Full Height) --}}
+                <div class="flex-1 h-full relative">
+                    <select id="program_id" name="program_id" required class="select2-init w-full h-full opacity-0 cursor-pointer">
+                        <option value=""></option>
                         @foreach($programs as $program)
                         <option value="{{ $program->id }}" {{ $selectedProgram && $selectedProgram->id == $program->id ? 'selected' : '' }}>
                             {{ $program->title }}
@@ -163,142 +215,180 @@
                         @endforeach
                     </select>
                 </div>
-            </div>
-            <div class="w-full md:w-auto">
-                <button type="submit" class="w-full md:w-auto inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-md transition-all active:scale-95 text-sm h-[50px]">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+
+                {{-- Submit Button (Right - Inside Capsule) --}}
+                <button type="submit"
+                    class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-8 h-full font-bold text-sm shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all duration-300 transform active:scale-95 flex items-center gap-2">
+                    Tampilkan
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
-                    Tampilkan Laporan
                 </button>
             </div>
+
         </form>
+
+        {{-- Helper Text --}}
+        @if(!$selectedProgram)
+        <div class="text-center mt-4">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100/50 border border-slate-200/50 text-xs font-semibold text-slate-500 animate-pulse">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                Silakan pilih program survei untuk memulai
+            </span>
+        </div>
+        @endif
     </div>
 
-    {{-- 3. Report Table / Empty State --}}
+    {{-- 3. Data Visualization / Table --}}
     @if($selectedProgram)
-    <div class="bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl overflow-hidden relative">
+    <div class="animate-fade-in-up" style="animation-duration: 0.6s;">
 
-        {{-- Container Scroll Horizontal --}}
-        <div class="overflow-x-auto custom-scrollbar">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                    <tr class="bg-slate-50/80 text-slate-600 text-xs uppercase font-bold tracking-wider border-b border-slate-200">
-                        {{-- Sticky First Column --}}
-                        <th class="px-6 py-4 text-left sticky left-0 bg-slate-50 z-20 shadow-r border-r border-slate-100 min-w-[200px]">
-                            Unit Kerja
-                        </th>
-
-                        @foreach ($selectedProgram->questionSections as $section)
-                        <th class="px-6 py-4 text-center min-w-[150px]">
-                            <span class="block text-indigo-600">{{ $section->title }}</span>
-                            <span class="text-[10px] text-slate-400 normal-case font-normal">Rata-rata</span>
-                        </th>
-                        @endforeach
-
-                        {{-- Sticky Last Column --}}
-                        <th class="px-6 py-4 text-center sticky right-[120px] bg-indigo-50 text-indigo-700 z-10 border-l border-indigo-100 shadow-l">
-                            Total Skor
-                        </th>
-                        <th class="px-6 py-4 text-center sticky right-0 bg-slate-50 z-20 w-[120px]">
-                            Aksi
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-slate-100 text-sm">
-                    @forelse ($reportData as $unitReport)
-                    <tr class="hover:bg-indigo-50/30 transition-colors duration-150 group">
-                        {{-- Sticky Unit Name --}}
-                        <td class="px-6 py-4 font-bold text-slate-700 sticky left-0 bg-white group-hover:bg-indigo-50/30 z-20 border-r border-slate-50 shadow-sm">
-                            {{ $unitReport['unit_name'] }}
-                        </td>
-
-                        {{-- Scores --}}
-                        @foreach ($unitReport['section_scores'] as $score)
-                        <td class="px-6 py-4 text-center text-slate-600">
-                            <span class="inline-block px-2 py-1 rounded-lg {{ $score >= 3 ? 'bg-green-50 text-green-700' : ($score >= 2 ? 'bg-yellow-50 text-yellow-700' : 'bg-red-50 text-red-700') }} font-mono font-semibold">
-                                {{ number_format($score, 2) }}
-                            </span>
-                        </td>
-                        @endforeach
-
-                        {{-- Sticky Total Avg --}}
-                        <td class="px-6 py-4 text-center sticky right-[120px] bg-white group-hover:bg-indigo-50/30 z-10 border-l border-slate-50">
-                            <span class="text-lg font-black text-indigo-600">{{ number_format($unitReport['total_avg'], 2) }}</span>
-                        </td>
-
-                        {{-- Sticky Action (DENGAN 2 TOMBOL: Detail & Export Unit) --}}
-                        <td class="px-6 py-4 text-center sticky right-0 bg-white group-hover:bg-indigo-50/30 z-20 w-[120px]">
-                            <div class="flex items-center justify-center gap-2">
-                                {{-- 1. Detail --}}
-                                <a href="{{ route('superadmin.reports.showUnit', [$selectedProgram->id, $unitReport['unit_id']]) }}"
-                                    class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm hover:shadow-md"
-                                    title="Lihat Detail">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </a>
-
-                                {{-- 2. Export Unit (Excel) --}}
-                                <a href="{{ route('superadmin.reports.export.unit', ['program' => $selectedProgram, 'unit' => $unitReport['unit_id']]) }}"
-                                    class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all shadow-sm hover:shadow-md"
-                                    title="Export Unit Ini">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="100%" class="py-12 text-center text-slate-400 italic">
-                            Belum ada respons masuk untuk program ini.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        {{-- Section Divider --}}
+        <div class="flex items-center gap-4 mb-6 mt-8">
+            <div class="h-px bg-slate-200 flex-1"></div>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Hasil Analisis</span>
+            <div class="h-px bg-slate-200 flex-1"></div>
         </div>
-    </div>
 
-    @elseif ($selectedProgram)
-    {{-- State: Program dipilih tapi kosong --}}
-    <div class="flex flex-col items-center justify-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-slate-300">
-        <div class="w-24 h-24 mb-4 opacity-60">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Card%20File%20Box.png" alt="Empty" class="w-full h-full object-contain">
+        <div class="bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-200/40 rounded-[2rem] overflow-hidden relative">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="min-w-full divide-y divide-slate-100">
+                    <thead>
+                        <tr class="bg-slate-50/80">
+                            {{-- Unit Kerja (Sticky) --}}
+                            <th class="px-8 py-5 text-left sticky left-0 bg-slate-50 z-20 shadow-r border-r border-slate-100 min-w-[240px]">
+                                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Unit Kerja</span>
+                            </th>
+
+                            @foreach ($selectedProgram->questionSections as $section)
+                            <th class="px-6 py-5 text-center min-w-[180px]">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wide">{{ Str::limit($section->title, 20) }}</span>
+                                    <span class="text-[10px] font-semibold text-indigo-400 mt-0.5">Rata-rata Skor</span>
+                                </div>
+                            </th>
+                            @endforeach
+
+                            {{-- Total (Sticky) --}}
+                            <th class="px-6 py-5 text-center sticky right-[100px] bg-indigo-50/50 z-10 border-l border-indigo-50 shadow-l min-w-[120px]">
+                                <span class="text-xs font-extrabold text-indigo-600 uppercase tracking-wider">Total Skor</span>
+                            </th>
+
+                            {{-- Aksi (Sticky) --}}
+                            <th class="px-6 py-5 text-center sticky right-0 bg-slate-50 z-20 w-[100px]">
+                                <span class="sr-only">Aksi</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-50">
+                        @forelse ($reportData as $unitReport)
+                        <tr class="hover:bg-slate-50/80 transition-colors group">
+
+                            {{-- Unit Name --}}
+                            <td class="px-8 py-5 sticky left-0 bg-white group-hover:bg-slate-50/80 z-20 border-r border-slate-50 shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-8 rounded-full {{ $unitReport['total_avg'] >= 3 ? 'bg-emerald-400' : ($unitReport['total_avg'] >= 2 ? 'bg-amber-400' : 'bg-rose-400') }}"></div>
+                                    <span class="font-bold text-slate-700 text-sm">{{ $unitReport['unit_name'] }}</span>
+                                </div>
+                            </td>
+
+                            {{-- Section Scores --}}
+                            @foreach ($unitReport['section_scores'] as $score)
+                            <td class="px-6 py-5 text-center">
+                                <div class="relative inline-block group/tooltip">
+                                    <span class="text-sm font-bold {{ $score >= 3 ? 'text-emerald-600' : ($score >= 2 ? 'text-amber-600' : 'text-rose-600') }}">
+                                        {{ number_format($score, 2) }}
+                                    </span>
+                                    {{-- Tooltip bar visual --}}
+                                    <div class="absolute bottom-0 left-0 w-full h-1 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                                        <div class="h-full {{ $score >= 3 ? 'bg-emerald-400' : ($score >= 2 ? 'bg-amber-400' : 'bg-rose-400') }}" style="width: {{ ($score/4)*100 }}%"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            @endforeach
+
+                            {{-- Total Score --}}
+                            <td class="px-6 py-5 text-center sticky right-[100px] bg-white group-hover:bg-slate-50/80 z-10 border-l border-slate-50">
+                                <span class="text-lg font-black text-slate-800">{{ number_format($unitReport['total_avg'], 2) }}</span>
+                            </td>
+
+                            {{-- Actions --}}
+                            <td class="px-6 py-5 text-center sticky right-0 bg-white group-hover:bg-slate-50/80 z-20">
+                                <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                    <a href="{{ route('superadmin.reports.showUnit', [$selectedProgram->id, $unitReport['unit_id']]) }}"
+                                        class="p-2 rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition-colors" title="Detail">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{{ route('superadmin.reports.export.unit', ['program' => $selectedProgram, 'unit' => $unitReport['unit_id']]) }}"
+                                        class="p-2 rounded-lg text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors" title="Download Excel">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="100%" class="py-20 text-center">
+                                <div class="flex flex-col items-center justify-center opacity-50">
+                                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png" alt="Empty" class="w-16 h-16 mb-4 grayscale">
+                                    <p class="text-slate-500 font-medium">Belum ada data respons untuk program ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <p class="text-slate-500 font-medium">Belum ada data laporan untuk program ini.</p>
     </div>
 
     @else
-    {{-- State: Belum pilih program --}}
-    <div class="flex flex-col items-center justify-center py-24 px-4 bg-white/60 backdrop-blur-xl rounded-3xl shadow-sm border-2 border-dashed border-slate-200">
-        <div class="w-32 h-32 mb-6 drop-shadow-sm animate-float">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Magnifying%20Glass%20Tilted%20Right.png" alt="Search" class="w-full h-full object-contain">
+    {{-- Empty State (Belum Pilih Program) --}}
+    <div class="mt-20 flex flex-col items-center justify-center text-center px-4">
+        <div class="w-40 h-40 bg-white rounded-full shadow-2xl shadow-indigo-100 flex items-center justify-center mb-8 animate-float-slow relative">
+            <div class="absolute inset-0 bg-indigo-50 rounded-full animate-ping opacity-20"></div>
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Magnifying%20Glass%20Tilted%20Right.png" alt="Search" class="w-24 h-24 object-contain">
         </div>
-        <h3 class="text-xl font-black text-slate-700 mb-2">Pilih Program Survei</h3>
-        <p class="text-slate-500 text-center max-w-md">Silakan pilih salah satu program survei pada menu di atas untuk menampilkan analisis data laporan.</p>
+        <h3 class="text-2xl font-black text-slate-800 mb-2">Mulai Analisis</h3>
+        <p class="text-slate-500 max-w-md mx-auto leading-relaxed">
+            Pilih salah satu program survei melalui pencarian di atas untuk melihat laporan detail dan statistik unit kerja.
+        </p>
     </div>
     @endif
+
 </div>
 
-{{-- SCRIPT SELECT2 --}}
+{{-- SCRIPTS --}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         // Inisialisasi Select2
         $('.select2-init').select2({
-            placeholder: "Cari nama program survei...",
-            allowClear: true,
+            placeholder: "Ketik untuk mencari program...",
+            allowClear: false, // PASTI HILANGKAN TANDA X
             width: '100%',
             language: {
                 noResults: function() {
-                    return "Program survei tidak ditemukan";
+                    return '<span class="text-xs text-slate-400 p-2 block">Program tidak ditemukan</span>';
                 }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
             }
+        });
+
+        // Event listener untuk focus ring effect pada parent capsule
+        $('.select2-init').on('select2:open', function(e) {
+            $(this).closest('.group').addClass('ring-4 ring-indigo-500/10 border-indigo-500/50');
+        });
+        $('.select2-init').on('select2:close', function(e) {
+            $(this).closest('.group').removeClass('ring-4 ring-indigo-500/10 border-indigo-500/50');
         });
     });
 </script>

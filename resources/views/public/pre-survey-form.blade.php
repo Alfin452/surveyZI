@@ -84,17 +84,11 @@
                         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-[0.15em]">Identitas Diri</h3>
                     </div>
 
-                    {{--
-                       PERBAIKAN:
-                       Input statis "Nama Lengkap" DIHAPUS.
-                       Sekarang form sepenuhnya bergantung pada loop $program->formFields.
-                    --}}
-
-                    {{-- FIELD DINAMIS (Dari Database) --}}
+                    {{-- FIELD DINAMIS --}}
                     @if($program->formFields->count() > 0)
                     @foreach($program->formFields as $field)
                     @php
-                    // Logic Autofill: Jika labelnya "Nama", otomatis isi dengan nama user login
+                    // Logic Autofill
                     $defaultValue = old('dynamic_data.'.$field->field_label);
                     if (!$defaultValue && (stripos($field->field_label, 'nama') !== false)) {
                     $defaultValue = Auth::user()->username;
@@ -107,22 +101,43 @@
                             @if($field->is_required) <span class="text-red-400">*</span> @endif
                         </label>
 
-                        {{-- TIPE: TEXT / NUMBER / DATE --}}
-                        @if(in_array($field->field_type, ['text', 'number', 'date']))
-                        <input type="{{ $field->field_type }}"
+                        {{-- [MODIFIKASI] TIPE: TEXT (Dibatasi 100 Karakter) --}}
+                        @if($field->field_type == 'text')
+                        <input type="text"
                             name="dynamic_data[{{ $field->field_label }}]"
                             {{ $field->is_required ? 'required' : '' }}
                             value="{{ $defaultValue }}"
+                            maxlength="100"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
                             placeholder="Masukkan {{ $field->field_label }}...">
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 100 karakter</p>
+
+                        {{-- [MODIFIKASI] TIPE: NUMBER (Dibatasi 15 Digit) --}}
+                        @elseif($field->field_type == 'number')
+                        <input type="number"
+                            name="dynamic_data[{{ $field->field_label }}]"
+                            {{ $field->is_required ? 'required' : '' }}
+                            value="{{ $defaultValue }}"
+                            oninput="if(this.value.length > 15) this.value = this.value.slice(0, 15);"
+                            class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
+                            placeholder="Hanya angka...">
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 15 digit</p>
+
+                        {{-- TIPE: DATE --}}
+                        @elseif($field->field_type == 'date')
+                        <input type="date"
+                            name="dynamic_data[{{ $field->field_label }}]"
+                            {{ $field->is_required ? 'required' : '' }}
+                            value="{{ $defaultValue }}"
+                            class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm">
 
                         {{-- TIPE: SELECT (DROPDOWN) --}}
                         @elseif($field->field_type == 'select')
                         <div x-data="{ 
-                                            open: false, 
-                                            selected: '{{ old('dynamic_data.'.$field->field_label) }}',
-                                            options: {{ json_encode($field->field_options) }}
-                                         }" class="relative">
+                                open: false, 
+                                selected: '{{ old('dynamic_data.'.$field->field_label) }}',
+                                options: {{ json_encode($field->field_options) }}
+                             }" class="relative">
 
                             <input type="hidden" name="dynamic_data[{{ $field->field_label }}]" :value="selected" {{ $field->is_required ? 'required' : '' }}>
 
@@ -163,11 +178,17 @@
                         </div>
                         @endif
 
-                        @error('dynamic_data.'.$field->field_label) <p class="mt-2 text-xs text-red-500 font-medium ml-1">{{ $message }}</p> @enderror
+                        @error('dynamic_data.'.$field->field_label)
+                        <p class="mt-2 text-xs text-red-500 font-bold ml-1 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            {{ $message }}
+                        </p>
+                        @enderror
                     </div>
                     @endforeach
                     @else
-                    {{-- FALLBACK: Jika Admin belum set field apapun, tampilkan pesan --}}
                     <div class="text-center py-10 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
                         <p class="text-slate-400 text-sm font-medium">Formulir data diri belum dikonfigurasi oleh Admin.</p>
                     </div>
