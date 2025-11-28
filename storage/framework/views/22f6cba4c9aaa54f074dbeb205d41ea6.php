@@ -163,23 +163,44 @@
                         </td>
 
                         
+                        
                         <td class="py-4 px-6 text-center align-middle">
-                            <?php if($program->is_active): ?>
-                            <span class="inline-flex items-center gap-1.5 bg-emerald-100/80 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 shadow-sm">
-                                <span class="relative flex h-2 w-2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                Aktif
-                            </span>
-                            <?php else: ?>
+                            <?php if(!$program->is_active): ?>
+                            
                             <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200">
-                                <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
+                                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
                                 Non-Aktif
                             </span>
-                            <?php endif; ?>
-                        </td>
 
+                            <?php elseif($program->end_date < now()->startOfDay()): ?>
+                                
+                                <span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full text-xs font-bold border border-rose-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Selesai
+                                </span>
+
+                                <?php elseif($program->start_date > now()->endOfDay()): ?>
+                                
+                                <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold border border-amber-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Terjadwal
+                                </span>
+
+                                <?php else: ?>
+                                
+                                <span class="inline-flex items-center gap-1.5 bg-emerald-100/80 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 shadow-sm">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                    Aktif
+                                </span>
+                                <?php endif; ?>
+                        </td>
                         
                         <td class="py-4 px-6 text-center align-middle">
                             <div class="inline-flex bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">

@@ -70,6 +70,7 @@
                         <thead>
                             <tr class="bg-slate-50/50 text-slate-600 text-xs uppercase font-bold tracking-wider border-b border-slate-100">
                                 <th class="py-4 px-6">Judul Program</th>
+                                <th class="py-4 px-6 text-center">Status</th>
                                 <th class="py-4 px-6">Periode</th>
                                 <th class="py-4 px-6 text-center">Aksi</th>
                             </tr>
@@ -86,6 +87,35 @@
                                         </span>
                                     </div>
                                 </td>
+
+                                {{-- STATUS (LOGIKA BARU) --}}
+                                <td class="py-4 px-6 text-center align-middle">
+                                    @if(!$program->is_active)
+                                    <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200">
+                                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span> Non-Aktif
+                                    </span>
+                                    @elseif($program->end_date < now()->startOfDay())
+                                        <span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full text-xs font-bold border border-rose-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg> Selesai
+                                        </span>
+                                        @elseif($program->start_date > now()->endOfDay())
+                                        <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold border border-amber-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg> Terjadwal
+                                        </span>
+                                        @else
+                                        <span class="inline-flex items-center gap-1.5 bg-emerald-100/80 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 shadow-sm">
+                                            <span class="relative flex h-2 w-2">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                            </span> Aktif
+                                        </span>
+                                        @endif
+                                </td>
+
                                 <td class="py-4 px-6 align-middle">
                                     <div class="flex items-center gap-2 text-xs text-slate-500 font-medium bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 w-fit">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -119,7 +149,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="3" class="py-16 text-center">
+                                <td colspan="4" class="py-16 text-center">
                                     <div class="flex flex-col items-center justify-center">
                                         <div class="w-24 h-24 mb-4 opacity-60">
                                             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Card%20File%20Box.png" alt="Empty" class="w-full h-full object-contain">
@@ -165,17 +195,32 @@
                                     </div>
                                 </td>
 
-                                {{-- Status --}}
+                                {{-- STATUS (LOGIKA BARU - SAMA SEPERTI SUPERADMIN) --}}
                                 <td class="py-4 px-6 text-center align-middle">
-                                    @if($program->is_active)
-                                    <span class="inline-flex items-center gap-1.5 bg-emerald-100/80 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200 shadow-sm">
-                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Aktif
+                                    @if(!$program->is_active)
+                                    <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200">
+                                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span> Non-Aktif
                                     </span>
-                                    @else
-                                    <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-xs font-bold border border-slate-200">
-                                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span> Nonaktif
-                                    </span>
-                                    @endif
+                                    @elseif($program->end_date < now()->startOfDay())
+                                        <span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full text-xs font-bold border border-rose-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg> Selesai
+                                        </span>
+                                        @elseif($program->start_date > now()->endOfDay())
+                                        <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold border border-amber-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg> Terjadwal
+                                        </span>
+                                        @else
+                                        <span class="inline-flex items-center gap-1.5 bg-emerald-100/80 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 shadow-sm">
+                                            <span class="relative flex h-2 w-2">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                            </span> Aktif
+                                        </span>
+                                        @endif
                                 </td>
 
                                 {{-- Periode --}}
@@ -217,7 +262,7 @@
                                             </svg>
                                         </a>
 
-                                        {{-- PERBAIKAN: Tombol Kloning (Duplikat) untuk Program Sendiri --}}
+                                        {{-- Tombol Kloning (Duplikat) untuk Program Sendiri --}}
                                         <button type="button"
                                             @click="$dispatch('open-clone-modal', { url: '{{ route('unitkerja.admin.my-programs.clone', $program) }}', name: '{{ addslashes($program->title) }}' })"
                                             class="p-2 text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-600 hover:text-white transition-all shadow-sm" title="Kloning Program">

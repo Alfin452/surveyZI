@@ -132,11 +132,40 @@ class SurveyProgramController extends Controller
 
     public function destroy(SurveyProgram $program)
     {
-        if ($program->answers()->exists()) {
-            return back()->with('error', 'Program ini tidak dapat dihapus karena sudah memiliki jawaban responden.');
+        try {
+            DB::transaction(function () use ($program) {
+                // 1. Hapus Jawaban Responden (Answers)
+                $program->answers()->delete();
+
+                // 2. Hapus Data Diri Responden (Pre-Survey Responses)
+                $program->preSurveyResponses()->delete();
+
+                // 3. Hapus Struktur Soal (Section -> Question -> Option)
+                // Kita load sections terlebih dahulu
+                foreach ($program->questionSections as $section) {
+                    foreach ($section->questions as $question) {
+                        $question->options()->delete(); // Hapus Opsi
+                        $question->delete();            // Hapus Soal
+                    }
+                    $section->delete(); // Hapus Bagian
+                }
+
+                // 4. Detach/Lepaskan Relasi Target Unit Kerja
+                $program->targetedUnitKerjas()->detach();
+
+                // 5. Hapus Konfigurasi Form Builder
+                $program->formFields()->delete();
+
+                // 6. Terakhir, Hapus Program Utama
+                $program->delete();
+            });
+
+            return redirect()->route('superadmin.programs.index')
+                ->with('success', 'Program survei dan seluruh data respondennya telah berhasil dihapus secara permanen.');
+        } catch (\Exception $e) {
+            // Jika ada error tak terduga, kembalikan dengan pesan error
+            return back()->with('error', 'Gagal menghapus program: ' . $e->getMessage());
         }
-        $program->delete();
-        return redirect()->route('superadmin.programs.index')->with('success', 'Program Survei berhasil dihapus.');
     }
 
     public function cloneProgram(Request $request, SurveyProgram $program, ProgramCloningService $cloningService)
