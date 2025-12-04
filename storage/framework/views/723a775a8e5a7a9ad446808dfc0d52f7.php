@@ -15,7 +15,6 @@
             display: none !important;
         }
 
-        /* Background Noise */
         .bg-noise {
             position: fixed;
             top: 0;
@@ -27,7 +26,6 @@
             pointer-events: none;
         }
 
-        /* Gradient Mesh */
         .bg-mesh {
             position: fixed;
             top: 0;
@@ -40,7 +38,6 @@
             background-color: #ffffff;
         }
 
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
@@ -56,7 +53,6 @@
     </style>
     <?php $__env->stopPush(); ?>
 
-    
     <div class="bg-mesh"></div>
     <div class="bg-noise"></div>
 
@@ -80,16 +76,12 @@
 
         
         <div class="w-full max-w-3xl bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden form-anim">
-
-            
             <div class="absolute top-0 left-0 w-full h-1 bg-slate-900"></div>
 
             <form action="<?php echo e(route('public.pre-survey.store', ['program' => $program, 'unitKerja' => $unitKerja])); ?>" method="POST" class="p-10 sm:p-16">
                 <?php echo csrf_field(); ?>
 
                 <div class="space-y-10">
-
-                    
                     <div class="mb-8 border-b border-slate-100 pb-4">
                         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-[0.15em]">Identitas Diri</h3>
                     </div>
@@ -98,10 +90,24 @@
                     <?php if($program->formFields->count() > 0): ?>
                     <?php $__currentLoopData = $program->formFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <?php
-                    // Logic Autofill
-                    $defaultValue = old('dynamic_data.'.$field->field_label);
-                    if (!$defaultValue && (stripos($field->field_label, 'nama') !== false)) {
-                    $defaultValue = Auth::user()->username;
+                    // 1. Tentukan Key (Slug) untuk Name Attribute
+                    $key = $field->field_key ?? Str::slug($field->field_label, '_');
+
+                    // 2. Tentukan Max Length
+                    $maxLength = $field->max_length ?? 255;
+
+                    // 3. Logika Pengambilan Nilai (Value)
+                    // Cek apakah ada data dari database (saat edit)
+                    $savedValue = isset($existingResponse) && isset($existingResponse->dynamic_data[$key])
+                    ? $existingResponse->dynamic_data[$key]
+                    : null;
+
+                    // Prioritas: Input Error (Old) -> Database (Saved) -> Default Auth (Auto-fill)
+                    $defaultValue = old('dynamic_data.'.$key, $savedValue);
+
+                    // Auto-fill Nama dari User Login jika masih kosong
+                    if (!$defaultValue && str_contains($key, 'nama')) {
+                    $defaultValue = Auth::user()->username ?? Auth::user()->name;
                     }
                     ?>
 
@@ -115,31 +121,37 @@
                         
                         <?php if($field->field_type == 'text'): ?>
                         <input type="text"
-                            name="dynamic_data[<?php echo e($field->field_label); ?>]"
+                            name="dynamic_data[<?php echo e($key); ?>]"
                             <?php echo e($field->is_required ? 'required' : ''); ?>
 
                             value="<?php echo e($defaultValue); ?>"
-                            maxlength="100"
+                            maxlength="<?php echo e($maxLength); ?>"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
                             placeholder="Masukkan <?php echo e($field->field_label); ?>...">
-                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 100 karakter</p>
+
+                        <?php if($field->max_length): ?>
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. <?php echo e($maxLength); ?> karakter</p>
+                        <?php endif; ?>
 
                         
                         <?php elseif($field->field_type == 'number'): ?>
                         <input type="number"
-                            name="dynamic_data[<?php echo e($field->field_label); ?>]"
+                            name="dynamic_data[<?php echo e($key); ?>]"
                             <?php echo e($field->is_required ? 'required' : ''); ?>
 
                             value="<?php echo e($defaultValue); ?>"
-                            oninput="if(this.value.length > 15) this.value = this.value.slice(0, 15);"
+                            oninput="if(this.value.length > <?php echo e($maxLength); ?>) this.value = this.value.slice(0, <?php echo e($maxLength); ?>);"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
                             placeholder="Hanya angka...">
-                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 15 digit</p>
+
+                        <?php if($field->max_length): ?>
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. <?php echo e($maxLength); ?> digit</p>
+                        <?php endif; ?>
 
                         
                         <?php elseif($field->field_type == 'date'): ?>
                         <input type="date"
-                            name="dynamic_data[<?php echo e($field->field_label); ?>]"
+                            name="dynamic_data[<?php echo e($key); ?>]"
                             <?php echo e($field->is_required ? 'required' : ''); ?>
 
                             value="<?php echo e($defaultValue); ?>"
@@ -148,13 +160,13 @@
                         
                         <?php elseif($field->field_type == 'select'): ?>
                         <div x-data="{ 
-                                open: false, 
-                                selected: '<?php echo e(old('dynamic_data.'.$field->field_label)); ?>',
-                                options: <?php echo e(json_encode($field->field_options)); ?>
+                                    open: false, 
+                                    selected: '<?php echo e($defaultValue); ?>',
+                                    options: <?php echo e(json_encode($field->field_options)); ?>
 
-                             }" class="relative">
+                                 }" class="relative">
 
-                            <input type="hidden" name="dynamic_data[<?php echo e($field->field_label); ?>]" :value="selected" <?php echo e($field->is_required ? 'required' : ''); ?>>
+                            <input type="hidden" name="dynamic_data[<?php echo e($key); ?>]" :value="selected" <?php echo e($field->is_required ? 'required' : ''); ?>>
 
                             <button type="button" @click="open = !open" @click.away="open = false"
                                 class="w-full flex items-center justify-between px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-left transition-all focus:bg-white focus:ring-2 focus:ring-slate-900"
@@ -181,12 +193,13 @@
                         <div class="flex flex-wrap gap-3">
                             <?php $__currentLoopData = $field->field_options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <label class="cursor-pointer relative">
-                                <input type="radio" name="dynamic_data[<?php echo e($field->field_label); ?>]" value="<?php echo e($option); ?>" class="peer sr-only" <?php echo e($field->is_required ? 'required' : ''); ?>
+                                <input type="radio" name="dynamic_data[<?php echo e($key); ?>]" value="<?php echo e($option); ?>" class="peer sr-only"
+                                    <?php echo e($field->is_required ? 'required' : ''); ?>
 
-                                    <?php echo e(old('dynamic_data.'.$field->field_label) == $option ? 'checked' : ''); ?>>
+                                    <?php echo e($defaultValue == $option ? 'checked' : ''); ?>>
 
                                 <div class="px-5 py-3 rounded-xl bg-slate-50 ring-1 ring-slate-200 text-sm font-bold text-slate-400 transition-all 
-                                                        peer-checked:bg-white peer-checked:text-slate-900 peer-checked:ring-2 peer-checked:ring-slate-900 peer-checked:shadow-md hover:bg-white">
+                                                            peer-checked:bg-white peer-checked:text-slate-900 peer-checked:ring-2 peer-checked:ring-slate-900 peer-checked:shadow-md hover:bg-white">
                                     <?php echo e($option); ?>
 
                                 </div>
@@ -195,7 +208,8 @@
                         </div>
                         <?php endif; ?>
 
-                        <?php $__errorArgs = ['dynamic_data.'.$field->field_label];
+                        
+                        <?php $__errorArgs = ['dynamic_data.'.$key];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -231,7 +245,8 @@ unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <button type="submit" class="w-full sm:w-auto bg-slate-900 text-white px-12 py-4 rounded-2xl font-bold text-sm tracking-[0.15em] uppercase hover:bg-slate-800 hover:shadow-xl hover:shadow-slate-200 hover:-translate-y-0.5 transition-all duration-300 active:scale-95">
-                        Lanjutkan
+                        <?php echo e(isset($existingResponse) ? 'Simpan Perubahan' : 'Lanjutkan'); ?>
+
                     </button>
                 </div>
 

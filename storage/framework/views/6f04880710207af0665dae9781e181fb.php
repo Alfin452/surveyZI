@@ -89,7 +89,7 @@
                             Kami menyadari bahwa banyaknya platform survei yang terpisah dapat membingungkan sivitas akademika. Oleh karena itu, aplikasi ini hadir sebagai <strong>hub sentral</strong>.
                         </p>
                         <p class="text-slate-500 leading-relaxed mt-4">
-                            Sistem ini dirancang fleksibel untuk menampung berbagai jenis kuesioner—mulai dari penilaian integritas (ZI), budaya kerja (Berakhlak), evaluasi dosen, hingga survei fasilitas—semua dalam satu akun dan satu antarmuka.
+                            Sistem ini dirancang fleksibel untuk menampung berbagai jenis kuesioner mulai dari penilaian integritas (ZI), budaya kerja (Berakhlak), evaluasi dosen, hingga survei fasilitas semua dalam satu akun dan satu antarmuka.
                         </p>
                     </div>
 

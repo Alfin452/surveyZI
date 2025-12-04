@@ -177,7 +177,6 @@ class SurveyProgramController extends Controller
      */
     public function updateFields(Request $request, SurveyProgram $program)
     {
-        // PERBAIKAN: Definisikan $user terlebih dahulu
         $user = Auth::user();
 
         // 1. Validasi Kepemilikan
@@ -185,39 +184,44 @@ class SurveyProgramController extends Controller
             abort(403, 'Akses ditolak. Program ini bukan milik unit kerja Anda.');
         }
 
-        // 2. Validasi Input (Sama dengan Superadmin)
+        // 2. Validasi Input
         $data = $request->validate([
             'fields' => 'present|array',
             'fields.*.label' => 'required|string|max:255',
+            'fields.*.key' => 'nullable|string|max:255', // [BARU] Validasi Key
             'fields.*.type' => 'required|in:text,number,date,select,radio',
-            'fields.*.options' => 'nullable|string', // Opsi dipisah koma
+            'fields.*.max_length' => 'nullable|integer', // [BARU] Validasi Max Length
+            'fields.*.options' => 'nullable|string',
             'fields.*.required' => 'nullable|boolean',
-            'requires_pre_survey' => 'boolean', // Checkbox status aktif/tidak
+            'requires_pre_survey' => 'boolean',
         ]);
 
-        // 3. Update Status 'requires_pre_survey' di tabel program
-        $program->update([
-            'requires_pre_survey' => $request->boolean('requires_pre_survey')
-        ]);
-
-        // 4. Strategi Update Fields: Hapus semua field lama, buat ulang yang baru (Full Sync)
-        // Menggunakan relasi formFields()
+        // 3. Full Sync Fields
         $program->formFields()->delete();
 
         if (!empty($data['fields'])) {
             foreach ($data['fields'] as $index => $fieldData) {
-                // Konversi opsi string "A, B, C" menjadi Array untuk disimpan
+
+                // Konversi opsi string ke Array JSON
                 $optionsArray = null;
                 if (in_array($fieldData['type'], ['select', 'radio']) && !empty($fieldData['options'])) {
                     $optionsArray = array_map('trim', explode(',', $fieldData['options']));
                 }
 
                 $program->formFields()->create([
-                    'field_label' => $fieldData['label'],
-                    'field_type' => $fieldData['type'],
-                    'field_options' => $optionsArray, // Pastikan model SurveyProgramFormField me-cast ini sebagai array/json
-                    'is_required' => isset($fieldData['required']) ? 1 : 0,
-                    'order' => $index, // Simpan urutan sesuai posisi di array
+                    'field_label'   => $fieldData['label'],
+
+                    // Gunakan Str::slug sebagai fallback jika key kosong
+                    'field_key'     => $fieldData['key'] ?? Str::slug($fieldData['label'], '_'),
+
+                    'field_type'    => $fieldData['type'],
+
+                    // Simpan Max Length
+                    'max_length'    => $fieldData['max_length'] ?? null,
+
+                    'field_options' => $optionsArray,
+                    'is_required'   => isset($fieldData['required']) ? 1 : 0,
+                    'order'         => $index,
                 ]);
             }
         }

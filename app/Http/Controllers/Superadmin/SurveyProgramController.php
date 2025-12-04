@@ -205,13 +205,20 @@ class SurveyProgramController extends Controller
         $data = $request->validate([
             'fields' => 'present|array',
             'fields.*.label' => 'required|string|max:255',
+
+            // [PERBAIKAN 1] Tambahkan validasi Key agar datanya tidak dibuang Laravel
+            'fields.*.key' => 'nullable|string|max:255',
+
             'fields.*.type' => 'required|in:text,number,date,select,radio',
-            'fields.*.options' => 'nullable|string', // Opsi dipisah koma
+
+            // [PERBAIKAN 2] Tambahkan validasi Max Length agar datanya masuk ke $data
+            'fields.*.max_length' => 'nullable|integer',
+
+            'fields.*.options' => 'nullable|string',
             'fields.*.required' => 'nullable|boolean',
         ]);
 
-        // Strategi: Hapus semua field lama, buat ulang yang baru (Full Sync)
-        // Ini cara paling aman untuk menghindari konflik urutan/penghapusan
+        // Hapus field lama (Full Sync)
         $program->formFields()->delete();
 
         if (!empty($data['fields'])) {
@@ -224,7 +231,9 @@ class SurveyProgramController extends Controller
 
                 $program->formFields()->create([
                     'field_label' => $fieldData['label'],
-                    'field_type' => $fieldData['type'],
+                    'field_key'     => $fieldData['key'] ?? Str::slug($fieldData['label'], '_'),          // Simpan Key
+                    'field_type'  => $fieldData['type'],
+                    'max_length'  => $fieldData['max_length'] ?? null, // Simpan Max Length
                     'field_options' => $optionsArray,
                     'is_required' => isset($fieldData['required']) ? 1 : 0,
                     'order' => $index, // Simpan urutan sesuai array

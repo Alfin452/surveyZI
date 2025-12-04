@@ -169,45 +169,74 @@ $oldAnswers = old('answers', []);
         class="min-h-screen flex flex-col pt-28 pb-24">
 
         {{-- 1. HEADER PROGRAM --}}
+        {{-- 1. HEADER PROGRAM --}}
         <div class="container mx-auto px-4 mb-8">
-            <div class="bg-white border border-slate-200 rounded-lg shadow-sm p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 md:p-6 relative overflow-hidden">
 
-                <div class="flex items-center gap-5 w-full md:w-auto">
-                    <a href="{{ route('home') }}" class="p-3 rounded-md bg-slate-50 text-slate-500 hover:bg-emerald-600 hover:text-white transition-colors border border-slate-200">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                    </a>
-                    <div>
-                        <div class="flex items-center gap-3 mb-1 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                            <span>{{ $unitKerja->unit_kerja_name }}</span>
-                            <span class="text-slate-300">|</span>
-                            <span x-text="'BAGIAN ' + (step + 1) + ' / ' + totalSteps"></span>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+
+                    {{-- KIRI: Back Button & Judul --}}
+                    <div class="flex items-start gap-4 w-full md:w-auto pr-12 md:pr-0 relative z-10">
+                        {{-- Tombol Kembali --}}
+                        <a href="{{ route('home') }}" class="shrink-0 p-2.5 md:p-3 rounded-xl bg-slate-50 text-slate-500 hover:bg-emerald-600 hover:text-white transition-colors border border-slate-200 shadow-sm">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                        </a>
+
+                        {{-- Info Judul --}}
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1.5 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <span class="truncate max-w-[150px] md:max-w-none">{{ $unitKerja->unit_kerja_name }}</span>
+                                <span class="text-slate-300">|</span>
+                                <span x-text="'BAGIAN ' + (step + 1) + ' / ' + totalSteps" class="text-emerald-600"></span>
+                            </div>
+                            <h1 class="text-lg md:text-2xl font-black text-slate-900 leading-snug tracking-tight break-words">
+                                {{ $program->title }}
+                            </h1>
                         </div>
-                        <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-none tracking-tight">
-                            {{ $program->title }}
-                        </h1>
                     </div>
+
+                    {{-- KANAN: Tombol Edit & Progress --}}
+                    <div class="w-full md:w-auto flex flex-col md:items-end gap-4 relative z-10">
+
+                        {{-- Wrapper untuk Edit & Progress (Mobile: Column Reverse agar progress di bawah) --}}
+                        <div class="flex flex-col md:flex-col gap-4 w-full md:w-auto">
+
+                            {{-- Tombol Edit Data Diri --}}
+                            @if($program->requires_pre_survey)
+                            <a href="{{ route('public.pre-survey.create', ['program' => $program->alias, 'unitKerja' => $unitKerja->alias]) }}"
+                                class="order-2 md:order-1 w-full md:w-auto inline-flex justify-center items-center gap-2 px-4 py-2.5 bg-amber-50 text-amber-700 rounded-xl text-xs font-bold border border-amber-200 hover:bg-amber-100 transition-all shadow-sm group">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500 group-hover:text-amber-700" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                                Edit Data Diri
+                            </a>
+                            @endif
+
+                            {{-- Progress Bar --}}
+                            <div class="order-1 md:order-2 w-full md:w-64 flex flex-col gap-2">
+                                <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                    <span>Kelengkapan</span>
+                                    <span x-text="Math.round(((Object.keys(answers).length) / {{ $program->questionSections->flatMap->questions->count() }}) * 100) + '%'"></span>
+                                </div>
+                                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 transition-all duration-500 ease-out"
+                                        :style="`width: ${((Object.keys(answers).length) / {{ $program->questionSections->flatMap->questions->count() }}) * 100}%`"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                {{-- Progress Bar --}}
-                <div class="w-full md:w-64 flex flex-col gap-2">
-                    <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        <span>Kelengkapan</span>
-                        <span x-text="Math.round(((Object.keys(answers).length) / {{ $program->questionSections->flatMap->questions->count() }}) * 100) + '%'"></span>
-                    </div>
-                    <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-emerald-500 transition-all duration-500 ease-out"
-                            :style="`width: ${((Object.keys(answers).length) / {{ $program->questionSections->flatMap->questions->count() }}) * 100}%`"></div>
-                    </div>
-                </div>
-
-                {{-- Mobile Toggle --}}
-                <button @click="showMobileNav = !showMobileNav" class="lg:hidden absolute top-6 right-6 p-2 text-slate-400 hover:text-emerald-600">
+                {{-- Mobile Toggle (Absolute Positioned Top Right) --}}
+                <button @click="showMobileNav = !showMobileNav" class="lg:hidden absolute top-5 right-5 p-2 bg-white/80 backdrop-blur-sm rounded-lg text-slate-400 hover:text-emerald-600 border border-transparent hover:border-slate-200 transition-all z-20">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                     </svg>
                 </button>
+
             </div>
         </div>
 
@@ -409,39 +438,111 @@ $oldAnswers = old('answers', []);
         </div>
 
         {{-- MOBILE NAV --}}
-        <div x-show="showMobileNav" class="fixed inset-0 z-50 lg:hidden" style="display: none;">
-            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" @click="showMobileNav = false" x-transition.opacity></div>
-            <div class="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-2xl p-8 overflow-y-auto"
-                x-transition:enter="transition ease-out duration-300"
+        {{-- MOBILE NAV DRAWER --}}
+        <div x-show="showMobileNav"
+            class="fixed inset-0 z-40 lg:hidden"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            style="display: none;">
+
+            {{-- Backdrop (Gelap) --}}
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                @click="showMobileNav = false"></div>
+
+            {{-- Drawer Panel --}}
+            {{-- [PERBAIKAN UTAMA] 
+                 1. z-40: Agar berada di layer "belakang" Header Utama (yang biasanya z-50).
+                 2. pt-20: Memberi jarak 80px dari atas agar Judul "Peta Soal" tidak tertutup Header.
+            --}}
+            <div class="absolute right-0 top-0 bottom-0 w-[85%] max-w-[320px] bg-white shadow-2xl flex flex-col h-full border-l border-slate-100 pt-20"
+                x-transition:enter="transition transform ease-out duration-300"
                 x-transition:enter-start="translate-x-full"
-                x-transition:enter-end="translate-x-0">
+                x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition transform ease-in duration-200"
+                x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="translate-x-full">
 
-                <div class="flex justify-between items-center mb-10">
-                    <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest">Peta Soal</h3>
-                    <button @click="showMobileNav = false" class="text-slate-400 hover:text-slate-900"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg></button>
-                </div>
-
-                @if($program->questionSections->count() > 0)
-                <div class="space-y-8">
-                    @php $mGlobalIndex = 1; @endphp
-                    @foreach($program->questionSections as $sIndex => $section)
+                {{-- Drawer Header --}}
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/80 backdrop-blur-md">
                     <div>
-                        <div class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-wider">Bagian {{ $sIndex + 1 }}</div>
-                        <div class="grid grid-cols-5 gap-3">
-                            @foreach($section->questions as $question)
-                            <button type="button" @click="jumpToSection({{ $sIndex }}, 'q-{{ $question->id }}'); showMobileNav = false"
-                                class="h-10 rounded-2xl text-xs font-bold flex items-center justify-center transition-all"
-                                :class="isAnswered({{ $question->id }}) ? 'bg-emerald-500 text-white shadow-md shadow-emerald-200' : 'bg-slate-50 text-slate-400'">
-                                {{ $mGlobalIndex++ }}
-                            </button>
-                            @endforeach
-                        </div>
+                        <h3 class="text-base font-black text-slate-900 tracking-tight">Peta Soal</h3>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Navigasi Cepat</p>
                     </div>
-                    @endforeach
+                    <button @click="showMobileNav = false" class="p-2 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all shadow-sm active:scale-95">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
-                @endif
+
+                {{-- Drawer Content (Scrollable) --}}
+                <div class="flex-1 overflow-y-auto p-5 custom-scrollbar bg-white">
+                    @if($program->questionSections->count() > 0)
+                    <div class="space-y-6">
+                        @php $mGlobalIndex = 1; @endphp
+                        @foreach($program->questionSections as $sIndex => $section)
+
+                        {{-- Section Card --}}
+                        <div class="rounded-2xl border transition-colors duration-300 {{ $loop->index == 0 ? 'mt-1' : '' }}"
+                            :class="step === {{ $sIndex }} ? 'bg-emerald-50/50 border-emerald-100' : 'bg-slate-50/50 border-slate-100'">
+
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md"
+                                        :class="step === {{ $sIndex }} ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'">
+                                        Bagian {{ $sIndex + 1 }}
+                                    </span>
+
+                                    {{-- Indikator Sedang Aktif --}}
+                                    <div x-show="step === {{ $sIndex }}" class="flex items-center gap-1.5">
+                                        <span class="relative flex h-2 w-2">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                        </span>
+                                        <span class="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Aktif</span>
+                                    </div>
+                                </div>
+
+                                {{-- Grid Nomor Soal --}}
+                                <div class="grid grid-cols-5 gap-2">
+                                    @foreach($section->questions as $question)
+                                    <button type="button"
+                                        @click="jumpToSection({{ $sIndex }}, 'q-{{ $question->id }}'); showMobileNav = false"
+                                        class="h-11 rounded-xl text-xs font-bold flex items-center justify-center transition-all duration-200 shadow-sm active:scale-90"
+                                        :class="isAnswered({{ $question->id }}) 
+                                                ? 'bg-emerald-500 text-white shadow-emerald-200 border-b-2 border-emerald-600' 
+                                                : (step === {{ $sIndex }} ? 'bg-white ring-2 ring-emerald-400 text-emerald-700' : 'bg-white border border-slate-200 text-slate-400 hover:border-slate-300')">
+                                        {{ $mGlobalIndex++ }}
+                                    </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <div class="h-full flex flex-col items-center justify-center text-center p-6 opacity-50">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </div>
+                        <p class="text-xs font-bold text-slate-400">Belum ada peta soal.</p>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Drawer Footer --}}
+                <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+                    <button @click="showMobileNav = false" class="w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all active:scale-[0.98]">
+                        Tutup Navigasi
+                    </button>
+                </div>
+
             </div>
         </div>
 

@@ -12,16 +12,18 @@ class SurveyProgramFormField extends Model
     protected $fillable = [
         'survey_program_id',
         'field_label',
-        'field_type',     // text, number, select, radio, date
-        'field_options',  // JSON (array opsi untuk select/radio)
+        'field_key',      // <--- Pastikan ini ada
+        'field_type',     // <--- Pastikan ini ada (PENTING)
+        'max_length',     // <--- Pastikan ini ada
+        'field_options',
         'is_required',
         'order',
     ];
 
-    // Casting otomatis agar field_options langsung jadi Array saat diakses
     protected $casts = [
         'field_options' => 'array',
         'is_required' => 'boolean',
+        // max_length tidak perlu cast khusus, integer otomatis
     ];
 
     public function surveyProgram()

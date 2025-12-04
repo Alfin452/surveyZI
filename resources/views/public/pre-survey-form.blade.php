@@ -6,7 +6,6 @@
             display: none !important;
         }
 
-        /* Background Noise */
         .bg-noise {
             position: fixed;
             top: 0;
@@ -18,7 +17,6 @@
             pointer-events: none;
         }
 
-        /* Gradient Mesh */
         .bg-mesh {
             position: fixed;
             top: 0;
@@ -31,7 +29,6 @@
             background-color: #ffffff;
         }
 
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
@@ -47,7 +44,6 @@
     </style>
     @endpush
 
-    {{-- BACKGROUND LAYERS --}}
     <div class="bg-mesh"></div>
     <div class="bg-noise"></div>
 
@@ -70,28 +66,38 @@
 
         {{-- MAIN CARD --}}
         <div class="w-full max-w-3xl bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden form-anim">
-
-            {{-- Accent Line --}}
             <div class="absolute top-0 left-0 w-full h-1 bg-slate-900"></div>
 
             <form action="{{ route('public.pre-survey.store', ['program' => $program, 'unitKerja' => $unitKerja]) }}" method="POST" class="p-10 sm:p-16">
                 @csrf
 
                 <div class="space-y-10">
-
-                    {{-- Judul Bagian --}}
                     <div class="mb-8 border-b border-slate-100 pb-4">
                         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-[0.15em]">Identitas Diri</h3>
                     </div>
 
-                    {{-- FIELD DINAMIS --}}
+                    {{-- LOOP FIELDS --}}
                     @if($program->formFields->count() > 0)
                     @foreach($program->formFields as $field)
                     @php
-                    // Logic Autofill
-                    $defaultValue = old('dynamic_data.'.$field->field_label);
-                    if (!$defaultValue && (stripos($field->field_label, 'nama') !== false)) {
-                    $defaultValue = Auth::user()->username;
+                    // 1. Tentukan Key (Slug) untuk Name Attribute
+                    $key = $field->field_key ?? Str::slug($field->field_label, '_');
+
+                    // 2. Tentukan Max Length
+                    $maxLength = $field->max_length ?? 255;
+
+                    // 3. Logika Pengambilan Nilai (Value)
+                    // Cek apakah ada data dari database (saat edit)
+                    $savedValue = isset($existingResponse) && isset($existingResponse->dynamic_data[$key])
+                    ? $existingResponse->dynamic_data[$key]
+                    : null;
+
+                    // Prioritas: Input Error (Old) -> Database (Saved) -> Default Auth (Auto-fill)
+                    $defaultValue = old('dynamic_data.'.$key, $savedValue);
+
+                    // Auto-fill Nama dari User Login jika masih kosong
+                    if (!$defaultValue && str_contains($key, 'nama')) {
+                    $defaultValue = Auth::user()->username ?? Auth::user()->name;
                     }
                     @endphp
 
@@ -101,45 +107,51 @@
                             @if($field->is_required) <span class="text-red-400">*</span> @endif
                         </label>
 
-                        {{-- [MODIFIKASI] TIPE: TEXT (Dibatasi 100 Karakter) --}}
+                        {{-- TIPE: TEXT --}}
                         @if($field->field_type == 'text')
                         <input type="text"
-                            name="dynamic_data[{{ $field->field_label }}]"
+                            name="dynamic_data[{{ $key }}]"
                             {{ $field->is_required ? 'required' : '' }}
                             value="{{ $defaultValue }}"
-                            maxlength="100"
+                            maxlength="{{ $maxLength }}"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
                             placeholder="Masukkan {{ $field->field_label }}...">
-                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 100 karakter</p>
 
-                        {{-- [MODIFIKASI] TIPE: NUMBER (Dibatasi 15 Digit) --}}
+                        @if($field->max_length)
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. {{ $maxLength }} karakter</p>
+                        @endif
+
+                        {{-- TIPE: NUMBER --}}
                         @elseif($field->field_type == 'number')
                         <input type="number"
-                            name="dynamic_data[{{ $field->field_label }}]"
+                            name="dynamic_data[{{ $key }}]"
                             {{ $field->is_required ? 'required' : '' }}
                             value="{{ $defaultValue }}"
-                            oninput="if(this.value.length > 15) this.value = this.value.slice(0, 15);"
+                            oninput="if(this.value.length > {{ $maxLength }}) this.value = this.value.slice(0, {{ $maxLength }});"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm"
                             placeholder="Hanya angka...">
-                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. 15 digit</p>
+
+                        @if($field->max_length)
+                        <p class="text-[10px] text-slate-400 mt-2 text-right tracking-wide">Maks. {{ $maxLength }} digit</p>
+                        @endif
 
                         {{-- TIPE: DATE --}}
                         @elseif($field->field_type == 'date')
                         <input type="date"
-                            name="dynamic_data[{{ $field->field_label }}]"
+                            name="dynamic_data[{{ $key }}]"
                             {{ $field->is_required ? 'required' : '' }}
                             value="{{ $defaultValue }}"
                             class="block w-full px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-slate-900 font-bold text-base placeholder:text-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all shadow-sm">
 
-                        {{-- TIPE: SELECT (DROPDOWN) --}}
+                        {{-- TIPE: SELECT --}}
                         @elseif($field->field_type == 'select')
                         <div x-data="{ 
-                                open: false, 
-                                selected: '{{ old('dynamic_data.'.$field->field_label) }}',
-                                options: {{ json_encode($field->field_options) }}
-                             }" class="relative">
+                                    open: false, 
+                                    selected: '{{ $defaultValue }}',
+                                    options: {{ json_encode($field->field_options) }}
+                                 }" class="relative">
 
-                            <input type="hidden" name="dynamic_data[{{ $field->field_label }}]" :value="selected" {{ $field->is_required ? 'required' : '' }}>
+                            <input type="hidden" name="dynamic_data[{{ $key }}]" :value="selected" {{ $field->is_required ? 'required' : '' }}>
 
                             <button type="button" @click="open = !open" @click.away="open = false"
                                 class="w-full flex items-center justify-between px-6 py-4 bg-slate-50 border-0 ring-1 ring-slate-200 rounded-2xl text-left transition-all focus:bg-white focus:ring-2 focus:ring-slate-900"
@@ -161,16 +173,17 @@
                             </div>
                         </div>
 
-                        {{-- TIPE: RADIO BUTTON --}}
+                        {{-- TIPE: RADIO --}}
                         @elseif($field->field_type == 'radio')
                         <div class="flex flex-wrap gap-3">
                             @foreach($field->field_options as $option)
                             <label class="cursor-pointer relative">
-                                <input type="radio" name="dynamic_data[{{ $field->field_label }}]" value="{{ $option }}" class="peer sr-only" {{ $field->is_required ? 'required' : '' }}
-                                    {{ old('dynamic_data.'.$field->field_label) == $option ? 'checked' : '' }}>
+                                <input type="radio" name="dynamic_data[{{ $key }}]" value="{{ $option }}" class="peer sr-only"
+                                    {{ $field->is_required ? 'required' : '' }}
+                                    {{ $defaultValue == $option ? 'checked' : '' }}>
 
                                 <div class="px-5 py-3 rounded-xl bg-slate-50 ring-1 ring-slate-200 text-sm font-bold text-slate-400 transition-all 
-                                                        peer-checked:bg-white peer-checked:text-slate-900 peer-checked:ring-2 peer-checked:ring-slate-900 peer-checked:shadow-md hover:bg-white">
+                                                            peer-checked:bg-white peer-checked:text-slate-900 peer-checked:ring-2 peer-checked:ring-slate-900 peer-checked:shadow-md hover:bg-white">
                                     {{ $option }}
                                 </div>
                             </label>
@@ -178,7 +191,8 @@
                         </div>
                         @endif
 
-                        @error('dynamic_data.'.$field->field_label)
+                        {{-- ERROR MESSAGE --}}
+                        @error('dynamic_data.'.$key)
                         <p class="mt-2 text-xs text-red-500 font-bold ml-1 flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -206,7 +220,7 @@
                     </div>
 
                     <button type="submit" class="w-full sm:w-auto bg-slate-900 text-white px-12 py-4 rounded-2xl font-bold text-sm tracking-[0.15em] uppercase hover:bg-slate-800 hover:shadow-xl hover:shadow-slate-200 hover:-translate-y-0.5 transition-all duration-300 active:scale-95">
-                        Lanjutkan
+                        {{ isset($existingResponse) ? 'Simpan Perubahan' : 'Lanjutkan' }}
                     </button>
                 </div>
 

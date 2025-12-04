@@ -69,55 +69,77 @@
 
                         <div class="pl-4 grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
 
-                            {{-- Label --}}
+                            {{-- 1. LABEL --}}
                             <div class="md:col-span-4">
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Label Pertanyaan</label>
-                                <input type="text" :name="`fields[${index}][label]`" x-model="field.field_label" required
+                                <input type="text" :name="`fields[${index}][label]`"
+                                    x-model="field.field_label"
+                                    @input="autoFillKey(index)"
+                                    required
                                     class="w-full rounded-xl border-slate-200 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-3 font-semibold text-slate-700"
-                                    placeholder="Contoh: NIM / Tahun Masuk">
+                                    placeholder="Contoh: Nama Lengkap">
                             </div>
 
-                            {{-- Tipe Input --}}
+                            {{-- 2. KEY (INI YANG KEMUNGKINAN ANDA LEWATKAN) --}}
                             <div class="md:col-span-3">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tipe Input</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Database Key <span class="text-[9px] text-purple-500 lowercase">(slug)</span>
+                                </label>
                                 <div class="relative">
-                                    <select :name="`fields[${index}][type]`" x-model="field.field_type"
-                                        class="w-full rounded-xl border-slate-200 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-3 appearance-none cursor-pointer">
-                                        <option value="text">Teks Singkat</option>
-                                        <option value="number">Angka (Number)</option>
-                                        <option value="date">Tanggal</option>
-                                        <option value="select">Dropdown (Pilihan)</option>
-                                        <option value="radio">Radio Button (Pilihan)</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-400">
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
+                                    {{-- Input inilah yang mengirim data 'key' ke controller --}}
+                                    <input type="text" :name="`fields[${index}][key]`"
+                                        x-model="field.field_key"
+                                        required
+                                        pattern="[a-z0-9_]+"
+                                        title="Hanya huruf kecil, angka, dan underscore"
+                                        class="w-full rounded-xl border-slate-200 bg-slate-100/50 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-3 font-mono text-slate-600 placeholder:text-slate-300"
+                                        placeholder="nama_lengkap">
+                                </div>
+                            </div>
+
+                            {{-- 3. TIPE & MAX LENGTH --}}
+                            <div class="md:col-span-3">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tipe & Validasi</label>
+                                <div class="flex gap-2">
+                                    <div class="relative w-full">
+                                        <select :name="`fields[${index}][type]`" x-model="field.field_type"
+                                            class="w-full rounded-xl border-slate-200 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-3 appearance-none cursor-pointer">
+                                            <option value="text">Teks Singkat</option>
+                                            <option value="number">Angka (Number)</option>
+                                            <option value="date">Tanggal</option>
+                                            <option value="select">Dropdown</option>
+                                            <option value="radio">Radio Button</option>
+                                        </select>
+                                    </div>
+                                    {{-- Input Max Length --}}
+                                    <div x-show="['text', 'number'].includes(field.field_type)" class="w-20 flex-shrink-0" title="Maksimal Karakter/Digit">
+                                        <input type="number" :name="`fields[${index}][max_length]`"
+                                            x-model="field.max_length"
+                                            class="w-full rounded-xl border-slate-200 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-2 text-center text-slate-600 placeholder:text-slate-300"
+                                            placeholder="Max">
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Opsi (Hanya muncul jika Select/Radio) --}}
-                            <div class="md:col-span-3" x-show="['select', 'radio'].includes(field.field_type)" x-transition>
+                            {{-- 4. OPSI (Select/Radio) --}}
+                            <div class="md:col-span-12 md:col-start-5 bg-purple-50/50 rounded-xl p-4 mt-2"
+                                x-show="['select', 'radio'].includes(field.field_type)" x-transition>
                                 <label class="block text-xs font-bold text-purple-600 uppercase tracking-wider mb-1.5">
                                     Opsi Jawaban <span class="text-[9px] normal-case text-slate-400">(Pisahkan koma)</span>
                                 </label>
                                 <input type="text" :name="`fields[${index}][options]`"
                                     x-model="field.options_string"
                                     :required="['select', 'radio'].includes(field.field_type)"
-                                    class="w-full rounded-xl border-purple-200 bg-purple-50/30 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-3 transition-colors placeholder-purple-300"
+                                    class="w-full rounded-xl border-purple-200 bg-white shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm py-2.5 px-3 transition-colors placeholder-purple-300"
                                     placeholder="Contoh: Pria, Wanita">
                             </div>
 
-                            {{-- Spacer jika opsi hidden --}}
-                            <div class="md:col-span-3" x-show="!['select', 'radio'].includes(field.field_type)"></div>
-
-                            {{-- Settings & Action --}}
+                            {{-- 5. AKSI --}}
                             <div class="md:col-span-2 flex items-center justify-end gap-4 pt-7">
                                 <label class="inline-flex items-center cursor-pointer select-none group/check">
                                     <input type="checkbox" :name="`fields[${index}][required]`" value="1" x-model="field.is_required"
                                         class="rounded border-slate-300 text-purple-600 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 cursor-pointer">
-                                    <span class="ml-2 text-sm font-bold text-slate-500 group-hover/check:text-purple-600 transition-colors">Wajib</span>
+                                    <span class="ml-2 text-sm font-bold text-slate-500 group-hover/check:text-purple-600">Wajib</span>
                                 </label>
 
                                 <button type="button" @click="removeField(index)"
@@ -132,7 +154,6 @@
                     </div>
                 </template>
 
-                {{-- Empty State (Harusnya jarang muncul karena ada auto-template) --}}
                 <div x-show="fields.length === 0" class="text-center py-12 border-2 border-dashed border-slate-300 rounded-3xl bg-slate-50/30">
                     <p class="text-slate-500 font-medium">Belum ada pertanyaan.</p>
                 </div>
@@ -149,14 +170,13 @@
                 </button>
 
                 <button type="submit"
-                    class="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-600 border border-transparent rounded-xl font-bold text-xs text-white uppercase tracking-widest hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5">
+                    class="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-600 border border-transparent rounded-xl font-bold text-xs text-white uppercase tracking-widest hover:bg-purple-700 hover:shadow-purple-500/30 shadow-lg transition-all">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     Simpan Konfigurasi
                 </button>
             </div>
-
         </form>
     </div>
 </div>
@@ -168,62 +188,86 @@
         let fieldsData = [];
 
         // --- LOGIKA AUTO TEMPLATE ---
-        // Jika database kosong, kita isi dengan template standar
         if (!initialData || initialData.length === 0) {
+            // Kita update template default Anda dengan field_key dan max_length
             fieldsData = [{
                     field_label: 'Nama Lengkap',
+                    field_key: 'nama_lengkap', // Baru
                     field_type: 'text',
                     options_string: '',
-                    is_required: true
+                    is_required: true,
+                    max_length: 100 // Baru
                 },
                 {
                     field_label: 'Usia',
+                    field_key: 'usia', // Baru
                     field_type: 'number',
                     options_string: '',
-                    is_required: true
+                    is_required: true,
+                    max_length: 3 // Baru (misal max 3 digit)
                 },
                 {
                     field_label: 'Jenis Kelamin',
+                    field_key: 'jenis_kelamin', // Baru
                     field_type: 'radio',
                     options_string: 'Laki-laki, Perempuan',
-                    is_required: true
+                    is_required: true,
+                    max_length: null
                 },
                 {
                     field_label: 'Status',
+                    field_key: 'status', // Baru
                     field_type: 'select',
                     options_string: 'Mahasiswa, Dosen, Tenaga Kependidikan, Alumni, Masyarakat Umum, Mitra Kerjasama',
-                    is_required: true
+                    is_required: true,
+                    max_length: null
                 },
                 {
                     field_label: 'Fakultas / Unit Asal',
+                    field_key: 'fakultas_unit_asal', // Baru
                     field_type: 'text',
                     options_string: '',
-                    is_required: true
+                    is_required: true,
+                    max_length: 100
                 }
             ];
         } else {
-            // Jika sudah ada data, gunakan data tersebut
+            // Jika load dari DB, pastikan property baru tetap ada (handle null)
             fieldsData = initialData.map(f => ({
                 ...f,
-                // Konversi array JSON ke string untuk edit
-                options_string: Array.isArray(f.field_options) ? f.field_options.join(', ') : ''
+                options_string: Array.isArray(f.field_options) ? f.field_options.join(', ') : '',
+                field_key: f.field_key || '', // Handle data lama
+                max_length: f.max_length || null // Handle data lama
             }));
         }
 
         return {
             fields: fieldsData,
 
+            // --- FUNGSI BARU: AUTO FILL KEY ---
+            autoFillKey(index) {
+                let label = this.fields[index].field_label;
+                // Ubah ke lowercase, spasi jadi underscore, hapus simbol
+                let slug = label.toLowerCase()
+                    .replace(/[^\w\s]/gi, '')
+                    .replace(/\s+/g, '_');
+
+                // Isi ke field key
+                this.fields[index].field_key = slug;
+            },
+
             addField() {
                 this.fields.push({
                     field_label: '',
+                    field_key: '', // Baru
                     field_type: 'text',
                     options_string: '',
-                    is_required: true
+                    is_required: true,
+                    max_length: null // Baru
                 });
             },
 
             removeField(index) {
-                // Hapus konfirmasi jika field masih kosong agar cepat
                 let f = this.fields[index];
                 if (!f.field_label && !f.options_string) {
                     this.fields.splice(index, 1);
